@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>行业三部 · 系统性经营诊断 2026-05-26</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif;background:#f0f2f5;color:#1a1a2e}
+/* NAV */
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;background:#1a1a2e;display:flex;align-items:center;padding:0 24px;height:52px;gap:4px}
+.nav-brand{color:#fff;font-weight:700;font-size:15px;margin-right:20px;white-space:nowrap}
+.nav-brand span{color:#60a5fa}
+.tab-btn{padding:8px 16px;border:none;background:transparent;color:#94a3b8;cursor:pointer;font-size:13px;border-radius:6px;white-space:nowrap;transition:all .2s}
+.tab-btn:hover{color:#fff;background:rgba(255,255,255,.1)}
+.tab-btn.active{color:#fff;background:#2563eb}
+.content{margin-top:52px;padding:20px}
+.layer{display:none}
+.layer.active{display:block}
+
+/* CARDS & SECTIONS */
+.section-title{font-size:18px;font-weight:700;color:#1a1a2e;margin:20px 0 12px;padding-left:8px;border-left:4px solid #2563eb}
+.kpi-row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px}
+.kpi{background:#fff;border-radius:10px;padding:16px 20px;flex:1;min-width:150px;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.kpi-label{font-size:12px;color:#6b7280;margin-bottom:4px}
+.kpi-value{font-size:22px;font-weight:700;color:#1a1a2e}
+.kpi-sub{font-size:12px;margin-top:2px}
+.up{color:#16a34a}.down{color:#e8372c}.flat{color:#6b7280}
+
+/* TABLE */
+.tbl-wrap{background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.08);margin-bottom:20px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{background:#f8fafc;padding:10px 12px;text-align:left;font-weight:600;color:#374151;border-bottom:1px solid #e5e7eb;white-space:nowrap}
+td{padding:9px 12px;border-bottom:1px solid #f3f4f6;color:#374151}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafbff}
+.badge{display:inline-block;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:600}
+.badge-blue{background:#dbeafe;color:#1d4ed8}
+.badge-green{background:#dcfce7;color:#15803d}
+.badge-red{background:#fee2e2;color:#b91c1c}
+.badge-orange{background:#ffedd5;color:#c2410c}
+.badge-purple{background:#ede9fe;color:#6d28d9}
+.badge-gray{background:#f3f4f6;color:#374151}
+
+/* FUNNEL CARDS */
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(480px,1fr));gap:16px;margin-bottom:20px}
+.diag-card{background:#fff;border-radius:12px;padding:18px;box-shadow:0 1px 4px rgba(0,0,0,.08);border-left:4px solid #e5e7eb}
+.diag-card.critical{border-left-color:#e8372c}
+.diag-card.warning{border-left-color:#f97316}
+.diag-card.ok{border-left-color:#16a34a}
+.card-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px}
+.card-title{font-size:14px;font-weight:700;color:#1a1a2e}
+.card-gmv{font-size:12px;color:#6b7280}
+.tags{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:10px}
+.tag{display:inline-flex;align-items:center;gap:3px;padding:3px 8px;border-radius:10px;font-size:11px;font-weight:600}
+.tag-blue{background:#dbeafe;color:#1d4ed8}
+.tag-orange{background:#ffedd5;color:#c2410c}
+.tag-red{background:#fee2e2;color:#b91c1c}
+.tag-purple{background:#ede9fe;color:#6d28d9}
+.tag-green{background:#dcfce7;color:#15803d}
+.tag-gray{background:#f3f4f6;color:#6b7280}
+
+/* FUNNEL VIZ */
+.funnel-row{display:flex;align-items:center;gap:6px;margin:4px 0}
+.funnel-label{font-size:11px;color:#6b7280;width:90px;text-align:right;flex-shrink:0}
+.funnel-bar-wrap{flex:1;position:relative;height:24px;background:#f3f4f6;border-radius:4px;overflow:hidden}
+.funnel-bar{height:100%;border-radius:4px;display:flex;align-items:center;padding-left:8px;font-size:11px;font-weight:600;color:#fff;transition:width .3s}
+.funnel-bar.ok{background:#16a34a}
+.funnel-bar.warn{background:#f97316}
+.funnel-bar.bad{background:#e8372c}
+.funnel-val{position:absolute;right:8px;top:50%;transform:translateY(-50%);font-size:11px;font-weight:700;color:#374151}
+.funnel-arrow{font-size:14px;color:#94a3b8}
+.conclusion{margin-top:10px;padding:8px 10px;background:#f8fafc;border-radius:6px;font-size:12px;color:#374151;border-left:3px solid #2563eb}
+.action{margin-top:6px;font-size:11px;color:#6b7280;padding-left:13px}
+
+/* CARRIER BARS */
+.carrier-row{display:flex;gap:2px;height:24px;border-radius:4px;overflow:hidden;margin:4px 0}
+.carrier-seg{display:flex;align-items:center;justify-content:center;font-size:10px;color:#fff;font-weight:700;min-width:4%}
+
+/* HEALTH SIGNAL */
+.signal{width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:6px}
+.signal-green{background:#16a34a}
+.signal-yellow{background:#eab308}
+.signal-red{background:#e8372c}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-brand">行业三部 · <span>系统性经营诊断</span></div>
+  <button class="tab-btn active" onclick="showLayer('l1',this)">① GMV大盘</button>
+  <button class="tab-btn" onclick="showLayer('l2',this)">② 商家分层</button>
+  <button class="tab-btn" onclick="showLayer('l3',this)">③ 载体结构</button>
+  <button class="tab-btn" onclick="showLayer('l4',this)">④ 店播漏斗诊断</button>
+  <button class="tab-btn" onclick="showLayer('l5',this)">⑤ 商笔漏斗诊断</button>
+</nav>
+
+<!-- LAYER 1: GMV 大盘 -->
+<div id="l1" class="content layer active">
+  <div class="section-title">① GMV 大盘总览 · 2026-04-27~05-26 vs 上期</div>
+  <div class="kpi-row">
+    <div class="kpi"><div class="kpi-label">整体GMV</div><div class="kpi-value">¥39.33亿</div><div class="kpi-sub down">环比 -1.30%</div></div>
+    <div class="kpi"><div class="kpi-label">店播GMV</div><div class="kpi-value">¥18.45亿</div><div class="kpi-sub down">环比 -3.3%</div></div>
+    <div class="kpi"><div class="kpi-label">K播GMV</div><div class="kpi-value">¥6.64亿</div><div class="kpi-sub up">环比 +5.2% ✅唯一正增长</div></div>
+    <div class="kpi"><div class="kpi-label">商卡GMV</div><div class="kpi-value">¥7.77亿</div><div class="kpi-sub up">环比 +0.8%</div></div>
+    <div class="kpi"><div class="kpi-label">笔记GMV</div><div class="kpi-value">¥6.42亿</div><div class="kpi-sub down">环比 -3.5%</div></div>
+  </div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>#</th><th>行业组</th><th>总GMV(万)</th><th>环比</th><th>主导载体</th><th>店播占比</th><th>K播占比</th><th>商卡占比</th><th>笔记占比</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td><b>一组（文玩玉翠）</b></td><td>100,299</td><td class="down">-3.68%</td><td><span class="badge badge-blue">店播主导</span></td><td>71%</td><td>18%</td><td>9%</td><td>2%</td></tr>
+        <tr><td>2</td><td><b>十一组（潮玩）</b></td><td>46,226</td><td class="down">-5.38%</td><td><span class="badge badge-blue">店播主导</span></td><td>61%</td><td>5%</td><td>20%</td><td>14%</td></tr>
+        <tr><td>3</td><td><b>九组（家用）</b></td><td>25,633</td><td class="up">+2.80%</td><td><span class="badge badge-gray">混合</span></td><td>34%</td><td>22%</td><td>17%</td><td>27%</td></tr>
+        <tr><td>4</td><td><b>五组（休食）</b></td><td>23,595</td><td class="down">-3.25%</td><td><span class="badge badge-gray">混合</span></td><td>26%</td><td>15%</td><td>27%</td><td>32%</td></tr>
+        <tr><td>5</td><td><b>十二组（手工）</b></td><td>22,473</td><td class="down">-5.31%</td><td><span class="badge badge-blue">店播主导</span></td><td>65%</td><td>5%</td><td>18%</td><td>12%</td></tr>
+        <tr><td>6</td><td><b>二组（亲子生活）</b></td><td>22,190</td><td class="down">-15.74%</td><td><span class="badge badge-gray">混合</span></td><td>38%</td><td>21%</td><td>21%</td><td>21%</td></tr>
+        <tr><td>7</td><td><b>十组（家纺）</b></td><td>17,524</td><td class="up">+11.16%</td><td><span class="badge badge-gray">混合</span></td><td>31%</td><td>20%</td><td>22%</td><td>27%</td></tr>
+        <tr><td>8</td><td><b>四组（大健康）</b></td><td>16,372</td><td class="flat">±0%</td><td><span class="badge badge-gray">混合</span></td><td>20%</td><td>31%</td><td>27%</td><td>23%</td></tr>
+        <tr><td>9</td><td><b>八组（消费电子）</b></td><td>16,192</td><td class="up">+10.73%</td><td><span class="badge badge-green">商卡主导</span></td><td>19%</td><td>8%</td><td>51%</td><td>22%</td></tr>
+        <tr><td>10</td><td><b>十五组（酒旅）</b></td><td>14,658</td><td class="down">-15.73%</td><td><span class="badge badge-blue">店播主导</span></td><td>61%</td><td>7%</td><td>26%</td><td>6%</td></tr>
+        <tr><td>11</td><td><b>七组（家具）</b></td><td>13,585</td><td class="up">+27.00%</td><td><span class="badge badge-purple">K播主导</span></td><td>23%</td><td>57%</td><td>15%</td><td>5%</td></tr>
+        <tr><td>12</td><td><b>六组（生鲜）</b></td><td>13,208</td><td class="down">-3.53%</td><td><span class="badge badge-gray">混合</span></td><td>28%</td><td>14%</td><td>27%</td><td>30%</td></tr>
+        <tr><td>13</td><td><b>十三组（教育）</b></td><td>12,729</td><td class="up">+45.10%</td><td><span class="badge badge-gray">混合</span></td><td>14%</td><td>38%</td><td>23%</td><td>24%</td></tr>
+        <tr><td>14</td><td><b>十一组（虚拟）</b></td><td>10,672</td><td class="up">+4.55%</td><td><span class="badge badge-orange">笔记主导</span></td><td>9%</td><td>9%</td><td>28%</td><td>54%</td></tr>
+        <tr><td>15</td><td><b>十四组（二奢）</b></td><td>10,332</td><td class="down">-9.46%</td><td><span class="badge badge-blue">店播主导</span></td><td>76%</td><td>1%</td><td>20%</td><td>3%</td></tr>
+        <tr><td>16</td><td><b>十组（家饰）</b></td><td>9,182</td><td class="down">-1.79%</td><td><span class="badge badge-blue">店播主导</span></td><td>57%</td><td>10%</td><td>16%</td><td>16%</td></tr>
+        <tr><td>17</td><td><b>八组（家电）</b></td><td>8,726</td><td class="up">+24.33%</td><td><span class="badge badge-gray">混合</span></td><td>23%</td><td>34%</td><td>25%</td><td>17%</td></tr>
+        <tr><td>18</td><td><b>三组（宠物）</b></td><td>5,129</td><td class="down">-0.58%</td><td><span class="badge badge-gray">混合</span></td><td>17%</td><td>6%</td><td>36%</td><td>41%</td></tr>
+        <tr><td>19</td><td><b>十三组（图书）</b></td><td>4,613</td><td class="down">-18.91%</td><td><span class="badge badge-orange">笔记主导</span></td><td>13%</td><td>19%</td><td>16%</td><td>52%</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div style="background:#fff;border-radius:10px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,.08);font-size:13px;line-height:1.8">
+    <b>大盘核心结论：</b><br>
+    ✅ <b>增长：</b>教育(+45%)、家具(+27%)、家电(+24%)、家纺(+11%)、消费电子(+11%) — 均由K播/商卡驱动<br>
+    🔴 <b>失血：</b>图书(-19%)、二奢(-9%)、酒旅(-16%)、亲子(-16%) — 主要是店播GMV大幅下滑<br>
+    ⚠️ K播是本月唯一正增长载体(+5.2%)；店播、笔记、商卡整体承压
+  </div>
+</div>
+
+<!-- LAYER 2: 商家分层 -->
+<div id="l2" class="content layer">
+  <div class="section-title">② 商家分层健康度 · B5/6降级率 + B4跃迁率</div>
+  <div class="kpi-row">
+    <div class="kpi"><div class="kpi-label">B5/6整体商家数</div><div class="kpi-value">1,383家</div><div class="kpi-sub">降级405家 <span class="down">(28.6%)</span></div></div>
+    <div class="kpi"><div class="kpi-label">B4跃迁整体</div><div class="kpi-value">18.93%</div><div class="kpi-sub flat">基准线</div></div>
+    <div class="kpi"><div class="kpi-label">降级率红线</div><div class="kpi-value" style="color:#e8372c">>35%</div><div class="kpi-sub down">6个行业触发</div></div>
+    <div class="kpi"><div class="kpi-label">降级率黄线</div><div class="kpi-value" style="color:#eab308">20-35%</div><div class="kpi-sub flat">8个行业在此区间</div></div>
+  </div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>健康度</th><th>行业组</th><th>B5/6商家数</th><th>店均GMV环比</th><th>降级率</th><th>跃迁率</th><th>诊断</th></tr></thead>
+      <tbody>
+        <tr><td><span class="signal signal-green"></span></td><td><b>八组（家电）</b></td><td>37</td><td class="up">+19.02%</td><td style="color:#16a34a">9.68%</td><td class="up">19.64%</td><td><span class="badge badge-green">头部稳定 腰部激活</span></td></tr>
+        <tr><td><span class="signal signal-green"></span></td><td><b>四组（大健康）</b></td><td>78</td><td class="up">+1.31%</td><td style="color:#16a34a">18.42%</td><td class="flat">12.15%</td><td><span class="badge badge-green">头部稳定 腰部偏弱</span></td></tr>
+        <tr><td><span class="signal signal-green"></span></td><td><b>一组（文玩玉翠）</b></td><td>395</td><td class="down">-2.66%</td><td style="color:#16a34a">19.90%</td><td class="flat">15.58%</td><td><span class="badge badge-green">头部稳定</span></td></tr>
+        <tr><td><span class="signal signal-yellow"></span></td><td><b>七组（家具）</b></td><td>60</td><td class="up">+12.14%</td><td style="color:#eab308">15.91%</td><td class="up">21.88%</td><td><span class="badge badge-blue">腰部动能强 头部稳</span></td></tr>
+        <tr><td><span class="signal signal-yellow"></span></td><td><b>五组（休食）</b></td><td>101</td><td class="up">+8.84%</td><td style="color:#eab308">26.61%</td><td class="flat">10.08%</td><td><span class="badge" style="background:#fef9c3;color:#854d0e">头部有压 腰部弱</span></td></tr>
+        <tr><td><span class="signal signal-yellow"></span></td><td><b>九组（家用）</b></td><td>98</td><td class="up">+5.75%</td><td style="color:#eab308">27.66%</td><td class="up">19.10%</td><td><span class="badge" style="background:#fef9c3;color:#854d0e">头部小幅流失</span></td></tr>
+        <tr><td><span class="signal signal-yellow"></span></td><td><b>十二组（手工）</b></td><td>70</td><td class="down">-0.96%</td><td style="color:#eab308">27.78%</td><td class="flat">17.62%</td><td><span class="badge" style="background:#fef9c3;color:#854d0e">头部承压</span></td></tr>
+        <tr><td><span class="signal signal-yellow"></span></td><td><b>十五组（酒旅）</b></td><td>41</td><td class="down">-23.14%</td><td style="color:#eab308">24.32%</td><td class="flat">13.11%</td><td><span class="badge badge-red">头部GMV暴跌</span></td></tr>
+        <tr><td><span class="signal signal-yellow"></span></td><td><b>十四组（二奢）</b></td><td>39</td><td class="down">-11.84%</td><td style="color:#eab308">33.33%</td><td class="flat">17.18%</td><td><span class="badge" style="background:#fef9c3;color:#854d0e">头部松动 逼近红线</span></td></tr>
+        <tr><td><span class="signal signal-yellow"></span></td><td><b>八组（消费电子）</b></td><td>40</td><td class="up">+34.34%</td><td style="color:#eab308">32.50%</td><td class="flat">11.19%</td><td><span class="badge badge-orange">头部分化 部分跑出</span></td></tr>
+        <tr><td><span class="signal signal-yellow"></span></td><td><b>十一组（虚拟）</b></td><td>19</td><td class="up">+11.28%</td><td style="color:#eab308">22.22%</td><td class="up">34.83%</td><td><span class="badge badge-blue">腰部激活强劲</span></td></tr>
+        <tr><td><span class="signal signal-red"></span></td><td><b>十一组（潮玩）</b></td><td>92</td><td class="down">-9.56%</td><td style="color:#e8372c">46.67%</td><td class="up">32.05%</td><td><span class="badge badge-red">⚠️头部严重出血</span></td></tr>
+        <tr><td><span class="signal signal-red"></span></td><td><b>十三组（教育）</b></td><td>35</td><td class="up">+109.38%</td><td style="color:#e8372c">44.12%</td><td class="up">29.41%</td><td><span class="badge badge-orange">头部分化剧烈 新强涌现</span></td></tr>
+        <tr><td><span class="signal signal-red"></span></td><td><b>二组（亲子生活）</b></td><td>97</td><td class="down">-11.15%</td><td style="color:#e8372c">40.16%</td><td class="flat">12.41%</td><td><span class="badge badge-red">⚠️头部萎缩 腰部乏力</span></td></tr>
+        <tr><td><span class="signal signal-red"></span></td><td><b>十组（家纺）</b></td><td>63</td><td class="up">+32.02%</td><td style="color:#e8372c">40.00%</td><td class="up">19.66%</td><td><span class="badge badge-orange">降级高但均值反升 两极分化</span></td></tr>
+        <tr><td><span class="signal signal-red"></span></td><td><b>六组（生鲜）</b></td><td>62</td><td class="up">+5.69%</td><td style="color:#e8372c">38.36%</td><td class="up">21.13%</td><td><span class="badge badge-red">头部流失严重</span></td></tr>
+        <tr><td><span class="signal signal-red"></span></td><td><b>十组（家饰）</b></td><td>30</td><td class="up">+0.94%</td><td style="color:#e8372c">37.50%</td><td class="up">20.78%</td><td><span class="badge badge-red">头部大幅降级</span></td></tr>
+        <tr><td><span class="signal signal-red"></span></td><td><b>三组（宠物）</b></td><td>8</td><td class="up">+10.70%</td><td style="color:#e8372c">42.86%</td><td class="flat">15.83%</td><td><span class="badge badge-red">头部极少且出血</span></td></tr>
+        <tr><td><span class="signal signal-red"></span></td><td><b>十三组（图书）</b></td><td>18</td><td class="down">-22.76%</td><td style="color:#e8372c">40.91%</td><td class="flat">19.66%</td><td><span class="badge badge-red">⚠️头部出血+GMV双跌</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div style="background:#fff;border-radius:10px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,.08);font-size:13px;line-height:1.8">
+    <b>分层核心结论：</b><br>
+    🔴 <b>高危（降级>35%）：</b>潮玩(46.7%)、教育(44.1%)、宠物(42.9%)、图书(40.9%)、亲子(40.2%)、家纺(40%)、家饰(37.5%)、生鲜(38.4%)<br>
+    🟡 <b>黄线（20-35%）：</b>消费电子(32.5%)、二奢(33.3%)、手工(27.8%)、家用(27.7%)、休食(26.6%)、酒旅(24.3%)、虚拟(22.2%)<br>
+    ✅ <b>健康：</b>家电(9.7%)、大健康(18.4%)、文玩玉翠(19.9%)<br>
+    ⚠️ 注意：教育虽降级率高但店均GMV+109%，说明强者更强，是行业内部分化而非整体下滑
+  </div>
+</div>
+
+<!-- LAYER 3: 载体结构 -->
+<div id="l3" class="content layer">
+  <div class="section-title">③ 各行业载体结构 · 主导类型与四载体占比</div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>行业组</th><th>载体占比分布</th><th>主导类型</th><th>店播趋势</th><th>K播趋势</th><th>商卡趋势</th><th>笔记趋势</th></tr></thead>
+      <tbody id="carrier-tbody">
+      </tbody>
+    </table>
+  </div>
+  <div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:12px">
+    <div style="display:flex;align-items:center;gap:6px;font-size:12px"><div style="width:14px;height:14px;border-radius:3px;background:#2563eb"></div>店播</div>
+    <div style="display:flex;align-items:center;gap:6px;font-size:12px"><div style="width:14px;height:14px;border-radius:3px;background:#7c3aed"></div>K播</div>
+    <div style="display:flex;align-items:center;gap:6px;font-size:12px"><div style="width:14px;height:14px;border-radius:3px;background:#16a34a"></div>商卡</div>
+    <div style="display:flex;align-items:center;gap:6px;font-size:12px"><div style="width:14px;height:14px;border-radius:3px;background:#f97316"></div>笔记</div>
+  </div>
+  <div style="background:#fff;border-radius:10px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,.08);font-size:13px;line-height:1.8">
+    <b>载体结构核心结论：</b><br>
+    🔵 <b>店播主导（&gt;50%）：</b>文玩玉翠(71%)、二奢(76%)、手工(65%)、潮玩(61%)、酒旅(61%)、家饰(57%) — 高度依赖直播能力<br>
+    🟣 <b>K播主导：</b>家具(57%) — 全行业K播最高，依赖达人投放<br>
+    🟢 <b>商卡主导：</b>消费电子(51%) — 标品搜索属性强，商卡天然适配<br>
+    🟠 <b>笔记主导：</b>虚拟(54%)、图书(52%) — 低客单、强内容种草品类<br>
+    ⚙️ <b>混合型（各载体均衡）：</b>家用、休食、亲子、家纺、大健康、宠物、生鲜、教育 — 多载体分散风险，但单项突破难
+  </div>
+</div>
+
+<!-- LAYER 4: 店播漏斗诊断 -->
+<div id="l4" class="content layer">
+  <div class="section-title">④ 店播漏斗逐环诊断 · 每行业精准定位问题环节</div>
+  <div class="kpi-row">
+    <div class="kpi"><div class="kpi-label">基准 CTR</div><div class="kpi-value">2.04%</div><div class="kpi-sub">低于1.5%=🟡弱</div></div>
+    <div class="kpi"><div class="kpi-label">基准 CVR</div><div class="kpi-value">2.20%</div><div class="kpi-sub">低于1.5%=🟠弱</div></div>
+    <div class="kpi"><div class="kpi-label">基准 转化率</div><div class="kpi-value">4.28%</div><div class="kpi-sub">低于3%=🔴弱</div></div>
+    <div class="kpi"><div class="kpi-label">基准 单h曝光</div><div class="kpi-value">8,791</div><div class="kpi-sub">低于5000=🔵稀释</div></div>
+  </div>
+  <p style="font-size:12px;color:#6b7280;margin-bottom:16px">漏斗：<b>曝光量</b> → <b>[流量调控:单h曝光]</b> → <b>CTR(封面点击)</b> → <b>CVR(点击→进播)</b> → <b>商品转化率</b> → <b>客单价</b> → <b>GPM</b></p>
+  <div class="cards-grid" id="liveCards"></div>
+</div>
+
+<!-- LAYER 5: 商笔漏斗诊断 -->
+<div id="l5" class="content layer">
+  <div class="section-title">⑤ 商笔漏斗逐环诊断 · 每行业精准定位问题环节</div>
+  <div class="kpi-row">
+    <div class="kpi"><div class="kpi-label">基准 CTR1(阅读率)</div><div class="kpi-value">15.06%</div><div class="kpi-sub">低于12%=🟡弱</div></div>
+    <div class="kpi"><div class="kpi-label">基准 CTR2(商卡点击)</div><div class="kpi-value">9.13%</div><div class="kpi-sub">低于7%=🟠弱</div></div>
+    <div class="kpi"><div class="kpi-label">基准 CVR(转化)</div><div class="kpi-value">6.53%</div><div class="kpi-sub">低于3%=🔴弱</div></div>
+    <div class="kpi"><div class="kpi-label">基准 篇均曝光</div><div class="kpi-value">62次</div><div class="kpi-sub">低于50=🔵稀释</div></div>
+  </div>
+  <p style="font-size:12px;color:#6b7280;margin-bottom:16px">漏斗：<b>发布量</b> → <b>[流量调控:篇均曝光]</b> → <b>CTR1(阅读率)</b> → <b>CTR2(商卡点击率)</b> → <b>CVR(商品转化率)</b> → <b>客单价</b> → <b>GPM</b></p>
+  <div class="cards-grid" id="noteCards"></div>
+</div>
+
+<script>
+function showLayer(id,btn){
+  document.querySelectorAll('.layer').forEach(l=>l.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ---- 载体数据 ----
+const carrierData=[
+  {n:'一组（文玩玉翠）',dian:71,k:18,shang:9,bi:2,type:'店播主导',dianT:'-0.1%',kT:'-',shT:'-',biT:'+6.6%'},
+  {n:'十一组（潮玩）',dian:61,k:5,shang:20,bi:14,type:'店播主导',dianT:'-3.8%',kT:'-',shT:'-',biT:'-7.1%'},
+  {n:'九组（家用）',dian:34,k:22,shang:17,bi:27,type:'混合',dianT:'-1.1%',kT:'-',shT:'-',biT:'-0.6%'},
+  {n:'五组（休食）',dian:26,k:15,shang:27,bi:32,type:'混合',dianT:'-0.9%',kT:'-',shT:'-',biT:'-8.2%'},
+  {n:'十二组（手工）',dian:65,k:5,shang:18,bi:12,type:'店播主导',dianT:'-9.2%',kT:'-',shT:'-',biT:'-5.5%'},
+  {n:'二组（亲子生活）',dian:38,k:21,shang:21,bi:21,type:'混合',dianT:'-12.1%',kT:'-',shT:'-',biT:'-9.4%'},
+  {n:'十组（家纺）',dian:31,k:20,shang:22,bi:27,type:'混合',dianT:'+2.2%',kT:'-',shT:'-',biT:'+8.3%'},
+  {n:'四组（大健康）',dian:20,k:31,shang:27,bi:23,type:'混合',dianT:'-7.3%',kT:'-',shT:'-',biT:'-17.2%'},
+  {n:'八组（消费电子）',dian:19,k:8,shang:51,bi:22,type:'商卡主导',dianT:'-8.6%',kT:'-',shT:'+10.7%',biT:'-10.2%'},
+  {n:'十五组（酒旅）',dian:61,k:7,shang:26,bi:6,type:'店播主导',dianT:'-21.6%',kT:'-',shT:'-',biT:'-21.6%'},
+  {n:'七组（家具）',dian:23,k:57,shang:15,bi:5,type:'K播主导',dianT:'+14.7%',kT:'+27%',shT:'-',biT:'-9%'},
+  {n:'六组（生鲜）',dian:28,k:14,shang:27,bi:30,type:'混合',dianT:'+4.6%',kT:'-',shT:'-',biT:'-10.7%'},
+  {n:'十三组（教育）',dian:14,k:38,shang:23,bi:24,type:'混合',dianT:'+13.3%',kT:'+45.1%',shT:'-',biT:'+42.9%'},
+  {n:'十一组（虚拟）',dian:9,k:9,shang:28,bi:54,type:'笔记主导',dianT:'+64.2%',kT:'-',shT:'-',biT:'-2.7%'},
+  {n:'十四组（二奢）',dian:76,k:1,shang:20,bi:3,type:'店播主导',dianT:'-11.4%',kT:'-',shT:'-',biT:'-11.9%'},
+  {n:'十组（家饰）',dian:57,k:10,shang:16,bi:16,type:'店播主导',dianT:'-6.5%',kT:'-',shT:'-',biT:'-3.6%'},
+  {n:'八组（家电）',dian:23,k:34,shang:25,bi:17,type:'混合',dianT:'+93.3%',kT:'+24.3%',shT:'-',biT:'+8.2%'},
+  {n:'三组（宠物）',dian:17,k:6,shang:36,bi:41,type:'混合',dianT:'-0.4%',kT:'-',shT:'-',biT:'-8.4%'},
+  {n:'十三组（图书）',dian:13,k:19,shang:16,bi:52,type:'笔记主导',dianT:'-21.9%',kT:'-',shT:'-',biT:'-1.3%'},
+];
+
+const tbody=document.getElementById('carrier-tbody');
+carrierData.forEach(d=>{
+  const typeClass={
+    '店播主导':'badge-blue','K播主导':'badge-purple','商卡主导':'badge-green','笔记主导':'badge-orange','混合':'badge-gray'
+  }[d.type];
+  const colorClass=v=>v.startsWith('+')?'up':v.startsWith('-')?'down':'flat';
+  tbody.innerHTML+=`<tr>
+    <td><b>${d.n}</b></td>
+    <td>
+      <div class="carrier-row">
+        <div class="carrier-seg" style="width:${d.dian}%;background:#2563eb">${d.dian>8?d.dian+'%':''}</div>
+        <div class="carrier-seg" style="width:${d.k}%;background:#7c3aed">${d.k>8?d.k+'%':''}</div>
+        <div class="carrier-seg" style="width:${d.shang}%;background:#16a34a">${d.shang>8?d.shang+'%':''}</div>
+        <div class="carrier-seg" style="width:${d.bi}%;background:#f97316">${d.bi>8?d.bi+'%':''}</div>
+      </div>
+    </td>
+    <td><span class="badge ${typeClass}">${d.type}</span></td>
+    <td class="${colorClass(d.dianT)}">${d.dianT}</td>
+    <td class="${colorClass(d.kT)}">${d.kT}</td>
+    <td class="${colorClass(d.shT)}">${d.shT}</td>
+    <td class="${colorClass(d.biT)}">${d.biT}</td>
+  </tr>`;
+});
+
+// ---- 店播漏斗数据 ----
+const liveData=[
+  {n:'一组（文玩玉翠）',gmv:'7.17亿',gmvt:'-0.1%',expo:8.58,h_expo:4893,ctr:3.98,cvr:1.03,conv:1.92,aov:1717,aovt:0,br_ctr:2.172,br_cvr:1.175,lk_ctr:5.300,lk_cvr:0.936,gpm:821},
+  {n:'十一组（潮玩）',gmv:'2.82亿',gmvt:'-3.8%',expo:17.80,h_expo:4014,ctr:3.24,cvr:4.21,conv:8.99,aov:150,aovt:0,br_ctr:1.532,br_cvr:3.180,lk_ctr:3.968,lk_cvr:2.200,gpm:156},
+  {n:'九组（家用）',gmv:'0.87亿',gmvt:'-1.1%',expo:17.80,h_expo:17127,ctr:1.64,cvr:2.41,conv:4.22,aov:280,aovt:0,br_ctr:1.085,br_cvr:4.046,lk_ctr:3.423,lk_cvr:1.914,gpm:58},
+  {n:'五组（休食）',gmv:'0.61亿',gmvt:'-0.9%',expo:13.09,h_expo:12928,ctr:1.18,cvr:3.02,conv:5.84,aov:112,aovt:0,br_ctr:0.644,br_cvr:6.573,lk_ctr:2.890,lk_cvr:2.004,gpm:45},
+  {n:'十二组（手工）',gmv:'1.46亿',gmvt:'-9.2%',expo:8.35,h_expo:7641,ctr:3.64,cvr:2.22,conv:4.25,aov:200,aovt:0,br_ctr:1.814,br_cvr:2.989,lk_ctr:5.200,lk_cvr:2.125,gpm:176},
+  {n:'二组（亲子生活）',gmv:'0.83亿',gmvt:'-12.1%',expo:13.26,h_expo:10185,ctr:1.78,cvr:2.16,conv:3.19,aov:250,aovt:-10,br_ctr:1.230,br_cvr:3.833,lk_ctr:2.790,lk_cvr:2.277,gpm:62},
+  {n:'十组（家纺）',gmv:'0.55亿',gmvt:'+2.2%',expo:6.76,h_expo:8802,ctr:2.06,cvr:2.20,conv:4.08,aov:220,aovt:0,br_ctr:1.113,br_cvr:2.999,lk_ctr:3.465,lk_cvr:2.071,gpm:80},
+  {n:'四组（大健康）',gmv:'0.32亿',gmvt:'-7.3%',expo:5.33,h_expo:9711,ctr:1.74,cvr:0.94,conv:2.73,aov:300,aovt:0,br_ctr:0.382,br_cvr:3.961,lk_ctr:4.203,lk_cvr:0.237,gpm:51},
+  {n:'八组（消费电子）',gmv:'0.31亿',gmvt:'-8.6%',expo:11.21,h_expo:17844,ctr:1.29,cvr:1.25,conv:1.66,aov:800,aovt:0,br_ctr:0.850,br_cvr:2.587,lk_ctr:2.906,lk_cvr:0.529,gpm:25},
+  {n:'十五组（酒旅）',gmv:'0.89亿',gmvt:'-21.6%',expo:9.73,h_expo:17837,ctr:0.97,cvr:1.62,conv:3.56,aov:680,aovt:-67.5,br_ctr:0.311,br_cvr:4.326,lk_ctr:1.575,lk_cvr:1.101,gpm:92},
+  {n:'七组（家具）',gmv:'0.31亿',gmvt:'+14.7%',expo:4.02,h_expo:9027,ctr:1.53,cvr:0.81,conv:1.52,aov:479,aovt:0,br_ctr:0.918,br_cvr:2.282,lk_ctr:3.248,lk_cvr:0.370,gpm:80},
+  {n:'六组（生鲜）',gmv:'0.38亿',gmvt:'+4.6%',expo:9.70,h_expo:14048,ctr:1.52,cvr:1.87,conv:4.78,aov:53,aovt:0,br_ctr:0.844,br_cvr:3.629,lk_ctr:3.641,lk_cvr:0.779,gpm:31},
+  {n:'十三组（教育）',gmv:'0.18亿',gmvt:'+13.3%',expo:5.05,h_expo:14789,ctr:1.52,cvr:0.39,conv:5.38,aov:200,aovt:-53,br_ctr:0.445,br_cvr:1.997,lk_ctr:3.971,lk_cvr:0.227,gpm:36},
+  {n:'十一组（虚拟）',gmv:'0.09亿',gmvt:'+64.2%',expo:3.85,h_expo:16050,ctr:1.51,cvr:1.66,conv:6.59,aov:67,aovt:-36.9,br_ctr:0.491,br_cvr:4.276,lk_ctr:2.580,lk_cvr:1.208,gpm:25},
+  {n:'十四组（二奢）',gmv:'0.79亿',gmvt:'-11.4%',expo:2.66,h_expo:4317,ctr:2.85,cvr:0.14,conv:0.16,aov:4891,aovt:0,br_ctr:2.202,br_cvr:0.171,lk_ctr:3.953,lk_cvr:0.084,gpm:287},
+  {n:'十组（家饰）',gmv:'0.53亿',gmvt:'-6.5%',expo:8.50,h_expo:11290,ctr:2.49,cvr:1.66,conv:3.45,aov:107,aovt:0,br_ctr:1.552,br_cvr:3.616,lk_ctr:4.250,lk_cvr:1.680,gpm:62},
+  {n:'八组（家电）',gmv:'0.20亿',gmvt:'+93.3%',expo:1.43,h_expo:5009,ctr:1.13,cvr:0.94,conv:2.49,aov:1137,aovt:+24.7,br_ctr:0.535,br_cvr:1.619,lk_ctr:2.638,lk_cvr:0.595,gpm:168},
+  {n:'三组（宠物）',gmv:'0.09亿',gmvt:'-0.4%',expo:2.23,h_expo:5734,ctr:2.02,cvr:1.13,conv:4.49,aov:109,aovt:0,br_ctr:0.796,br_cvr:3.747,lk_ctr:4.286,lk_cvr:0.739,gpm:36},
+  {n:'十三组（图书）',gmv:'0.06亿',gmvt:'-21.9%',expo:1.54,h_expo:5504,ctr:1.05,cvr:1.44,conv:3.17,aov:200,aovt:0,br_ctr:0.537,br_cvr:3.755,lk_ctr:2.526,lk_cvr:1.123,gpm:34},
+];
+
+function buildLiveTags(d){
+  const tags=[];
+  // 流量稀释
+  if(d.h_expo<5000) tags.push('<span class="tag tag-blue">🔵 流量稀释(单h曝光低)</span>');
+  // CTR
+  if(d.ctr<1.5) tags.push('<span class="tag tag-gray" style="background:#fef9c3;color:#854d0e">🟡 CTR弱(封面/标题)</span>');
+  // CVR
+  if(d.cvr<1.5) tags.push('<span class="tag tag-orange">🟠 CVR弱(点击不进播)</span>');
+  // 转化
+  if(d.conv<3.0) tags.push('<span class="tag tag-red">🔴 转化率弱(进播不下单)</span>');
+  // 客单
+  if(d.aovt<-20) tags.push('<span class="tag tag-purple">💜 客单价大幅下滑</span>');
+  if(tags.length===0) tags.push('<span class="tag tag-green">✅ 全链路相对健康</span>');
+  return tags.join('');
+}
+
+function funnelBar(val,base,label,unit='%'){
+  const pct=Math.min(100,Math.round(val/base*100));
+  const cls=val>=base?'ok':val>=base*0.7?'warn':'bad';
+  return `<div class="funnel-row">
+    <div class="funnel-label">${label}</div>
+    <div class="funnel-bar-wrap">
+      <div class="funnel-bar ${cls}" style="width:${pct}%"></div>
+      <span class="funnel-val">${val}${unit}</span>
+    </div>
+  </div>`;
+}
+
+function liveConclusion(d){
+  const issues=[];
+  if(d.h_expo<5000) issues.push('流量严重稀释(供给过剩被稀释)');
+  if(d.ctr<1.5) issues.push('封面/标题点击力弱');
+  if(d.cvr<1.5) issues.push('点击后留存差(前3秒内容不吸人)');
+  if(d.conv<3.0) issues.push('进播后商品力弱/话术未触发下单');
+  if(d.aovt<-20) issues.push(`客单价环比下滑${d.aovt}%`);
+  if(issues.length===0) return {c:'整体漏斗通畅，建议保持现有运营策略，重点扩量。',a:'持续优化封面CTR，测试不同开播时段以提升单h曝光。'};
+  const c=`核心问题：${issues.join('；')}。`;
+  let a='';
+  if(d.h_expo<5000) a+='①增加单场开播时长+优化标题获取更多流量分发；';
+  if(d.ctr<1.5) a+='②优化直播间封面/标题，测试强视觉钩子；';
+  if(d.cvr<1.5) a+='③提升前3秒留播率，加强主播开场话术与选品展示；';
+  if(d.conv<3.0) a+='④增加限时优惠+秒杀款刺激即时转化；';
+  if(d.aovt<-20) a+='⑤检视商品结构，避免一味低价换量损伤客单；';
+  return {c,a:a.slice(0,-1)};
+}
+
+function liveCritical(d){
+  const cnt=[d.h_expo<5000,d.ctr<1.5,d.cvr<1.5,d.conv<3.0,d.aovt<-20].filter(Boolean).length;
+  return cnt>=3?'critical':cnt>=1?'warning':'ok';
+}
+
+// 入口诊断
+function entryDiag(d){
+  const brPrimary=d.br_ctr>=1.0&&d.br_cvr>=2.0;
+  const lkPrimary=d.lk_ctr>=3.0&&d.lk_cvr>=1.5;
+  if(brPrimary&&lkPrimary) return `<span style="color:#16a34a;font-size:11px">✅ 双入口协同：呼吸灯(${d.br_ctr}%/CVR${d.br_cvr}%) + 直播卡(${d.lk_ctr}%/CVR${d.lk_cvr}%)</span>`;
+  if(lkPrimary&&!brPrimary) return `<span style="color:#f97316;font-size:11px">⚠️ 依赖直播卡(${d.lk_ctr}%) 呼吸灯弱(${d.br_ctr}%) → 笔记联动不足，内容种草缺位</span>`;
+  if(brPrimary&&!lkPrimary) return `<span style="color:#2563eb;font-size:11px">📍 呼吸灯主导(${d.br_ctr}%) 笔记种草链路通，建议扩笔记投入</span>`;
+  return `<span style="color:#e8372c;font-size:11px">🔴 双入口均弱 呼吸灯${d.br_ctr}% 直播卡${d.lk_ctr}% → 需全面诊断直播间内容质量</span>`;
+}
+
+const liveCards=document.getElementById('liveCards');
+liveData.forEach(d=>{
+  const cls=liveCritical(d);
+  const tags=buildLiveTags(d);
+  const {c,a}=liveConclusion(d);
+  const gmvCls=d.gmvt.startsWith('+')?'up':'down';
+  liveCards.innerHTML+=`
+  <div class="diag-card ${cls}">
+    <div class="card-header">
+      <div class="card-title">${d.n}</div>
+      <div class="card-gmv">店播GMV ${d.gmv} <span class="${gmvCls}">${d.gmvt}</span> · GPM ${d.gpm}</div>
+    </div>
+    <div class="tags">${tags}</div>
+    ${funnelBar(d.h_expo,8791,'单h曝光','次')}
+    ${funnelBar(d.ctr,2.04,'CTR封面')}
+    ${funnelBar(d.cvr,2.20,'CVR进播')}
+    ${funnelBar(d.conv,4.28,'商品转化率')}
+    <div style="font-size:11px;color:#6b7280;margin:6px 0 4px">入口诊断：${entryDiag(d)}</div>
+    <div class="conclusion">💡 ${c}</div>
+    <div class="action">▶ ${a}</div>
+  </div>`;
+});
+
+// ---- 商笔漏斗数据 ----
+const noteData=[
+  {n:'一组（文玩玉翠）',gmv:'0.18亿',gmvt:'+6.6%',pub:8.0,pubt:'+56.4%',expo:1.30,pv:46,ctr1:10.90,ctr2:29.50,cvr:0.733,aov:383.5,aovt:+15.1,gpm:90.4,gmvShare:1.8},
+  {n:'十一组（潮玩）',gmv:'0.66亿',gmvt:'-7.1%',pub:79.2,pubt:'+35.3%',expo:27.24,pv:55,ctr1:15.17,ctr2:12.90,cvr:3.887,aov:25.9,aovt:+2.7,gpm:19.7,gmvShare:14.2},
+  {n:'九组（家用）',gmv:'0.68亿',gmvt:'-0.6%',pub:20.4,pubt:'+21.3%',expo:15.43,pv:92,ctr1:18.77,ctr2:6.39,cvr:7.050,aov:45.2,aovt:+4.3,gpm:38.2,gmvShare:26.6},
+  {n:'五组（休食）',gmv:'0.76亿',gmvt:'-8.2%',pub:19.2,pubt:'+25.0%',expo:17.97,pv:100,ctr1:16.52,ctr2:6.82,cvr:7.429,aov:43.1,aovt:+22.3,gpm:36.1,gmvShare:32.3},
+  {n:'十二组（手工）',gmv:'0.27亿',gmvt:'-5.5%',pub:7.9,pubt:'+47.6%',expo:6.31,pv:82,ctr1:19.55,ctr2:11.34,cvr:4.260,aov:36.2,aovt:+14.6,gpm:34.2,gmvShare:12.0},
+  {n:'二组（亲子生活）',gmv:'0.46亿',gmvt:'-9.4%',pub:15.8,pubt:'+38.9%',expo:7.98,pv:73,ctr1:13.17,ctr2:11.17,cvr:4.848,aov:67.9,aovt:-2.6,gpm:48.4,gmvShare:20.6},
+  {n:'十组（家纺）',gmv:'0.47亿',gmvt:'+8.3%',pub:8.3,pubt:'+17.6%',expo:7.56,pv:119,ctr1:12.57,ctr2:12.76,cvr:4.113,aov:85.2,aovt:+46.9,gpm:56.2,gmvShare:26.7},
+  {n:'四组（大健康）',gmv:'0.38亿',gmvt:'-17.2%',pub:12.4,pubt:'+0.6%',expo:7.64,pv:81,ctr1:14.42,ctr2:5.70,cvr:6.181,aov:78.2,aovt:-2.6,gpm:39.7,gmvShare:23.0},
+  {n:'八组（消费电子）',gmv:'0.35亿',gmvt:'-10.2%',pub:14.2,pubt:'+0.0%',expo:8.01,pv:67,ctr1:17.22,ctr2:10.00,cvr:4.158,aov:50.8,aovt:+2.7,gpm:36.3,gmvShare:21.8},
+  {n:'十五组（酒旅）',gmv:'0.08亿',gmvt:'-21.6%',pub:3.9,pubt:'-26.0%',expo:0.61,pv:48,ctr1:11.87,ctr2:14.01,cvr:1.609,aov:334.4,aovt:-11.8,gpm:89.4,gmvShare:5.7},
+  {n:'七组（家具）',gmv:'0.07亿',gmvt:'-9.0%',pub:5.0,pubt:'-10.4%',expo:1.03,pv:37,ctr1:14.11,ctr2:11.20,cvr:2.259,aov:127.4,aovt:-3.9,gpm:45.5,gmvShare:5.1},
+  {n:'六组（生鲜）',gmv:'0.40亿',gmvt:'-10.7%',pub:13.0,pubt:'+49.1%',expo:9.81,pv:111,ctr1:13.59,ctr2:7.77,cvr:7.118,aov:50.4,aovt:+6.4,gpm:37.9,gmvShare:30.2},
+  {n:'十三组（教育）',gmv:'0.31亿',gmvt:'+42.9%',pub:29.2,pubt:'+484.6%',expo:4.04,pv:49,ctr1:14.29,ctr2:6.48,cvr:9.328,aov:50.3,aovt:+17.2,gpm:43.4,gmvShare:24.3},
+  {n:'十一组（虚拟）',gmv:'0.58亿',gmvt:'-2.7%',pub:160.3,pubt:'+357.3%',expo:33.76,pv:39,ctr1:13.20,ctr2:8.31,cvr:13.200,aov:10.0,aovt:-5.8,gpm:14.5,gmvShare:54.0},
+  {n:'十四组（二奢）',gmv:'0.03亿',gmvt:'-11.9%',pub:2.5,pubt:'+15.7%',expo:0.23,pv:15,ctr1:12.42,ctr2:20.29,cvr:0.514,aov:472.0,aovt:-65.3,gpm:61.1,gmvShare:2.5},
+  {n:'十组（家饰）',gmv:'0.15亿',gmvt:'-3.6%',pub:6.6,pubt:'+50.1%',expo:3.97,pv:84,ctr1:11.37,ctr2:13.40,cvr:4.109,aov:52.9,aovt:-8.1,gpm:33.1,gmvShare:16.3},
+  {n:'八组（家电）',gmv:'0.15亿',gmvt:'+8.2%',pub:3.6,pubt:'+20.7%',expo:1.34,pv:62,ctr1:13.69,ctr2:7.49,cvr:5.079,aov:172.6,aovt:+14.7,gpm:89.8,gmvShare:17.0},
+  {n:'三组（宠物）',gmv:'0.21亿',gmvt:'-8.4%',pub:7.6,pubt:'+34.4%',expo:5.10,pv:68,ctr1:21.58,ctr2:5.54,cvr:8.863,aov:35.5,aovt:-4.6,gpm:37.5,gmvShare:41.0},
+  {n:'十三组（图书）',gmv:'0.24亿',gmvt:'-1.3%',pub:11.6,pubt:'-22.7%',expo:5.77,pv:61,ctr1:11.56,ctr2:7.49,cvr:8.019,aov:50.9,aovt:-8.5,gpm:35.4,gmvShare:52.5},
+];
+
+function buildNoteTags(d){
+  const tags=[];
+  if(d.pv<50) tags.push('<span class="tag tag-blue">🔵 流量稀释(篇均曝光低)</span>');
+  if(d.ctr1<12) tags.push('<span class="tag" style="background:#fef9c3;color:#854d0e">🟡 CTR1弱(内容封面吸引力)</span>');
+  if(d.ctr2<7) tags.push('<span class="tag tag-orange">🟠 CTR2弱(商卡引导不足)</span>');
+  if(d.cvr<3.0) tags.push('<span class="tag tag-red">🔴 CVR弱(商品力/转化弱)</span>');
+  if(d.aovt<-20) tags.push('<span class="tag tag-purple">💜 客单价下滑</span>');
+  if(tags.length===0) tags.push('<span class="tag tag-green">✅ 全链路相对健康</span>');
+  return tags.join('');
+}
+
+function noteConclusion(d){
+  const issues=[];
+  if(d.pv<50) issues.push(`流量稀释(篇均${d.pv}次<基准62)`);
+  if(d.ctr1<12) issues.push('笔记内容封面/标题吸引力弱(CTR1不足)');
+  if(d.ctr2<7) issues.push('读完笔记但没有点击商卡(商品挂载/引导弱)');
+  if(d.cvr<3.0) issues.push('进商卡不下单(商品力/价格/详情页问题)');
+  if(d.aovt<-20) issues.push(`客单价环比下滑${d.aovt}%`);
+  if(issues.length===0) return {c:'笔记漏斗整体健康，GMV驱动靠数量与效率双优。',a:'持续测试爆款笔记内容形式，扩大发布量。'};
+  const c=`核心问题：${issues.join('；')}。`;
+  let a='';
+  if(d.pv<50) a+='①减少无效笔记发布，提升单篇内容质量以获取更多平台分发；';
+  if(d.ctr1<12) a+='②优化笔记封面图和标题钩子，测试真实场景/对比/结果类内容；';
+  if(d.ctr2<7) a+='③优化商卡挂载方式和笔记中的种草引导，在内容黄金位放商品链接；';
+  if(d.cvr<3.0) a+='④提升商品主图/详情页转化力，配合限时优惠降低决策门槛；';
+  if(d.aovt<-20) a+='⑤审视是否过度依赖低价品引流，适当提升高客单商品在笔记中的曝光；';
+  return {c,a:a.slice(0,-1)||'优化内容形式提升整体效率'};
+}
+
+function noteCritical(d){
+  const cnt=[d.pv<50,d.ctr1<12,d.ctr2<7,d.cvr<3.0,d.aovt<-20].filter(Boolean).length;
+  return cnt>=3?'critical':cnt>=1?'warning':'ok';
+}
+
+const noteCards=document.getElementById('noteCards');
+noteData.forEach(d=>{
+  const cls=noteCritical(d);
+  const tags=buildNoteTags(d);
+  const {c,a}=noteConclusion(d);
+  const gmvCls=d.gmvt.startsWith('+')?'up':'down';
+  noteCards.innerHTML+=`
+  <div class="diag-card ${cls}">
+    <div class="card-header">
+      <div class="card-title">${d.n}</div>
+      <div class="card-gmv">笔记GMV ${d.gmv} <span class="${gmvCls}">${d.gmvt}</span> · 笔记占比${d.gmvShare}% · GPM ${d.gpm}</div>
+    </div>
+    <div class="tags">${tags}</div>
+    ${funnelBar(d.pv,62,'篇均曝光','次')}
+    ${funnelBar(d.ctr1,15.06,'CTR1阅读率')}
+    ${funnelBar(d.ctr2,9.13,'CTR2商卡点击')}
+    ${funnelBar(d.cvr,6.53,'CVR转化率')}
+    <div style="font-size:11px;color:#6b7280;margin:6px 0 2px">客单价 <b>¥${d.aov}</b> <span class="${d.aovt>0?'up':'down'}">${d.aovt>0?'+':''}${d.aovt}%</span> · GPM <b>${d.gpm}</b></div>
+    <div class="conclusion">💡 ${c}</div>
+    <div class="action">▶ ${a}</div>
+  </div>`;
+});
+</script>
+</body>
+</html>
