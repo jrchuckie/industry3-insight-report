@@ -130,7 +130,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei
     <div class="funnel-step"><div class="funnel-dot" style="background:#7c3aed"></div>客单价（看环比↕）</div>
     <span class="funnel-arrow">→</span>
     <div class="funnel-step"><div class="funnel-dot" style="background:#16a34a"></div>GPM</div>
-    <div style="margin-left:auto;font-size:10px;color:#6b7280">笔记/商家基准=373条（中位数），客单价仅看环比方向</div>
+    <div style="margin-left:auto;font-size:10px;color:#6b7280">笔记/商家基准=373条/商家（中位数）；客单价基准=¥50.9（行业中位数，排除极端高客单行业）</div>
   </div>
 
   <div class="legend">
@@ -156,6 +156,7 @@ const BASE = {
   ctr1: 15.06,      // CTR1阅读率%
   ctr2: 9.13,       // CTR2商卡点击%
   cvr: 6.53,        // CVR转化%
+  aov: 50.9,        // 客单价中位数（排除文玩/二奢/酒旅极端高客单）
   gpm: 32.2,        // GPM
 };
 
@@ -471,25 +472,29 @@ function funnelRowCount(name, val, base, unit, capVal) {
 }
 
 function funnelRowAov(aov, aovT) {
-  // 客单价：只看环比方向，不和跨行业均值比
-  const barCls = aovT >= 0 ? 'ok' : (aovT > -10 ? 'warn' : 'bad');
-  // 进度条宽度：以50%为基点，涨/跌扩展
-  const barWidth = Math.min(90, Math.max(10, 50 + aovT * 0.8)) + '%';
-  const sign = aovT >= 0 ? '+' : '';
-  const cls = aovT >= 0 ? 'up' : 'down';
+  // 客单价：数值 vs 基准中位数 ¥50.9，和其他漏斗层逻辑一致
+  const base = BASE.aov;
+  const cls = getBarClass(aov, base);
+  const width = getBarWidth(aov, base);
+  const diff = aov - base;
+  const diffSign = diff >= 0 ? '+' : '';
+  const diffClass = diff >= 0 ? 'up' : 'down';
+  const aovTSign = aovT >= 0 ? '+' : '';
+  const aovTClass = aovT >= 0 ? 'up' : 'down';
   return `
     <div class="funnel-row">
       <div class="funnel-left"><div class="funnel-name-label">客单价</div></div>
       <div class="funnel-center">
         <div class="funnel-bar-bg">
-          <div class="funnel-fill ${barCls}" style="width:${barWidth}"></div>
-          <div class="funnel-base-line" style="left:50%"></div>
+          <div class="funnel-fill ${cls}" style="width:${width}"></div>
+          <div class="funnel-base-line" style="left:60%"></div>
           <span class="funnel-val-overlay">¥${aov}</span>
         </div>
       </div>
       <div class="funnel-right">
-        <div class="funnel-compare">环比涨跌</div>
-        <div class="funnel-yoy ${cls}">${sign}${aovT}%</div>
+        <div class="funnel-compare">基准 ¥${base}</div>
+        <div class="funnel-yoy ${diffClass}">${diffSign}¥${Math.round(diff)}</div>
+        <div style="font-size:10px;color:#94a3b8;margin-top:1px">环比 <span class="${aovTClass}">${aovTSign}${aovT}%</span></div>
       </div>
     </div>`;
 }
@@ -536,7 +541,7 @@ function buildCard(d, rank) {
         ${funnelRowPct('CTR2 商卡点击', d.ctr2, BASE.ctr2, 2)}
         <div class="funnel-connector"><div class="funnel-connector-line"></div><div class="funnel-connector-label">→ CVR 转化率</div><div class="funnel-connector-line"></div></div>
         ${funnelRowPct('CVR 转化率', d.cvr, BASE.cvr, 3)}
-        <div class="funnel-connector"><div class="funnel-connector-line"></div><div class="funnel-connector-label">→ 客单价（环比↕）</div><div class="funnel-connector-line"></div></div>
+        <div class="funnel-connector"><div class="funnel-connector-line"></div><div class="funnel-connector-label">→ 客单价</div><div class="funnel-connector-line"></div></div>
         ${funnelRowAov(d.aov, d.aovT)}
         <div style="margin-top:8px;display:flex;align-items:center;gap:10px;padding:8px 0 0 120px;border-top:1px dashed #e5e7eb">
           <span style="font-size:11px;color:#6b7280">GPM结果：</span>
