@@ -474,8 +474,7 @@ function mkBubble(elId,data,xField,yField,sizeField,xBase,yBase,xUnit,yUnit){
     grid:{left:'8%',right:'5%',top:'8%',bottom:'8%'},
     tooltip:{formatter:p=>`${p.data.name}<br/>曝光 ${p.data.value[0].toFixed(1)}${xUnit}<br/>GPM ${p.data.value[1].toFixed(1)}${yUnit}<br/>GMV ${p.data.value[2].toFixed(2)}亿`},
     xAxis:{name:'总曝光('+xUnit+')',splitLine:{lineStyle:{type:'dashed'}},
-      axisLabel:{formatter:v=>v+xUnit},
-      markLine:{data:[{xAxis:xBase,lineStyle:{color:'#94a3b8',type:'dashed'}}]}},
+      axisLabel:{formatter:v=>v+xUnit}},
     yAxis:{name:'GPM('+yUnit+')',splitLine:{lineStyle:{type:'dashed'}},
       axisLabel:{formatter:v=>v+yUnit}},
     series:[{type:'scatter',data:pts,
@@ -546,6 +545,7 @@ function initLiveCharts(){
 
 // 初始化
 renderNote('gmv');
+renderLive('gmv');
 initNoteCharts();
 chartsInited.note=true;
 </script>
