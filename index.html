@@ -2,220 +2,206 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>行业三部 · 商笔 & 店播漏斗诊断 2026-05-26</title>
 <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif;background:#f0f2f5;color:#1a1a2e;font-size:13px}
-
-/* ── NAV ── */
 .nav{position:fixed;top:0;left:0;right:0;z-index:200;background:#0f172a;height:50px;display:flex;align-items:center;padding:0 20px;gap:16px}
-.nav-title{color:#fff;font-weight:700;font-size:14px;white-space:nowrap}
+.nav-title{color:#fff;font-weight:700;font-size:14px}
 .nav-sub{color:#94a3b8;font-size:11px}
-
-/* ── TABS ── */
-.tab-bar{position:fixed;top:50px;left:0;right:0;z-index:190;background:#1e293b;display:flex;border-bottom:2px solid #334155}
-.tab-btn{flex:1;max-width:200px;padding:12px 24px;cursor:pointer;font-size:13px;font-weight:600;color:#94a3b8;border:none;background:transparent;border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .2s;text-align:center}
-.tab-btn.active{color:#fff;border-bottom-color:#6366f1}
-.tab-btn:hover:not(.active){color:#cbd5e1}
-
-.tab-sort{margin-left:auto;display:flex;gap:6px;padding:6px 20px 6px 0}
-.sort-btn{padding:4px 10px;border:1px solid #374151;background:transparent;color:#94a3b8;cursor:pointer;font-size:11px;border-radius:6px;transition:all .2s;white-space:nowrap}
-.sort-btn.active-note{background:#2563eb;border-color:#2563eb;color:#fff}
-.sort-btn.active-live{background:#7c3aed;border-color:#7c3aed;color:#fff}
-
-.content{margin-top:100px;padding:16px}
+.tab-bar{position:fixed;top:50px;left:0;right:0;z-index:190;background:#1e293b;display:flex;align-items:center;border-bottom:2px solid #334155;height:44px}
+.tab-btn{padding:0 28px;cursor:pointer;font-size:13px;font-weight:600;color:#94a3b8;border:none;background:transparent;border-bottom:3px solid transparent;height:44px;margin-bottom:-2px;transition:all .2s}
+.tab-btn.active-note{color:#fff;border-bottom-color:#2563eb}
+.tab-btn.active-live{color:#fff;border-bottom-color:#7c3aed}
+.tab-sort{margin-left:auto;display:flex;gap:6px;padding-right:16px}
+.sort-btn{padding:4px 10px;border:1px solid #374151;background:transparent;color:#94a3b8;cursor:pointer;font-size:11px;border-radius:6px;transition:all .2s}
+.sort-btn.an{background:#2563eb;border-color:#2563eb;color:#fff}
+.sort-btn.al{background:#7c3aed;border-color:#7c3aed;color:#fff}
+.content{margin-top:94px;padding:14px}
 .tab-panel{display:none}.tab-panel.active{display:block}
 
-/* ── CHARTS SECTION ── */
-.charts-section{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
-.chart-card{background:#fff;border-radius:12px;padding:14px 16px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
-.chart-title{font-size:12px;font-weight:700;color:#1a1a2e;margin-bottom:4px}
-.chart-sub{font-size:10px;color:#6b7280;margin-bottom:10px}
-.chart-box{width:100%}
-.bubble-card{grid-column:1/-1}
-@media(max-width:900px){.charts-section{grid-template-columns:1fr}.bubble-card{grid-column:1}}
-
-/* ── SUMMARY BAR ── */
-.summary-bar{border-radius:12px;padding:14px 20px;margin-bottom:14px;color:#fff}
-.summary-bar.note{background:#1a1a2e}
-.summary-bar.live{background:#0f172a}
-.summary-title{font-size:12px;color:#94a3b8;margin-bottom:8px}
-.summary-kpis{display:flex;gap:18px;flex-wrap:wrap}
-.kpi{text-align:center}
-.kpi-val{font-size:16px;font-weight:700}
+/* SUMMARY */
+.summary-bar{border-radius:12px;padding:12px 20px;margin-bottom:12px;color:#fff}
+.summary-bar.note{background:#1a1a2e}.summary-bar.live{background:#0f172a}
+.summary-title{font-size:12px;color:#94a3b8;margin-bottom:6px}
+.summary-kpis{display:flex;gap:16px;flex-wrap:wrap}
+.kpi{text-align:center}.kpi-val{font-size:15px;font-weight:700}
 .kpi-label{font-size:10px;color:#94a3b8;margin-top:1px}
 
-/* ── FUNNEL CARDS ── */
+/* CHARTS - 3 in a row */
+.charts-top{display:grid;grid-template-columns:1fr;gap:12px;margin-bottom:14px}
+.bubble-wrap{background:#fff;border-radius:12px;padding:14px 16px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.bars-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.bar-card{background:#fff;border-radius:12px;padding:14px 16px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.chart-title{font-size:12px;font-weight:700;color:#1a1a2e;margin-bottom:3px}
+.chart-sub{font-size:10px;color:#6b7280;margin-bottom:8px}
+@media(max-width:900px){.bars-row{grid-template-columns:1fr}}
+
+/* FUNNEL CARDS */
+.funnel-ref{display:flex;align-items:center;margin-bottom:10px;background:#fff;border-radius:10px;padding:8px 14px;box-shadow:0 1px 4px rgba(0,0,0,.06);flex-wrap:wrap;gap:6px;font-size:11px}
+.fdot{width:9px;height:9px;border-radius:50%;flex-shrink:0;display:inline-block}
+.farrow{color:#94a3b8;margin:0 3px}
 .cards-container{display:grid;grid-template-columns:1fr;gap:12px}
 .diag-card{background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.08);border-left:6px solid #e5e7eb}
-.diag-card.sev-0{border-left-color:#16a34a}
-.diag-card.sev-1{border-left-color:#eab308}
-.diag-card.sev-2{border-left-color:#f97316}
-.diag-card.sev-3{border-left-color:#e8372c}
-.card-header{padding:12px 16px 10px;display:flex;align-items:flex-start;gap:10px;border-bottom:1px solid #f3f4f6}
+.diag-card.sev-0{border-left-color:#16a34a}.diag-card.sev-1{border-left-color:#eab308}
+.diag-card.sev-2{border-left-color:#f97316}.diag-card.sev-3{border-left-color:#e8372c}
+.card-header{padding:12px 16px 8px;display:flex;align-items:flex-start;gap:10px;border-bottom:1px solid #f3f4f6}
 .card-rank{font-size:17px;font-weight:800;color:#94a3b8;width:26px;flex-shrink:0;line-height:1}
 .card-name-block{flex:1}
 .card-name{font-size:14px;font-weight:700}
 .card-meta{font-size:11px;color:#6b7280;margin-top:3px;display:flex;gap:10px;flex-wrap:wrap}
 .card-severity{margin-left:auto;flex-shrink:0}
 .severity-label{font-size:11px;font-weight:700;padding:3px 9px;border-radius:10px}
-.sev-label-0{background:#dcfce7;color:#15803d}
-.sev-label-1{background:#fef9c3;color:#854d0e}
-.sev-label-2{background:#ffedd5;color:#c2410c}
-.sev-label-3{background:#fee2e2;color:#b91c1c}
-.card-body{padding:12px 16px;display:grid;grid-template-columns:1fr 320px;gap:14px}
+.sl0{background:#dcfce7;color:#15803d}.sl1{background:#fef9c3;color:#854d0e}
+.sl2{background:#ffedd5;color:#c2410c}.sl3{background:#fee2e2;color:#b91c1c}
+.card-body{padding:12px 16px;display:grid;grid-template-columns:1fr 330px;gap:14px}
 @media(max-width:900px){.card-body{grid-template-columns:1fr}}
 
-/* ── FUNNEL BARS ── */
+/* FUNNEL BARS */
 .funnel-visual{display:flex;flex-direction:column;gap:5px}
-.section-label{font-size:10px;font-weight:700;color:#6b7280;letter-spacing:.5px;padding:4px 0 2px 110px;text-transform:uppercase}
+.sec-lbl{font-size:10px;font-weight:700;color:#6b7280;letter-spacing:.5px;padding:4px 0 2px 108px;text-transform:uppercase}
 .funnel-row{display:flex;align-items:center;gap:8px}
-.funnel-left{width:105px;flex-shrink:0;text-align:right}
-.funnel-name-label{font-size:11px;color:#6b7280;line-height:1.3}
-.funnel-center{flex:1;position:relative}
-.funnel-bar-bg{height:28px;background:#f1f5f9;border-radius:5px;position:relative;overflow:hidden}
-.funnel-fill{height:100%;border-radius:5px}
-.funnel-fill.ok{background:linear-gradient(90deg,#16a34a,#4ade80)}
-.funnel-fill.warn{background:linear-gradient(90deg,#eab308,#fde047)}
-.funnel-fill.bad{background:linear-gradient(90deg,#e8372c,#f87171)}
-.funnel-fill.supply{background:linear-gradient(90deg,#3b82f6,#93c5fd)}
-.funnel-fill.indigo{background:linear-gradient(90deg,#6366f1,#a5b4fc)}
-.funnel-val-overlay{position:absolute;right:6px;top:50%;transform:translateY(-50%);font-size:11px;font-weight:700;color:#1a1a2e}
-.funnel-base-line{position:absolute;top:0;height:100%;width:2px;background:rgba(0,0,0,.2);z-index:2}
-.funnel-right{width:105px;flex-shrink:0;padding-left:4px}
-.funnel-compare{font-size:10px;color:#6b7280}
-.funnel-yoy{font-size:11px;font-weight:600;margin-top:1px}
-.funnel-connector{display:flex;align-items:center;padding:0 0 0 113px}
-.fcl{flex:1;height:1px;background:#e5e7eb}
-.fcn{font-size:10px;color:#6b7280;white-space:nowrap;padding:0 6px;background:#fff}
+.fl{width:100px;flex-shrink:0;text-align:right;font-size:11px;color:#6b7280;line-height:1.3}
+.fc{flex:1;position:relative}
+.fb{height:28px;background:#f1f5f9;border-radius:5px;position:relative;overflow:hidden}
+.ff{height:100%;border-radius:5px}
+.ff.ok{background:linear-gradient(90deg,#16a34a,#4ade80)}
+.ff.warn{background:linear-gradient(90deg,#eab308,#fde047)}
+.ff.bad{background:linear-gradient(90deg,#e8372c,#f87171)}
+.ff.sup{background:linear-gradient(90deg,#3b82f6,#93c5fd)}
+.fvo{position:absolute;right:6px;top:50%;transform:translateY(-50%);font-size:11px;font-weight:700;color:#1a1a2e}
+.fbl{position:absolute;top:0;height:100%;width:2px;background:rgba(0,0,0,.2);z-index:2}
+.fr{width:105px;flex-shrink:0;padding-left:4px}
+.fr-base{font-size:10px;color:#6b7280}
+.fr-val{font-size:11px;font-weight:600;margin-top:1px}
+.conn{display:flex;align-items:center;padding:0 0 0 108px}
+.cl{flex:1;height:1px;background:#e5e7eb}
+.cn{font-size:10px;color:#6b7280;white-space:nowrap;padding:0 6px;background:#fff}
+.dual-e{display:flex;gap:6px;padding-left:108px;margin:3px 0}
+.eb{flex:1;background:#f8fafc;border-radius:7px;padding:6px;border-top:2px solid #e5e7eb}
+.eb.hx{border-top-color:#f97316}.eb.zb{border-top-color:#7c3aed}
+.eb-title{font-size:10px;font-weight:700;color:#6b7280;margin-bottom:3px}
+.eb-row{display:flex;justify-content:space-between;font-size:11px;margin-top:2px}
+.eb-val{font-weight:700}
+.gbar{margin-top:6px;display:flex;align-items:center;gap:8px;padding:6px 0 0 108px;border-top:1px dashed #e5e7eb}
 
-/* ── DUAL ENTRY ── */
-.dual-entry{display:flex;gap:6px;padding-left:113px;margin:3px 0}
-.entry-box{flex:1;background:#f8fafc;border-radius:7px;padding:7px;border-top:2px solid #e5e7eb}
-.entry-box.huxi{border-top-color:#f97316}
-.entry-box.zhibo{border-top-color:#7c3aed}
-.entry-title{font-size:10px;font-weight:700;color:#6b7280;margin-bottom:3px}
-.entry-row{display:flex;justify-content:space-between;font-size:11px;margin-top:2px}
-.entry-val{font-weight:700}
-
-/* ── RIGHT PANEL ── */
+/* RIGHT PANEL */
 .right-panel{display:flex;flex-direction:column;gap:8px}
 .tags-row{display:flex;flex-wrap:wrap;gap:4px}
 .tag{display:inline-flex;align-items:center;gap:3px;padding:3px 8px;border-radius:8px;font-size:11px;font-weight:600}
-.tag-blue{background:#dbeafe;color:#1d4ed8}
-.tag-yellow{background:#fef9c3;color:#854d0e}
-.tag-orange{background:#ffedd5;color:#c2410c}
-.tag-red{background:#fee2e2;color:#b91c1c}
-.tag-purple{background:#ede9fe;color:#6d28d9}
-.tag-green{background:#dcfce7;color:#15803d}
-.conclusion-box{background:#f8fafc;border-radius:8px;padding:9px 11px;border-left:3px solid #6366f1}
-.conclusion-title{font-size:10px;font-weight:700;color:#6366f1;margin-bottom:3px;text-transform:uppercase;letter-spacing:.5px}
-.conclusion-text{font-size:11px;color:#374151;line-height:1.6}
+.tb{background:#dbeafe;color:#1d4ed8}.ty{background:#fef9c3;color:#854d0e}
+.to{background:#ffedd5;color:#c2410c}.tr{background:#fee2e2;color:#b91c1c}
+.tp{background:#ede9fe;color:#6d28d9}.tg{background:#dcfce7;color:#15803d}
 
-.carrier-badge{display:inline-block;padding:2px 6px;border-radius:7px;font-size:10px;font-weight:600}
-.cb-blue{background:#dbeafe;color:#1d4ed8}.cb-purple{background:#ede9fe;color:#6d28d9}
-.cb-green{background:#dcfce7;color:#15803d}.cb-orange{background:#ffedd5;color:#c2410c}
-.cb-gray{background:#f3f4f6;color:#374151}
-.up{color:#16a34a}.down{color:#e8372c}
-.gpm-bar{margin-top:6px;display:flex;align-items:center;gap:8px;padding:6px 0 0 113px;border-top:1px dashed #e5e7eb}
+/* DIAGNOSIS HIGHLIGHT BOX */
+.diag-box{background:#f8fafc;border-radius:8px;padding:10px 12px;border-left:3px solid #6366f1}
+.diag-title{font-size:10px;font-weight:700;color:#6366f1;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px}
+.diag-issue{font-size:13px;font-weight:700;color:#1a1a2e;margin-bottom:4px}
+.diag-kpi{font-size:12px;color:#374151;margin-bottom:8px;line-height:1.5}
+.diag-rows{display:flex;flex-direction:column;gap:5px}
+.diag-row{border-radius:6px;padding:6px 10px}
+.diag-row.low-row{background:#fff7ed;border-left:3px solid #f97316}
+.diag-row.yoy-row{background:#fef2f2;border-left:3px solid #dc2626}
+.diag-row-label{font-size:10px;font-weight:700;color:#6b7280;margin-bottom:3px;text-transform:uppercase;letter-spacing:.3px}
+.diag-pills{display:flex;flex-wrap:wrap;gap:4px}
+.diag-pill{font-size:11px;font-weight:600;padding:2px 8px;border-radius:6px}
+.diag-pill.low{background:#fed7aa;color:#c2410c}
+.diag-pill.yoy{background:#fecaca;color:#b91c1c}
+.diag-pill.ok{background:#dcfce7;color:#15803d}
+.action-box{background:#f0fdf4;border-radius:8px;padding:9px 11px;border-left:3px solid #16a34a}
+.action-title{font-size:10px;font-weight:700;color:#16a34a;margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px}
+.action-text{font-size:11px;color:#374151;line-height:1.6}
 
-/* ── FUNNEL REF ── */
-.funnel-ref{display:flex;align-items:center;margin-bottom:12px;background:#fff;border-radius:10px;padding:10px 14px;box-shadow:0 1px 4px rgba(0,0,0,.06);flex-wrap:wrap;gap:6px;font-size:11px}
-.funnel-step{display:flex;align-items:center;gap:5px}
-.fdot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
-.farrow{color:#94a3b8;margin:0 3px}
+.cb-b{background:#dbeafe;color:#1d4ed8;display:inline-block;padding:2px 6px;border-radius:7px;font-size:10px;font-weight:600}
+.cb-p{background:#ede9fe;color:#6d28d9;display:inline-block;padding:2px 6px;border-radius:7px;font-size:10px;font-weight:600}
+.cb-g{background:#dcfce7;color:#15803d;display:inline-block;padding:2px 6px;border-radius:7px;font-size:10px;font-weight:600}
+.cb-o{background:#ffedd5;color:#c2410c;display:inline-block;padding:2px 6px;border-radius:7px;font-size:10px;font-weight:600}
+.cb-gr{background:#f3f4f6;color:#374151;display:inline-block;padding:2px 6px;border-radius:7px;font-size:10px;font-weight:600}
+.up{color:#16a34a}.dn{color:#e8372c}
 </style>
 </head>
 <body>
-
 <nav class="nav">
   <div class="nav-title">行业三部 · 商笔 & 店播漏斗诊断</div>
-  <div class="nav-sub">2026-04-27~05-26 · 逐行业漏斗下钻</div>
+  <div class="nav-sub">2026-04-27~05-26 · GMV YoY 为年同比，漏斗指标为环比上期</div>
 </nav>
-
 <div class="tab-bar">
-  <button class="tab-btn active" id="tab-note" onclick="switchTab('note')">📝 笔记诊断</button>
-  <button class="tab-btn" id="tab-live" onclick="switchTab('live')">📡 店播诊断</button>
-  <div class="tab-sort" id="sort-note">
-    <button class="sort-btn active-note" onclick="sortNote('gmv',this)">按笔记GMV↓</button>
+  <button class="tab-btn active-note" id="tb-note" onclick="switchTab('note')">📝 笔记诊断</button>
+  <button class="tab-btn" id="tb-live" onclick="switchTab('live')">📡 店播诊断</button>
+  <div class="tab-sort" id="s-note">
+    <button class="sort-btn an" onclick="sortNote('gmv',this)">按GMV↓</button>
     <button class="sort-btn" onclick="sortNote('sev',this)">按严重程度↓</button>
     <button class="sort-btn" onclick="sortNote('pv',this)">按篇均曝光↑</button>
   </div>
-  <div class="tab-sort" id="sort-live" style="display:none">
-    <button class="sort-btn active-live" onclick="sortLive('gmv',this)">按店播GMV↓</button>
+  <div class="tab-sort" id="s-live" style="display:none">
+    <button class="sort-btn al" onclick="sortLive('gmv',this)">按GMV↓</button>
     <button class="sort-btn" onclick="sortLive('sev',this)">按严重程度↓</button>
     <button class="sort-btn" onclick="sortLive('hexp',this)">按单h曝光↑</button>
   </div>
 </div>
 
 <div class="content">
-
-<!-- ══════════════════ 笔记 TAB ══════════════════ -->
-<div class="tab-panel active" id="panel-note">
-
+<!-- ── 笔记 ── -->
+<div class="tab-panel active" id="p-note">
   <div class="summary-bar note">
-    <div class="summary-title">📝 商笔大盘 · 2026-04-27~05-26 vs 上期</div>
+    <div class="summary-title">📝 商笔大盘 · 2026-04-27~05-26（GMV YoY为年同比）</div>
     <div class="summary-kpis">
-      <div class="kpi"><div class="kpi-val" style="color:#f87171">¥6.42亿</div><div class="kpi-label">笔记GMV · -4.1%</div></div>
-      <div class="kpi"><div class="kpi-val" style="color:#fb923c">429万</div><div class="kpi-label">发布量 · +81.6%（内卷）</div></div>
-      <div class="kpi"><div class="kpi-val" style="color:#f87171">165.1亿</div><div class="kpi-label">总曝光 · -10.9%</div></div>
+      <div class="kpi"><div class="kpi-val" style="color:#f87171">¥6.43亿</div><div class="kpi-label">笔记GMV</div></div>
+      <div class="kpi"><div class="kpi-val" style="color:#fb923c">429万条</div><div class="kpi-label">发布量（内卷）</div></div>
       <div class="kpi"><div class="kpi-val">62次/篇</div><div class="kpi-label">篇均曝光基准</div></div>
-      <div class="kpi"><div class="kpi-val">373条</div><div class="kpi-label">笔记/商家 中位数基准</div></div>
+      <div class="kpi"><div class="kpi-val">373条</div><div class="kpi-label">笔记/商家 中位数</div></div>
       <div class="kpi"><div class="kpi-val">15.06%</div><div class="kpi-label">CTR1基准</div></div>
       <div class="kpi"><div class="kpi-val">9.13%</div><div class="kpi-label">CTR2基准</div></div>
       <div class="kpi"><div class="kpi-val">6.53%</div><div class="kpi-label">CVR基准</div></div>
       <div class="kpi"><div class="kpi-val">¥50.9</div><div class="kpi-label">客单价基准（中位数）</div></div>
     </div>
   </div>
-
-  <!-- 图表区 -->
-  <div class="charts-section">
-    <div class="chart-card bubble-card">
-      <div class="chart-title">战略矩阵：总曝光 × GPM（气泡大小 = 笔记GMV）</div>
-      <div class="chart-sub">右上=明星行业 · 左上=高效精品 · 右下=流量洼地 · 左下=双弱待援</div>
-      <div class="chart-box" id="note-bubble" style="height:380px"></div>
+  <div class="charts-top">
+    <div class="bubble-wrap">
+      <div class="chart-title">战略矩阵：总曝光 × GPM（气泡大小 = 笔记GMV · YoY = 年同比）</div>
+      <div class="chart-sub">右上=明星 · 左上=高效精品 · 右下=流量洼地 · 左下=双弱待援</div>
+      <div id="n-bubble" style="height:340px"></div>
     </div>
-    <div class="chart-card">
-      <div class="chart-title">总曝光对比（亿次）</div>
-      <div class="chart-sub">基准线 = 6.31亿（中位数）</div>
-      <div class="chart-box" id="note-bar-exp" style="height:520px"></div>
-    </div>
-    <div class="chart-card">
-      <div class="chart-title">GPM 对比（元）</div>
-      <div class="chart-sub">基准线 = 38.2元（中位数）</div>
-      <div class="chart-box" id="note-bar-gpm" style="height:520px"></div>
-    </div>
-    <div class="chart-card">
-      <div class="chart-title">笔记 GMV 对比（亿元）</div>
-      <div class="chart-sub">基准线 = 0.27亿（中位数）</div>
-      <div class="chart-box" id="note-bar-gmv" style="height:520px"></div>
+    <div class="bars-row">
+      <div class="bar-card">
+        <div class="chart-title">总曝光对比（亿次）</div>
+        <div class="chart-sub">基准线 = 6.31亿（中位数）</div>
+        <div id="n-bar-exp" style="height:500px"></div>
+      </div>
+      <div class="bar-card">
+        <div class="chart-title">GPM 对比（元）</div>
+        <div class="chart-sub">基准线 = 38.2元（中位数）</div>
+        <div id="n-bar-gpm" style="height:500px"></div>
+      </div>
+      <div class="bar-card">
+        <div class="chart-title">笔记 GMV 对比（亿元）· YoY标注</div>
+        <div class="chart-sub">基准线 = 0.27亿（中位数）</div>
+        <div id="n-bar-gmv" style="height:500px"></div>
+      </div>
     </div>
   </div>
-
   <div class="funnel-ref">
-    <b style="color:#6b7280;margin-right:6px">商笔漏斗：</b>
-    <div class="funnel-step"><div class="fdot" style="background:#6366f1"></div>笔记/商家</div><span class="farrow">→</span>
-    <div class="funnel-step"><div class="fdot" style="background:#3b82f6"></div>篇均曝光</div><span class="farrow">→</span>
-    <div class="funnel-step"><div class="fdot" style="background:#eab308"></div>CTR1</div><span class="farrow">→</span>
-    <div class="funnel-step"><div class="fdot" style="background:#f97316"></div>CTR2商卡点击</div><span class="farrow">→</span>
-    <div class="funnel-step"><div class="fdot" style="background:#e8372c"></div>CVR转化</div><span class="farrow">→</span>
-    <div class="funnel-step"><div class="fdot" style="background:#7c3aed"></div>客单价</div><span class="farrow">→</span>
-    <div class="funnel-step"><div class="fdot" style="background:#16a34a"></div>GPM</div>
-    <div style="margin-left:auto;font-size:10px;color:#6b7280">客单价基准=¥50.9中位数</div>
+    <b style="color:#6b7280;margin-right:4px">商笔漏斗：</b>
+    <span class="fdot" style="background:#6366f1"></span>笔记/商家<span class="farrow">→</span>
+    <span class="fdot" style="background:#3b82f6"></span>篇均曝光<span class="farrow">→</span>
+    <span class="fdot" style="background:#eab308"></span>CTR1<span class="farrow">→</span>
+    <span class="fdot" style="background:#f97316"></span>CTR2商卡点击<span class="farrow">→</span>
+    <span class="fdot" style="background:#e8372c"></span>CVR转化<span class="farrow">→</span>
+    <span class="fdot" style="background:#7c3aed"></span>客单价<span class="farrow">→</span>
+    <span class="fdot" style="background:#16a34a"></span>GPM
+    <span style="margin-left:auto;font-size:10px;color:#6b7280">客单价基准=¥50.9中位数 · ▌基准线=60%处</span>
   </div>
-
-  <div class="cards-container" id="note-cards"></div>
+  <div class="cards-container" id="n-cards"></div>
 </div>
 
-<!-- ══════════════════ 店播 TAB ══════════════════ -->
-<div class="tab-panel" id="panel-live">
-
+<!-- ── 店播 ── -->
+<div class="tab-panel" id="p-live">
   <div class="summary-bar live">
-    <div class="summary-title">📡 店播大盘 · 2026-04-27~05-26 vs 上期</div>
+    <div class="summary-title">📡 店播大盘 · 2026-04-27~05-26（指标为环比上期）</div>
     <div class="summary-kpis">
-      <div class="kpi"><div class="kpi-val" style="color:#f87171">¥32.91亿</div><div class="kpi-label">店播GMV · -3.3%</div></div>
+      <div class="kpi"><div class="kpi-val" style="color:#f87171">¥32.91亿</div><div class="kpi-label">店播GMV</div></div>
       <div class="kpi"><div class="kpi-val">9,711次</div><div class="kpi-label">单h曝光基准</div></div>
       <div class="kpi"><div class="kpi-val">1.6%</div><div class="kpi-label">CTR封面点击基准</div></div>
       <div class="kpi"><div class="kpi-val">1.6%</div><div class="kpi-label">CVR进播率基准</div></div>
@@ -224,489 +210,344 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei
       <div class="kpi"><div class="kpi-val">2,094s</div><div class="kpi-label">店均时长基准</div></div>
     </div>
   </div>
-
-  <!-- 图表区 -->
-  <div class="charts-section">
-    <div class="chart-card bubble-card">
+  <div class="charts-top">
+    <div class="bubble-wrap">
       <div class="chart-title">战略矩阵：总曝光 × GPM（气泡大小 = 店播GMV）</div>
-      <div class="chart-sub">右上=明星行业 · 左上=高效精品 · 右下=流量洼地 · 左下=双弱待援</div>
-      <div class="chart-box" id="live-bubble" style="height:380px"></div>
+      <div class="chart-sub">右上=明星 · 左上=高效精品 · 右下=流量洼地 · 左下=双弱待援</div>
+      <div id="l-bubble" style="height:340px"></div>
     </div>
-    <div class="chart-card">
-      <div class="chart-title">总曝光对比（亿次）</div>
-      <div class="chart-sub">基准线 = 8.35亿（中位数）</div>
-      <div class="chart-box" id="live-bar-exp" style="height:520px"></div>
-    </div>
-    <div class="chart-card">
-      <div class="chart-title">GPM 对比（元）</div>
-      <div class="chart-sub">基准线 = 44.1元（中位数）</div>
-      <div class="chart-box" id="live-bar-gpm" style="height:520px"></div>
-    </div>
-    <div class="chart-card">
-      <div class="chart-title">店播 GMV 对比（亿元）</div>
-      <div class="chart-sub">基准线 = 1.19亿（中位数）</div>
-      <div class="chart-box" id="live-bar-gmv" style="height:520px"></div>
+    <div class="bars-row">
+      <div class="bar-card">
+        <div class="chart-title">总曝光对比（亿次）</div>
+        <div class="chart-sub">基准线 = 8.35亿（中位数）</div>
+        <div id="l-bar-exp" style="height:500px"></div>
+      </div>
+      <div class="bar-card">
+        <div class="chart-title">GPM 对比（元）</div>
+        <div class="chart-sub">基准线 = 44.1元（中位数）</div>
+        <div id="l-bar-gpm" style="height:500px"></div>
+      </div>
+      <div class="bar-card">
+        <div class="chart-title">店播 GMV 对比（亿元）</div>
+        <div class="chart-sub">基准线 = 1.19亿（中位数）</div>
+        <div id="l-bar-gmv" style="height:500px"></div>
+      </div>
     </div>
   </div>
-
   <div class="funnel-ref">
-    <b style="color:#6b7280;margin-right:6px">店播漏斗：</b>
-    <div class="funnel-step"><div class="fdot" style="background:#3b82f6"></div>时长+场次</div><span class="farrow">→</span>
-    <div class="funnel-step"><div class="fdot" style="background:#6366f1"></div>单h曝光</div><span class="farrow">→</span>
-    <div class="funnel-step"><div class="fdot" style="background:#eab308"></div>CTR封面</div><span class="farrow">→</span>
-    <div class="funnel-step"><div class="fdot" style="background:#f97316"></div>CVR进播</div><span class="farrow">→</span>
-    <div class="funnel-step"><div class="fdot" style="background:#e8372c"></div>商品转化</div><span class="farrow">→</span>
-    <div class="funnel-step"><div class="fdot" style="background:#7c3aed"></div>客单价</div><span class="farrow">→</span>
-    <div class="funnel-step"><div class="fdot" style="background:#16a34a"></div>GPM</div>
-    <div style="margin-left:auto;font-size:10px;color:#6b7280">含呼吸灯 vs 直播卡双入口拆解</div>
+    <b style="color:#6b7280;margin-right:4px">店播漏斗：</b>
+    <span class="fdot" style="background:#3b82f6"></span>时长+场次<span class="farrow">→</span>
+    <span class="fdot" style="background:#6366f1"></span>单h曝光<span class="farrow">→</span>
+    <span class="fdot" style="background:#eab308"></span>CTR封面<span class="farrow">→</span>
+    <span class="fdot" style="background:#f97316"></span>CVR进播<span class="farrow">→</span>
+    <span class="fdot" style="background:#e8372c"></span>商品转化<span class="farrow">→</span>
+    <span class="fdot" style="background:#7c3aed"></span>客单价<span class="farrow">→</span>
+    <span class="fdot" style="background:#16a34a"></span>GPM
+    <span style="margin-left:auto;font-size:10px;color:#6b7280">含呼吸灯 vs 直播卡双入口拆解</span>
   </div>
-
-  <div class="cards-container" id="live-cards"></div>
+  <div class="cards-container" id="l-cards"></div>
+</div>
 </div>
 
-</div><!-- /content -->
-
 <script>
-// ══════════════ 笔记数据 ══════════════
-const NOTE_BASE = { notePerMer:373, pv:62, ctr1:15.06, ctr2:9.13, cvr:6.53, aov:50.9, gpm:38.2 };
+// ═══ 笔记数据 ═══
+const noteData = [{"n":"五组（休食）","gmv":0.763,"gmv_y":-24.6,"expo":17.95,"expo_y":-40.1,"pavg":100.0,"ctr1":16.4,"ctr2":6.89,"gpm":36.2,"cvr":7.43,"pub":19.5,"totalMer":516,"b56":101,"gmvShare":32.3,"type":"混合","pvT":-41.6,"ctr2T":-4.8,"cvrT":8.0,"aov":43.1,"aovT":22.3,"issue":"篇均曝光稀释＋CTR2断层","kpi":"篇均PV 100次，CTR2 6.89%（基准9.13%）","low":["CTR2=6.89%","商卡引导弱"],"yoy_bad":["GMV YoY -24.6%","曝光 YoY -40.1%"],"actions":["①CTR2核心战役：黄金位置强化商卡引导（视频前5秒/图文首图）","②商卡价格力：胶囊显示价vs划线价对比、首单券","③控制内卷：收缩低质内容，优先产出高CES内容"]},{"n":"九组（家用）","gmv":0.68,"gmv_y":12.5,"expo":15.38,"expo_y":-7.6,"pavg":91.7,"ctr1":18.59,"ctr2":6.46,"gpm":38.3,"cvr":7.049,"pub":20.6,"totalMer":534,"b56":98,"gmvShare":26.6,"type":"混合","pvT":-20.7,"ctr2T":-29.9,"cvrT":7.6,"aov":45.2,"aovT":4.3,"issue":"CTR2单点断层（种草到位但商卡引导弱）","kpi":"CTR1=18.77%强，CTR2=6.46%断层","low":["CTR2=6.46%","商卡引导弱"],"yoy_bad":["曝光 YoY -7.6%"],"actions":["①CTR2是唯一核心战役：商卡引导优化","②胶囊价格力展示：显示价vs划线价","③笔记选品精简：2-3个主推SKU"]},{"n":"十一组（潮玩）","gmv":0.655,"gmv_y":42.3,"expo":27.04,"expo_y":6.8,"pavg":55.2,"ctr1":15.12,"ctr2":12.96,"gpm":19.8,"cvr":3.88,"pub":79.2,"totalMer":886,"b56":92,"gmvShare":14.2,"type":"店播主导","pvT":-12.5,"ctr2T":-0.5,"cvrT":-7.1,"aov":25.9,"aovT":2.7,"issue":"货盘结构：CVR偏弱＋客单过低","kpi":"客单¥25.9（行业第二低），CVR=3.88%","low":["CVR=3.88%","客单¥25.9偏低","GPM=19.8"],"yoy_bad":[],"actions":["①货盘升级：引入高客单/高品质SKU","②笔记定位调整：种草引流至店播完成高客单成交"]},{"n":"十一组（虚拟）","gmv":0.576,"gmv_y":142.3,"expo":33.7,"expo_y":72.7,"pavg":38.9,"ctr1":13.21,"ctr2":8.33,"gpm":14.5,"cvr":13.223,"pub":160.3,"totalMer":89,"b56":19,"gmvShare":54.0,"type":"笔记主导","pvT":-50.1,"ctr2T":-37.4,"cvrT":10.6,"aov":10.0,"aovT":-5.8,"issue":"供给严重内卷：发布量激增但篇均曝光仅39次","kpi":"篇均PV=39次，GPM=14.5（全行业最低）","low":["篇均PV=39次","GPM=14.5最低","客单¥10极低"],"yoy_bad":[],"actions":["①收缩内卷：优先提升单篇质量","②客单提升：引入课程包/会员年卡等高客单品"]},{"n":"十组（家纺）","gmv":0.471,"gmv_y":7.8,"expo":7.63,"expo_y":-34.0,"pavg":120.4,"ctr1":12.54,"ctr2":12.78,"gpm":56.2,"cvr":4.116,"pub":8.4,"totalMer":295,"b56":63,"gmvShare":26.7,"type":"混合","pvT":-46.2,"ctr2T":14.4,"cvrT":-20.7,"aov":85.2,"aovT":46.9,"issue":"整体健康，警惕曝光趋势下滑","kpi":"GMV YoY+7.8%，GPM=56.2，客单+46.9%","low":["CTR1=12.54%略低"],"yoy_bad":["曝光 YoY -34.0%"],"actions":["①保持健康大盘，关注曝光趋势","②CVR=4.1%：试用装降低决策门槛"]},{"n":"二组（亲子生活）","gmv":0.458,"gmv_y":3.7,"expo":7.99,"expo_y":-9.0,"pavg":72.9,"ctr1":13.12,"ctr2":11.22,"gpm":48.4,"cvr":4.845,"pub":15.9,"totalMer":532,"b56":97,"gmvShare":20.6,"type":"混合","pvT":-23.0,"ctr2T":-0.3,"cvrT":8.0,"aov":67.9,"aovT":-2.6,"issue":"全链路轻度承压","kpi":"CTR1/CTR2/CVR均略低于基准","low":["CTR1=13.12%","CTR2=11.22%","CVR=4.85%"],"yoy_bad":["曝光 YoY -9.0%"],"actions":["①视频形态测试：亲子场景视频CTR1更高","②入门款+试用装降低决策门槛"]},{"n":"六组（生鲜）","gmv":0.402,"gmv_y":-15.0,"expo":9.8,"expo_y":-27.8,"pavg":110.8,"ctr1":13.59,"ctr2":7.79,"gpm":38.2,"cvr":7.11,"pub":13.0,"totalMer":284,"b56":62,"gmvShare":30.2,"type":"混合","pvT":-47.4,"ctr2T":-14.7,"cvrT":2.9,"aov":50.4,"aovT":6.4,"issue":"内卷＋双CTR偏弱","kpi":"发布+49%，曝光-27.8%，CTR1=13.6%，CTR2=7.79%","low":["CTR1=13.59%","CTR2=7.79%"],"yoy_bad":["GMV YoY -15.0%","曝光 YoY -27.8%"],"actions":["①控制内卷：收缩低质内容","②CTR2：商卡突出价格力（克重单价/配送保障）"]},{"n":"四组（大健康）","gmv":0.375,"gmv_y":-29.4,"expo":7.6,"expo_y":-42.9,"pavg":80.5,"ctr1":14.42,"ctr2":5.69,"gpm":39.7,"cvr":6.186,"pub":12.8,"totalMer":288,"b56":78,"gmvShare":23.0,"type":"混合","pvT":-38.8,"ctr2T":-0.6,"cvrT":4.1,"aov":78.2,"aovT":-2.6,"issue":"流量分发侧问题＋CTR2极弱","kpi":"发布+0.6%但曝光-42.9%，CTR2=5.69%","low":["CTR2=5.69%（最低之一）","篇均PV=80.5次"],"yoy_bad":["GMV YoY -29.4%","曝光 YoY -42.9%"],"actions":["①流量问题向上确认：发布稳定但曝光大跌","②CTR2核心战役：突出功效差异化（成分/功效/人群适配）"]},{"n":"八组（消费电子）","gmv":0.353,"gmv_y":-14.4,"expo":8.0,"expo_y":-33.1,"pavg":67.2,"ctr1":17.18,"ctr2":10.04,"gpm":36.3,"cvr":4.169,"pub":14.2,"totalMer":268,"b56":40,"gmvShare":21.8,"type":"商卡主导","pvT":-43.4,"ctr2T":10.2,"cvrT":2.7,"aov":50.8,"aovT":2.7,"issue":"CVR断层：被种草了但没下单","kpi":"CTR1=17.18%强，CVR=4.17%偏弱","low":["CVR=4.17%","篇均PV=67.2次"],"yoy_bad":["GMV YoY -14.4%","曝光 YoY -33.1%"],"actions":["①CVR核心断点：优化商品详情页（主图/参数对比）","②搜索场景强化：标题优化型号+使用场景关键词"]},{"n":"十三组（教育）","gmv":0.312,"gmv_y":110.1,"expo":4.03,"expo_y":22.6,"pavg":48.7,"ctr1":14.42,"ctr2":6.46,"gpm":43.8,"cvr":9.351,"pub":29.5,"totalMer":187,"b56":35,"gmvShare":24.3,"type":"混合","pvT":-59.8,"ctr2T":-29.1,"cvrT":2.9,"aov":50.3,"aovT":17.2,"issue":"内卷最严重（发布+485%），篇均稀释至49次","kpi":"篇均PV=49次，CTR2=6.46%，CVR=9.33%极高","low":["篇均PV=49次","CTR2=6.46%"],"yoy_bad":[],"actions":["①收缩低质内容：发布+485%但曝光仅+22.6%","②CTR2=6.46%：商卡突出课程效果/限时优惠"]},{"n":"十二组（手工）","gmv":0.269,"gmv_y":15.7,"expo":6.28,"expo_y":-12.7,"pavg":82.1,"ctr1":19.46,"ctr2":11.37,"gpm":34.3,"cvr":4.27,"pub":7.9,"totalMer":562,"b56":70,"gmvShare":12.0,"type":"店播主导","pvT":-42.2,"ctr2T":4.4,"cvrT":9.6,"aov":36.2,"aovT":14.6,"issue":"整体较健康，CVR略弱","kpi":"CTR1=19.46%强，CVR=4.27%略弱","low":["CVR=4.27%"],"yoy_bad":["曝光 YoY -12.7%"],"actions":["①CVR：手工品细节质量感展示（材质特写/制作精度）","②适当收缩内卷：优先推高CES制作过程视频"]},{"n":"三组（宠物）","gmv":0.21,"gmv_y":2.5,"expo":5.07,"expo_y":4.0,"pavg":67.3,"ctr1":21.57,"ctr2":5.55,"gpm":37.7,"cvr":8.854,"pub":7.7,"totalMer":120,"b56":8,"gmvShare":41.0,"type":"混合","pvT":-32.9,"ctr2T":-39.2,"cvrT":6.4,"aov":35.5,"aovT":-4.6,"issue":"最典型CTR2断层（内容留人但商卡引导极弱）","kpi":"CTR1=21.57%最高，CTR2=5.55%最低","low":["CTR2=5.55%（全行业最低）"],"yoy_bad":[],"actions":["①CTR2是宠物商笔的唯一核心战役","②自然融入式商品引导：'我家猫爱吃的粮就是这款'","③商卡价格力：折扣/满减/赠品信息要可见"]},{"n":"十三组（图书）","gmv":0.242,"gmv_y":-0.5,"expo":5.77,"expo_y":-29.6,"pavg":60.8,"ctr1":11.55,"ctr2":7.51,"gpm":35.4,"cvr":8.03,"pub":11.8,"totalMer":117,"b56":18,"gmvShare":52.5,"type":"笔记主导","pvT":-46.5,"ctr2T":-17.8,"cvrT":25.8,"aov":50.9,"aovT":-8.5,"issue":"内容吸引力弱：CTR1全行业最低","kpi":"CTR1=11.55%（全行业最低）","low":["CTR1=11.55%（最低）","篇均PV=60.8次"],"yoy_bad":["曝光 YoY -29.6%"],"actions":["①CTR1核心战役：封面突出'结论/金句/改变'","②视频形态：图书视频CTR1通常远高于图文"]},{"n":"一组（文玩玉翠）","gmv":0.182,"gmv_y":35.2,"expo":1.3,"expo_y":5.8,"pavg":45.5,"ctr1":10.88,"ctr2":29.58,"gpm":90.2,"cvr":0.733,"pub":8.1,"totalMer":847,"b56":395,"gmvShare":1.8,"type":"店播主导","pvT":-2.9,"ctr2T":15.0,"cvrT":-13.4,"aov":383.5,"aovT":15.1,"issue":"CVR天然极低（高客单非标品品类特性）","kpi":"CTR2=29.58%全行业第一，CVR=0.73%全行业最低","low":["CVR=0.73%（品类天花板）","篇均PV=45.5次"],"yoy_bad":[],"actions":["①接受CVR极低是品类特性：笔记定位为品鉴内容","②笔记引流至直播间建立信任后成交"]},{"n":"八组（家电）","gmv":0.15,"gmv_y":-10.1,"expo":1.33,"expo_y":-50.0,"pavg":61.6,"ctr1":13.65,"ctr2":7.53,"gpm":91.8,"cvr":5.082,"pub":3.7,"totalMer":112,"b56":37,"gmvShare":17.0,"type":"混合","pvT":-42.6,"ctr2T":-17.8,"cvrT":7.3,"aov":172.6,"aovT":14.7,"issue":"流量严重稀释：GPM最高但曝光大跌","kpi":"GPM=91.8（最高），曝光YoY -50.0%","low":["篇均PV=61.6次","CVR=5.08%"],"yoy_bad":["GMV YoY -10.1%","曝光 YoY -50.0%"],"actions":["①流量问题优先：曝光-50%，疑似平台分发侧问题","②精品化策略：每篇对应一个具体型号/使用场景"]},{"n":"十组（家饰）","gmv":0.149,"gmv_y":-6.4,"expo":3.97,"expo_y":-15.0,"pavg":83.8,"ctr1":11.29,"ctr2":13.49,"gpm":33.0,"cvr":4.106,"pub":6.6,"totalMer":231,"b56":30,"gmvShare":16.3,"type":"店播主导","pvT":-29.4,"ctr2T":93.8,"cvrT":-20.4,"aov":52.9,"aovT":-8.1,"issue":"CTR1弱但CTR2强（封面弱/读完会点）","kpi":"CTR1=11.29%偏低，CTR2=13.49%较高","low":["CTR1=11.29%（偏低）","CVR=4.11%"],"yoy_bad":["曝光 YoY -15.0%"],"actions":["①CTR1是核心：家饰封面必须做'空间感'设计（实景效果图）","②CVR：商品详情页降低高客单决策门槛"]},{"n":"七组（家具）","gmv":0.07,"gmv_y":-1.5,"expo":1.03,"expo_y":-30.3,"pavg":37.3,"ctr1":14.08,"ctr2":11.22,"gpm":45.4,"cvr":2.259,"pub":5.1,"totalMer":192,"b56":60,"gmvShare":5.1,"type":"K播主导","pvT":-24.6,"ctr2T":-1.8,"cvrT":-19.6,"aov":127.4,"aovT":-3.9,"issue":"笔记场景CVR极低（高客单天然难转化）","kpi":"篇均PV=37.3次（最低），CVR=2.26%","low":["篇均PV=37.3次（最低）","CVR=2.26%"],"yoy_bad":["曝光 YoY -30.3%"],"actions":["①笔记定位调整：高客单CVR天然低，笔记作为种草引流至直播间","②篇均曝光=37次：排查内容质量分问题"]},{"n":"十五组（酒旅）","gmv":0.084,"gmv_y":-1.8,"expo":0.61,"expo_y":-45.5,"pavg":47.9,"ctr1":11.84,"ctr2":13.95,"gpm":90.5,"cvr":1.619,"pub":4.0,"totalMer":122,"b56":41,"gmvShare":5.7,"type":"店播主导","pvT":-68.5,"ctr2T":193.5,"cvrT":-26.8,"aov":334.4,"aovT":-11.8,"issue":"供给萎缩＋CVR天然极低＋客单下跌","kpi":"篇均PV=47.9次，CVR=1.62%，客单-11.8%","low":["CVR=1.62%（品类特性）","篇均PV=47.9次"],"yoy_bad":["曝光 YoY -45.5%"],"actions":["①接受CVR天然低：笔记主打'收藏种草'","②供给萎缩是隐患：激励商家恢复内容产出"]},{"n":"十四组（二奢）","gmv":0.026,"gmv_y":39.0,"expo":0.23,"expo_y":-16.6,"pavg":14.8,"ctr1":12.45,"ctr2":20.16,"gpm":60.6,"cvr":0.512,"pub":2.5,"totalMer":227,"b56":39,"gmvShare":2.5,"type":"店播主导","pvT":-29.9,"ctr2T":56.1,"cvrT":-86.2,"aov":472.0,"aovT":-65.3,"issue":"全行业最低曝光＋CVR几乎为零＋客单暴跌","kpi":"篇均PV=14.8次（最低），CVR=0.51%，客单YoY -65.3%","low":["篇均PV=14.8次（最低）","CVR=0.51%"],"yoy_bad":["曝光 YoY -16.6%","客单价 -65.3%"],"actions":["①客单价-65.3%最紧急：紧急介入货盘引导","②篇均曝光=14.8次：大幅提升内容质量（鉴定故事）"]}];
 
-const noteData = [
-  {name:'五组（休食）',type:'混合',gmv:0.76,gmvT:-8.2,pub:19.2,pubT:25.0,totalMer:516,expo:17.97,expoT:-39.8,pv:100,pvT:-41.6,ctr1:16.52,ctr2:6.82,cvr:7.429,aov:43.1,aovT:22.3,gpm:36.1,b56:101,gmvShare:32.3,
-    context:'发布量+25%但篇均曝光-41.6%，内卷。CTR2=6.82%是核心短板（低于基准9.13%），用户读完但没点商卡。CVR=7.4%健康，客单+22.3%正向。',
-    actions:['①CTR2核心战役：黄金位置强化商卡引导（视频前5秒/图文首图）','②商卡价格力：胶囊显示价vs划线价对比、首单券要在商卡中可见','③控制内卷：收缩低质内容，优先产出高CES内容']},
-  {name:'九组（家用）',type:'混合',gmv:0.68,gmvT:-0.6,pub:20.4,pubT:21.3,totalMer:534,expo:15.43,expoT:-6.9,pv:92,pvT:-20.7,ctr1:18.77,ctr2:6.39,cvr:7.050,aov:45.2,aovT:4.3,gpm:38.2,b56:98,gmvShare:26.6,
-    context:'CTR1=18.77%显著高于均值（种草到位），但CTR2=6.39%明显低于基准——用户读完了但没点商卡，是"种草到位、引流断层"典型。',
-    actions:['①CTR2是唯一核心战役：商卡引导优化是重点','②胶囊价格力：显示价vs划线价对比、满减券要可见','③笔记选品精简：每篇2-3个主推SKU']},
-  {name:'十一组（潮玩）',type:'店播主导',gmv:0.66,gmvT:-7.1,pub:79.2,pubT:35.3,totalMer:886,expo:27.24,expoT:7.2,pv:55,pvT:-12.5,ctr1:15.17,ctr2:12.90,cvr:3.887,aov:25.9,aovT:2.7,gpm:19.7,b56:92,gmvShare:14.2,
-    context:'CTR1/CTR2漏斗健康，但CVR=3.9%偏弱，客单¥25.9全行业第二低，GPM=19.7远低于基准。货盘结构是核心问题——低客单品为主，店播才是潮玩主要成交场域。',
-    actions:['①货盘升级：引入高客单/高品质SKU','②笔记定位调整：种草引流至店播完成高客单成交','③CVR优化：突出稀缺性/限量/联名降低冲动购买门槛']},
-  {name:'十一组（虚拟）',type:'笔记主导',gmv:0.58,gmvT:-2.7,pub:160.3,pubT:357.3,totalMer:89,expo:33.76,expoT:74.8,pv:39,pvT:-50.1,ctr1:13.20,ctr2:8.31,cvr:13.200,aov:10.0,aovT:-5.8,gpm:14.5,b56:19,gmvShare:54.0,
-    context:'内卷最严重：发布+357%但篇均曝光仅+75%，降至39次。CVR=13.2%全行业最高（虚拟决策成本低），但客单¥10极低，GPM=14.5全行业最低。',
-    actions:['①收缩内卷：大量低质内容被低分发，优先提升单篇质量','②CTR1=13.2%低于均值：封面/标题钩子优化','③客单提升：引入课程包/会员年卡等高客单品']},
-  {name:'十组（家纺）',type:'混合',gmv:0.47,gmvT:8.3,pub:8.3,pubT:17.6,totalMer:295,expo:7.56,expoT:-34.8,pv:119,pvT:-46.2,ctr1:12.57,ctr2:12.76,cvr:4.113,aov:85.2,aovT:46.9,gpm:56.2,b56:63,gmvShare:26.7,
-    context:'本期少数GMV正增长（+8.3%）。客单+46.9%是核心驱动，GPM=56.2高于基准，篇均曝光119次全行业最高。CTR1=12.57%略低，CVR=4.1%偏弱，但客单和GPM弥补了中段损耗。',
-    actions:['①保持健康大盘，关注篇均曝光-46.2%是否持续','②CVR=4.1%：试用装/首单优惠降低¥85客单决策门槛','③CTR1小幅提升：测试更强视觉封面，但优先级低']},
-  {name:'二组（亲子生活）',type:'混合',gmv:0.46,gmvT:-9.4,pub:15.8,pubT:38.9,totalMer:532,expo:7.98,expoT:-9.3,pv:73,pvT:-23.0,ctr1:13.17,ctr2:11.17,cvr:4.848,aov:67.9,aovT:-2.6,gpm:48.4,b56:97,gmvShare:20.6,
-    context:'CTR1/CTR2/CVR三环节均略低于基准，全链路轻度承压。客单¥67.9健康，GPM=48.4高于基准。没有单一明显断点，是整体轻度下滑型。',
-    actions:['①视频形态测试：亲子场景视频CTR1通常高于图文','②CTR2=11.17%有提升空间：更自然植入商品引导','③CVR优化：入门款+试用装降低决策门槛']},
-  {name:'六组（生鲜）',type:'混合',gmv:0.40,gmvT:-10.7,pub:13.0,pubT:49.1,totalMer:284,expo:9.81,expoT:-27.7,pv:111,pvT:-47.4,ctr1:13.59,ctr2:7.77,cvr:7.118,aov:50.4,aovT:6.4,gpm:37.9,b56:62,gmvShare:30.2,
-    context:'发布+49%但曝光-27.7%，内卷。CTR1=13.59%和CTR2=7.77%均低于基准，双CTR偏弱。CVR=7.1%和客单¥50.4健康。',
-    actions:['①控制内卷：发布+49%但曝光下滑，收缩低质内容','②CTR1优化：突出新鲜度/产地/口感，视频展示食材处理过程','③CTR2优化：商卡突出价格力（克重单价/配送保障）']},
-  {name:'四组（大健康）',type:'混合',gmv:0.38,gmvT:-17.2,pub:12.4,pubT:0.6,totalMer:288,expo:7.64,expoT:-42.6,pv:81,pvT:-38.8,ctr1:14.42,ctr2:5.70,cvr:6.181,aov:78.2,aovT:-2.6,gpm:39.7,b56:78,gmvShare:23.0,
-    context:'发布量基本不变（+0.6%）但曝光大跌-42.6%——平台分发侧问题。CTR2=5.70%全行业倒数第二（健康品类商卡引导极弱）。',
-    actions:['①流量问题需向上确认：发布稳定但曝光跌-42%','②CTR2=5.7%核心战役：商卡突出功效差异化（成分/功效/人群适配）','③商业化补位：精准人群触达']},
-  {name:'八组（消费电子）',type:'商卡主导',gmv:0.35,gmvT:-10.2,pub:14.2,pubT:0.0,totalMer:268,expo:8.01,expoT:-32.9,pv:67,pvT:-43.4,ctr1:17.22,ctr2:10.00,cvr:4.158,aov:50.8,aovT:2.7,gpm:36.3,b56:40,gmvShare:21.8,
-    context:'CTR1=17.22%前三高，CTR2=10%高于基准。CVR=4.16%偏弱——用户被种草也点了商卡，但没下单。发布不变但曝光-32.9%，平台侧稀释。',
-    actions:['①CVR是核心断点：优化商品详情页（主图/参数对比/用户评价）','②流量稀释排查：CES分是否下降','③搜索场景强化：标题优化型号+使用场景关键词']},
-  {name:'三组（宠物）',type:'混合',gmv:0.21,gmvT:-8.4,pub:7.6,pubT:34.4,totalMer:120,expo:5.10,expoT:4.4,pv:68,pvT:-32.9,ctr1:21.58,ctr2:5.54,cvr:8.863,aov:35.5,aovT:-4.6,gpm:37.5,b56:8,gmvShare:41.0,
-    context:'CTR1=21.58%全行业最高，CVR=8.86%前三高。但CTR2=5.54%全行业最低——读完了但没点商卡，是最典型的"内容留人、商卡引导断层"。',
-    actions:['①CTR2是宠物商笔的唯一核心战役','②自然融入式商品引导："我家猫爱吃的粮就是这款"','③商卡价格力：折扣/满减/赠品信息要在胶囊中可见','④场景化选品：用场景词替代商品型号']},
-  {name:'十三组（教育）',type:'混合',gmv:0.31,gmvT:42.9,pub:29.2,pubT:484.6,totalMer:187,expo:4.04,expoT:22.6,pv:49,pvT:-59.8,ctr1:14.29,ctr2:6.48,cvr:9.328,aov:50.3,aovT:17.2,gpm:43.4,b56:35,gmvShare:24.3,
-    context:'GMV+42.9%笔记端最大增长，但发布+485%、篇均49次严重稀释。CTR2=6.48%低于基准，但CVR=9.33%极高（教育用户一旦触发决策转化极强）。',
-    actions:['①流量稀释最严重：收缩低质内容，集中资源高CES笔记','②CTR2=6.48%：商卡突出课程效果/学员案例/限时优惠','③CVR=9.3%是优势：把CTR2提上来，GMV还有大空间']},
-  {name:'十三组（图书）',type:'笔记主导',gmv:0.24,gmvT:-1.3,pub:11.6,pubT:-22.7,totalMer:117,expo:5.77,expoT:-29.8,pv:61,pvT:-46.5,ctr1:11.56,ctr2:7.49,cvr:8.019,aov:50.9,aovT:-8.5,gpm:35.4,b56:18,gmvShare:52.5,
-    context:'笔记主导行业（占GMV 52.5%），发布和曝光双降（-23%/-30%），供给收缩型。CTR1=11.56%全行业最低——图书内容封面吸引力天然弱。',
-    actions:['①CTR1核心战役：封面突出"结论/金句/改变"','②视频形态：图书视频CTR1通常远高于图文','③不应继续收缩供给：图书占GMV 52%']},
-  {name:'十二组（手工）',type:'店播主导',gmv:0.27,gmvT:-5.5,pub:7.9,pubT:47.6,totalMer:562,expo:6.31,expoT:-12.2,pv:82,pvT:-42.2,ctr1:19.55,ctr2:11.34,cvr:4.260,aov:36.2,aovT:14.6,gpm:34.2,b56:70,gmvShare:12.0,
-    context:'CTR1=19.55%全行业第二高，CTR2=11.34%健康。CVR=4.26%略偏弱，客单¥36偏低。发布+47.6%但曝光-12.2%，轻度内卷。整体相对健康。',
-    actions:['①CVR=4.3%：手工品细节质量感展示（材质特写/制作精度）','②适当收缩内卷：优先推高CES制作过程视频','③客单提升：引入定制款/高品质材料款']},
-  {name:'一组（文玩玉翠）',type:'店播主导',gmv:0.18,gmvT:6.6,pub:8.0,pubT:56.4,totalMer:847,expo:1.30,expoT:5.9,pv:46,pvT:-2.9,ctr1:10.90,ctr2:29.50,cvr:0.733,aov:383.5,aovT:15.1,gpm:90.4,b56:395,gmvShare:1.8,
-    context:'CTR2=29.50%全行业第一，GPM=90.4全行业第一。但CVR=0.73%全行业最低——¥384高客单非标品决策过程极长，笔记场景几乎不能完成最终转化。',
-    actions:['①接受CVR极低是品类特性：笔记作为"品鉴内容"种草引流至直播间','②笔记重新定位：展示文化/收藏/鉴别方法','③CTR1=10.9%偏低：封面需要更强视觉冲击']},
-  {name:'八组（家电）',type:'混合',gmv:0.15,gmvT:8.2,pub:3.6,pubT:20.7,totalMer:112,expo:1.34,expoT:-49.8,pv:62,pvT:-42.6,ctr1:13.69,ctr2:7.49,cvr:5.079,aov:172.6,aovT:14.7,gpm:89.8,b56:37,gmvShare:17.0,
-    context:'GPM=89.8全行业最高（客单¥172.6），GMV+8.2%正增长。但曝光大跌-49.8%（流量稀释而非内卷）。',
-    actions:['①流量问题优先：曝光-50%但发布仅+21%，疑似平台分发侧问题','②精品化策略：每篇对应一个具体型号/使用场景','③CVR优化：¥173客单需要更强使用测评内容']},
-  {name:'十组（家饰）',type:'店播主导',gmv:0.15,gmvT:-3.6,pub:6.6,pubT:50.1,totalMer:231,expo:3.97,expoT:-14.9,pv:84,pvT:-29.4,ctr1:11.37,ctr2:13.40,cvr:4.109,aov:52.9,aovT:-8.1,gpm:33.1,b56:30,gmvShare:16.3,
-    context:'CTR1=11.37%全行业倒数三（封面吸引力弱），但CTR2=13.40%全行业第三高（读完愿意点商卡）。CVR=4.1%偏弱。发布+50%但曝光-15%，轻度内卷。',
-    actions:['①CTR1是核心：家饰封面必须做"空间感"设计（实景效果图/前后对比）','②CVR优化：商品详情页降低高客单决策门槛','③内容绑定场景关键词：租房改造/北欧风/新婚装修']},
-  {name:'七组（家具）',type:'K播主导',gmv:0.07,gmvT:-9.0,pub:5.0,pubT:-10.4,totalMer:192,expo:1.03,expoT:-30.2,pv:37,pvT:-24.6,ctr1:14.11,ctr2:11.20,cvr:2.259,aov:127.4,aovT:-3.9,gpm:45.5,b56:60,gmvShare:5.1,
-    context:'K播主导行业（K播占57% GMV），笔记占比仅5.1%。发布和曝光双降，供给收缩型。篇均曝光=37次全行业倒数第一。CVR=2.26%偏弱，¥127高客单笔记场景即时购买决策极难。',
-    actions:['①笔记定位调整：¥127高客单CVR天然低，笔记作为种草起点引流至直播间','②篇均曝光=37次：排查内容质量分问题','③视频3D展示：家具需要空间感，360°展示建立信心']},
-  {name:'十五组（酒旅）',type:'店播主导',gmv:0.08,gmvT:-21.6,pub:3.9,pubT:-26.0,totalMer:122,expo:0.61,expoT:-44.5,pv:48,pvT:-68.5,ctr1:11.87,ctr2:14.01,cvr:1.609,aov:334.4,aovT:-11.8,gpm:89.4,b56:41,gmvShare:5.7,
-    context:'发布和曝光全面收缩（-26%/-44.5%），供给端主动萎缩。CVR=1.61%倒数第二——酒旅¥334高客单需要精确匹配日期/人数/地点，笔记无法提供，即时转化极难。',
-    actions:['①接受CVR天然低：笔记主打"收藏种草"，引流至直播间或私信成交','②供给萎缩是隐患：激励商家恢复内容产出','③客单跌-11.8%需关注：是否货盘向低端位移']},
-  {name:'十四组（二奢）',type:'店播主导',gmv:0.03,gmvT:-11.9,pub:2.5,pubT:15.7,totalMer:227,expo:0.23,expoT:-16.4,pv:15,pvT:-29.9,ctr1:12.42,ctr2:20.29,cvr:0.514,aov:472.0,aovT:-65.3,gpm:61.1,b56:39,gmvShare:2.5,
-    context:'篇均曝光=15次全行业最低（严重稀释）。CTR2=20.29%极高，但CVR=0.51%全行业最低——¥472奢侈品笔记场景几乎不成交。客单价环比-65.3%（货盘结构崩塌）。',
-    actions:['①客单价-65.3%最紧急：紧急介入货盘引导，回归高客单品','②篇均曝光=15次：大幅提升内容质量（鉴定故事/大牌平替）','③CVR=0.5%是品类天花板：笔记引流至店播建立信任后成交']},
-];
+// ═══ 店播数据 ═══
+const liveData = [{"n":"九组（家用）","type":"混合","gmv":5.12,"gmv_y":-1.3,"exp":17.80,"expT":-11.3,"hexp":17127,"hexpT":-15.3,"avgdur":3465,"avgdurT":4.7,"avgsess":17.9,"ctr":1.638,"cvr":2.409,"conv":4.216,"aov":139.0,"aovT":8.2,"gpm":73.8,"huxi_ctr":1.085,"huxi_cvr":4.046,"zhibo_ctr":3.423,"zhibo_cvr":1.914,"fans":93.9,"fansT":-40.6,"b56":98,"totalMer":534,"gmvShare":68.7,"issue":"客单价偏低拖累GMV","kpi":"单h曝光17127次（高于基准），客单¥139低于基准¥168.6","low":["客单¥139偏低","涨粉-40.6%"],"yoy_bad":["GMV -1.3%"],"actions":["①货盘升级：引入高客单SKU","②涨粉跌-40.6%：优化开场钩子和互动引导"]},{"n":"二组（亲子生活）","type":"混合","gmv":3.06,"gmv_y":-9.5,"exp":13.26,"expT":-10.3,"hexp":10185,"hexpT":-28.5,"avgdur":4340,"avgdurT":25.4,"avgsess":20.3,"ctr":1.778,"cvr":2.165,"conv":3.188,"aov":128.6,"aovT":11.9,"gpm":58.7,"huxi_ctr":1.230,"huxi_cvr":3.833,"zhibo_ctr":2.790,"zhibo_cvr":2.277,"fans":57.9,"fansT":-42.5,"b56":97,"totalMer":532,"gmvShare":63.3,"issue":"商品转化断层＋单h曝光趋势跌","kpi":"商品转化3.19%<基准3.6%，单h曝光趋势跌-28.5%","low":["商品转化3.19%","客单¥128.6"],"yoy_bad":["GMV -9.5%","单h曝光 -28.5%"],"actions":["①商品转化3.19%：优化选品和讲品节奏","②单h曝光趋势跌：向上确认平台分发权重变化"]},{"n":"十一组（潮玩）","type":"店播主导","gmv":2.73,"gmv_y":-7.5,"exp":17.80,"expT":11.2,"hexp":4014,"hexpT":-1.0,"avgdur":14781,"avgdurT":12.3,"avgsess":13.5,"ctr":3.244,"cvr":4.207,"conv":8.993,"aov":215.0,"aovT":11.8,"gpm":29.0,"huxi_ctr":1.532,"huxi_cvr":3.180,"zhibo_ctr":3.968,"zhibo_cvr":2.200,"fans":98.2,"fansT":-34.2,"b56":92,"totalMer":886,"gmvShare":54.4,"issue":"流量分发问题（漏斗效率全行业最强）","kpi":"单h曝光=4014次（最低），CTR/CVR/转化全行业最高","low":["单h曝光4014次（最低）"],"yoy_bad":["GMV -7.5%"],"actions":["①流量分发是唯一核心问题：向上确认潮玩品类分发","②开播间数优化：12.3间/商家过多导致稀释"]},{"n":"五组（休食）","type":"混合","gmv":2.35,"gmv_y":-1.9,"exp":13.09,"expT":-9.5,"hexp":12928,"hexpT":-25.3,"avgdur":3375,"avgdurT":21.1,"avgsess":18.4,"ctr":1.176,"cvr":3.025,"conv":5.839,"aov":111.9,"aovT":0.0,"gpm":51.2,"huxi_ctr":0.644,"huxi_cvr":6.573,"zhibo_ctr":2.890,"zhibo_cvr":2.004,"fans":34.4,"fansT":3.7,"b56":101,"totalMer":516,"gmvShare":54.0,"issue":"CTR封面点击弱（但进来就买）","kpi":"CTR=1.18%偏低，呼吸灯CVR=6.57%全行业最高","low":["CTR=1.18%","呼吸灯CTR=0.64%极低"],"yoy_bad":["单h曝光 -25.3%"],"actions":["①CTR核心断点：优化直播间封面（突出视觉诱惑感）","②呼吸灯CTR=0.64%：这个入口CVR极高，重点投入提升点击率"]},{"n":"一组（文玩玉翠）","type":"店播主导","gmv":2.29,"gmv_y":7.9,"exp":8.58,"expT":1.9,"hexp":4893,"hexpT":-2.3,"avgdur":5842,"avgdurT":4.3,"avgsess":17.7,"ctr":3.975,"cvr":1.030,"conv":1.921,"aov":1717.4,"aovT":-3.7,"gpm":60.9,"huxi_ctr":2.172,"huxi_cvr":1.175,"zhibo_ctr":5.300,"zhibo_cvr":0.936,"fans":53.9,"fansT":-34.4,"b56":395,"totalMer":847,"gmvShare":45.4,"issue":"CVR天然低（高客单非标品品类特性）","kpi":"GMV+7.9%正增长，CTR=3.98%极高，CVR/转化低是品类特性","low":["单h曝光4893次偏低","CVR=1.03%（品类特性）"],"yoy_bad":[],"actions":["①单h曝光偏低：向上争取更多分发资源","②接受CVR低：优化直播间成交节奏（鉴定环节/历史成交展示）"]},{"n":"六组（生鲜）","type":"混合","gmv":2.18,"gmv_y":-4.2,"exp":9.70,"expT":-3.7,"hexp":14048,"hexpT":-40.0,"avgdur":2303,"avgdurT":60.5,"avgsess":14.6,"ctr":1.523,"cvr":1.870,"conv":4.784,"aov":52.9,"aovT":7.3,"gpm":28.6,"huxi_ctr":0.844,"huxi_cvr":3.629,"zhibo_ctr":3.641,"zhibo_cvr":0.779,"fans":95.8,"fansT":85.9,"b56":62,"totalMer":284,"gmvShare":48.3,"issue":"供给放量但分发没跟上（单h曝光跌-40%）","kpi":"开播时长+60.5%，单h曝光跌-40%，涨粉+85.9%","low":["单h曝光-40%","GPM=28.6偏低"],"yoy_bad":["单h曝光 -40.0%","GMV -4.2%"],"actions":["①单h曝光跌-40%：优化直播间质量分（互动率/留存率）","②直播卡CVR=0.79%极低：检查素材是否与直播间内容匹配"]},{"n":"十二组（手工）","type":"店播主导","gmv":2.01,"gmv_y":-6.5,"exp":8.35,"expT":8.2,"hexp":7641,"hexpT":-1.1,"avgdur":3644,"avgdurT":9.4,"avgsess":17.2,"ctr":3.641,"cvr":2.221,"conv":4.246,"aov":236.5,"aovT":1.0,"gpm":44.1,"huxi_ctr":1.814,"huxi_cvr":2.989,"zhibo_ctr":5.200,"zhibo_cvr":2.125,"fans":47.8,"fansT":-13.9,"b56":70,"totalMer":562,"gmvShare":68.0,"issue":"单h曝光偏低制约GMV","kpi":"CTR=3.64%极高，单h曝光7641次低于基准","low":["单h曝光7641次"],"yoy_bad":["GMV -6.5%"],"actions":["①单h曝光7641次：优质开播素材提升质量分","②直播卡CTR=5.2%：充分利用直播卡入口扩大触达"]},{"n":"十组（家饰）","type":"店播主导","gmv":1.73,"gmv_y":-1.9,"exp":8.50,"expT":-25.4,"hexp":11290,"hexpT":-34.3,"avgdur":2508,"avgdurT":13.5,"avgsess":17.4,"ctr":2.490,"cvr":1.662,"conv":3.455,"aov":107.2,"aovT":28.3,"gpm":39.5,"huxi_ctr":1.552,"huxi_cvr":3.616,"zhibo_ctr":4.250,"zhibo_cvr":1.680,"fans":49.0,"fansT":-43.0,"b56":30,"totalMer":231,"gmvShare":67.4,"issue":"单h曝光跌-34.3%＋涨粉跌-43%","kpi":"客单+28.3%是亮点，曝光趋势跌需警惕","low":["单h曝光-34.3%"],"yoy_bad":["单h曝光 -34.3%","GMV -1.9%"],"actions":["①单h曝光跌-34.3%：排查直播间分类/标签问题","②涨粉跌-43%：加大直播卡投入"]},{"n":"四组（大健康）","type":"混合","gmv":1.47,"gmv_y":-12.8,"exp":5.33,"expT":-32.5,"hexp":9711,"hexpT":-19.4,"avgdur":1830,"avgdurT":-16.2,"avgsess":21.0,"ctr":1.735,"cvr":0.940,"conv":2.734,"aov":238.4,"aovT":-10.2,"gpm":62.0,"huxi_ctr":0.382,"huxi_cvr":3.961,"zhibo_ctr":4.203,"zhibo_cvr":0.237,"fans":13.3,"fansT":-36.8,"b56":78,"totalMer":288,"gmvShare":54.6,"issue":"CVR极弱＋呼吸灯CTR全行业最低","kpi":"CVR=0.94%，呼吸灯CTR=0.38%（最低），开播时长-16.2%","low":["CVR=0.94%","呼吸灯CTR=0.38%（最低）","直播卡CVR=0.24%"],"yoy_bad":["GMV -12.8%","曝光 -32.5%"],"actions":["①CVR=0.94%核心断点：更强信任建立（KOL背书/使用前后对比）","②呼吸灯CTR=0.38%：重新设计封面（突出功效结果）"]},{"n":"十组（家纺）","type":"混合","gmv":1.38,"gmv_y":3.2,"exp":6.76,"expT":10.1,"hexp":8802,"hexpT":-18.3,"avgdur":2562,"avgdurT":34.8,"avgsess":18.8,"ctr":2.063,"cvr":2.201,"conv":4.077,"aov":168.6,"aovT":-4.9,"gpm":47.4,"huxi_ctr":1.113,"huxi_cvr":2.999,"zhibo_ctr":3.465,"zhibo_cvr":2.071,"fans":35.4,"fansT":-27.3,"b56":63,"totalMer":295,"gmvShare":74.5,"issue":"整体健康，单h曝光轻微偏低","kpi":"GMV+3.2%，CTR/CVR/转化均高于基准","low":["单h曝光8802次略低"],"yoy_bad":[],"actions":["①关注单h曝光趋势（若继续下滑会影响GMV）","②涨粉跌-27.3%：加大直播卡触达"]},{"n":"八组（消费电子）","type":"商卡主导","gmv":1.36,"gmv_y":-5.4,"exp":11.21,"expT":-13.9,"hexp":17844,"hexpT":-18.5,"avgdur":2094,"avgdurT":5.5,"avgsess":19.2,"ctr":1.293,"cvr":1.255,"conv":1.663,"aov":112.5,"aovT":8.9,"gpm":23.1,"huxi_ctr":0.850,"huxi_cvr":2.587,"zhibo_ctr":2.906,"zhibo_cvr":0.529,"fans":44.7,"fansT":-29.7,"b56":40,"totalMer":268,"gmvShare":33.0,"issue":"商品转化断点（全行业漏斗最明显断点之一）","kpi":"商品转化1.66%（基准3.6%），直播卡CVR=0.53%极低","low":["商品转化1.66%","CVR=1.26%","直播卡CVR=0.53%"],"yoy_bad":["GMV -5.4%","曝光 -13.9%"],"actions":["①商品转化1.66%核心战役：实测+对比+参数讲解","②直播卡CVR=0.53%：检查定向精准度"]},{"n":"十三组（教育）","type":"混合","gmv":1.19,"gmv_y":45.1,"exp":5.05,"expT":-12.2,"hexp":14789,"hexpT":-6.6,"avgdur":1138,"avgdurT":-6.0,"avgsess":12.3,"ctr":1.518,"cvr":0.388,"conv":5.378,"aov":391.1,"aovT":-53.0,"gpm":55.4,"huxi_ctr":0.445,"huxi_cvr":1.997,"zhibo_ctr":3.971,"zhibo_cvr":0.227,"fans":17.3,"fansT":-16.1,"b56":35,"totalMer":187,"gmvShare":62.1,"issue":"CVR极低＋客单暴跌-53%","kpi":"CVR=0.39%（最低），客单价-53%（¥391）","low":["CVR=0.39%（最低）","直播卡CVR=0.23%（最低）"],"yoy_bad":["客单价 -53.0%"],"actions":["①客单价跌-53%最紧急：引入高客单课程/系列课","②CVR=0.39%：内容驱动成交（试听/学员展示）"]},{"n":"三组（宠物）","type":"混合","gmv":0.96,"gmv_y":-1.6,"exp":2.23,"expT":35.8,"hexp":5734,"hexpT":-10.9,"avgdur":1298,"avgdurT":52.5,"avgsess":15.3,"ctr":2.022,"cvr":1.130,"conv":4.492,"aov":109.5,"aovT":2.2,"gpm":55.8,"huxi_ctr":0.796,"huxi_cvr":3.747,"zhibo_ctr":4.286,"zhibo_cvr":0.739,"fans":7.0,"fansT":-18.1,"b56":8,"totalMer":120,"gmvShare":82.1,"issue":"CVR进播率偏低（开场留存差）","kpi":"CVR=1.13%，开播时长+52.5%但曝光没同步增加","low":["CVR=1.13%","单h曝光5734次"],"yoy_bad":[],"actions":["①CVR=1.13%：优化直播间开场（萌宠出镜/互动/即时福利）","②直播卡CVR=0.74%：定向更精准（有宠物用户画像）"]},{"n":"十四组（二奢）","type":"店播主导","gmv":0.87,"gmv_y":-9.3,"exp":2.66,"expT":-14.5,"hexp":4317,"hexpT":-19.5,"avgdur":2055,"avgdurT":6.2,"avgsess":18.4,"ctr":2.847,"cvr":0.136,"conv":0.158,"aov":4891.0,"aovT":-11.8,"gpm":10.4,"huxi_ctr":2.202,"huxi_cvr":0.171,"zhibo_ctr":3.953,"zhibo_cvr":0.084,"fans":9.4,"fansT":-39.1,"b56":39,"totalMer":227,"gmvShare":72.3,"issue":"CVR/转化极低（高客单非标品品类特性）＋GPM极低","kpi":"CVR=0.14%最低，商品转化0.16%，GPM=10.4","low":["CVR=0.14%（最低）","商品转化0.16%（最低）","GPM=10.4"],"yoy_bad":["GMV -9.3%"],"actions":["①接受CVR极低是品类特性：直播间作为品鉴展示引导至私域成交","②重新评估直播间资源投入ROI"]},{"n":"七组（家具）","type":"K播主导","gmv":0.83,"gmv_y":-9.3,"exp":4.02,"expT":-20.0,"hexp":9027,"hexpT":-15.0,"avgdur":1483,"avgdurT":-5.9,"avgsess":17.7,"ctr":1.526,"cvr":0.811,"conv":1.520,"aov":479.1,"aovT":-16.5,"gpm":38.4,"huxi_ctr":0.918,"huxi_cvr":2.282,"zhibo_ctr":3.248,"zhibo_cvr":0.370,"fans":19.6,"fansT":-37.0,"b56":60,"totalMer":192,"gmvShare":49.9,"issue":"CVR偏低＋转化弱＋客单-16.5%","kpi":"CVR=0.81%，商品转化1.52%，客单¥479跌-16.5%","low":["CVR=0.81%","商品转化1.52%"],"yoy_bad":["客单价 -16.5%","GMV -9.3%"],"actions":["①家具店播定位：高客单难直接成交，引导预约到店","②客单跌-16.5%：引导商家展示高客单主力品"]},{"n":"十三组（图书）","type":"笔记主导","gmv":0.21,"gmv_y":-0.6,"exp":1.54,"expT":-12.9,"hexp":5504,"hexpT":-26.4,"avgdur":932,"avgdurT":18.3,"avgsess":14.8,"ctr":1.047,"cvr":1.445,"conv":3.166,"aov":145.2,"aovT":-8.3,"gpm":36.2,"huxi_ctr":0.537,"huxi_cvr":3.755,"zhibo_ctr":2.526,"zhibo_cvr":1.123,"fans":2.9,"fansT":-38.0,"b56":18,"totalMer":117,"gmvShare":11.2,"issue":"店播供给极不充分（开播仅16min），CTR弱","kpi":"CTR=1.05%，开播时长932s（约16min）","low":["CTR=1.05%","开播时长仅932s"],"yoy_bad":["曝光 -12.9%"],"actions":["①图书店播定位：笔记的辅助补充，重心在笔记端","②CTR=1.05%：封面突出'书单主题/知识点'"]},{"n":"十五组（酒旅）","type":"店播主导","gmv":0.21,"gmv_y":17.8,"exp":9.73,"expT":157.9,"hexp":17837,"hexpT":-19.2,"avgdur":1818,"avgdurT":219.0,"avgsess":15.0,"ctr":0.973,"cvr":1.616,"conv":3.558,"aov":680.2,"aovT":-67.5,"gpm":28.0,"huxi_ctr":0.311,"huxi_cvr":4.326,"zhibo_ctr":1.575,"zhibo_cvr":1.101,"fans":17.1,"fansT":42.4,"b56":41,"totalMer":122,"gmvShare":14.7,"issue":"CTR全行业最低＋客单暴跌-67.5%","kpi":"CTR=0.97%（最低），客单¥680跌-67.5%","low":["CTR=0.97%（最低）","呼吸灯CTR=0.31%（最低）"],"yoy_bad":["客单价 -67.5%"],"actions":["①CTR=0.97%全行业最低：重新设计封面（突出限时特价/目的地）","②客单价跌-67.5%最紧急：货盘干预回归高客单套餐"]},{"n":"八组（家电）","type":"混合","gmv":0.19,"gmv_y":25.7,"exp":1.43,"expT":15.3,"hexp":5009,"hexpT":-15.6,"avgdur":949,"avgdurT":36.7,"avgsess":17.2,"ctr":1.128,"cvr":0.938,"conv":2.485,"aov":1137.1,"aovT":24.7,"gpm":177.3,"huxi_ctr":0.535,"huxi_cvr":1.619,"zhibo_ctr":2.638,"zhibo_cvr":0.595,"fans":3.9,"fansT":-18.3,"b56":37,"totalMer":112,"gmvShare":19.8,"issue":"GPM最高但CVR/转化偏低（高客单品类特性）","kpi":"GPM=177.3（最高），GMV+25.7%","low":["CVR=0.94%","商品转化2.49%","单h曝光5009次"],"yoy_bad":[],"actions":["①GPM=177.3是宝贵资产：优先做大开播商家基数","②CVR偏低：家电需要'实测+对比+参数讲解'，至少5-8分钟讲品"]},{"n":"十一组（虚拟）","type":"笔记主导","gmv":0.11,"gmv_y":-4.5,"exp":3.85,"expT":40.5,"hexp":16050,"hexpT":-68.4,"avgdur":800,"avgdurT":344.1,"avgsess":7.5,"ctr":1.513,"cvr":1.663,"conv":6.594,"aov":67.1,"aovT":-36.9,"gpm":9.8,"huxi_ctr":0.491,"huxi_cvr":4.276,"zhibo_ctr":2.580,"zhibo_cvr":1.208,"fans":23.0,"fansT":68.8,"b56":19,"totalMer":89,"gmvShare":10.4,"issue":"供给激增+单h曝光暴跌-68.4%＋客单跌-36.9%","kpi":"开播时长+344%，单h曝光-68.4%，GPM=9.8（最低之一）","low":["GPM=9.8","客单¥67.1跌-36.9%","单h曝光-68.4%"],"yoy_bad":["单h曝光 -68.4%","客单价 -36.9%"],"actions":["①单h曝光跌-68.4%：收缩低质直播间，减量提质","②客单价跌-36.9%：引导主推高价值产品（年卡/高级会员）"]}];
 
-// ══════════════ 店播数据 ══════════════
-const LIVE_BASE = { avgdur:2094, avgsess:17.4, hexp:9711, ctr:1.6, cvr:1.6, conv:3.6, aov:168.6 };
-
-const liveData = [
-  {name:'九组（家用）',type:'混合',gmv:5.12,gmvT:-1.3,exp:17.80,expT:-11.3,hexp:17127,hexpT:-15.3,avgdur:3465,avgdurT:4.7,avgsess:17.9,avgsessT:-2.0,ctr:1.638,cvr:2.409,conv:4.216,aov:139.0,aovT:8.2,gpm:73.8,huxi_ctr:1.085,huxi_cvr:4.046,zhibo_ctr:3.423,zhibo_cvr:1.914,fans:93.9,fansT:-40.6,b56:98,totalMer:534,gmvShare:68.7,
-    context:'单h曝光高于基准，供给稳健。CTR/CVR/商品转化均高于基准。主要短板是客单¥139低于基准¥168.6。涨粉跌-40.6%需关注。',
-    actions:['①货盘升级：引入高客单SKU提升客单价','②涨粉跌-40.6%：优化开场钩子和互动引导','③呼吸灯CTR=1.08%偏低：优化封面图/标题']},
-  {name:'二组（亲子生活）',type:'混合',gmv:3.06,gmvT:-9.5,exp:13.26,expT:-10.3,hexp:10185,hexpT:-28.5,avgdur:4340,avgdurT:25.4,avgsess:20.3,avgsessT:1.5,ctr:1.778,cvr:2.165,conv:3.188,aov:128.6,aovT:11.9,gpm:58.7,huxi_ctr:1.230,huxi_cvr:3.833,zhibo_ctr:2.790,zhibo_cvr:2.277,fans:57.9,fansT:-42.5,b56:97,totalMer:532,gmvShare:63.3,
-    context:'单h曝光接近基准但趋势跌-28.5%。开播时长+25.4%（供给在投入），但曝光跌、涨粉跌-42.5%，"投入增加但产出下降"信号。商品转化3.19%低于基准。',
-    actions:['①商品转化3.19%：优化选品和讲品节奏','②单h曝光趋势跌-28.5%：向上确认平台分发权重变化','③涨粉跌-42.5%：增加互动环节（亲子话题/宝宝互动）']},
-  {name:'十一组（潮玩）',type:'店播主导',gmv:2.73,gmvT:-7.5,exp:17.80,expT:11.2,hexp:4014,hexpT:-1.0,avgdur:14781,avgdurT:12.3,avgsess:13.5,avgsessT:4.6,ctr:3.244,cvr:4.207,conv:8.993,aov:215.0,aovT:11.8,gpm:29.0,huxi_ctr:1.532,huxi_cvr:3.180,zhibo_ctr:3.968,zhibo_cvr:2.200,fans:98.2,fansT:-34.2,b56:92,totalMer:886,gmvShare:54.4,
-    context:'CTR/CVR/转化全行业最高——漏斗效率极强。但单h曝光=4014次全行业最低（严重稀释），开播间数12.3间/商家过多。GMV跌完全是分发侧问题。',
-    actions:['①流量分发是唯一核心问题：漏斗效率全行业最强，需向上确认潮玩品类分发是否被压缩','②开播间数优化：12.3间/商家过多导致单间曝光稀释，集中做主播间','③品均爆灯次63次偏低：增加商品展示机会']},
-  {name:'五组（休食）',type:'混合',gmv:2.35,gmvT:-1.9,exp:13.09,expT:-9.5,hexp:12928,hexpT:-25.3,avgdur:3375,avgdurT:21.1,avgsess:18.4,avgsessT:0.9,ctr:1.176,cvr:3.025,conv:5.839,aov:111.9,aovT:0.0,gpm:51.2,huxi_ctr:0.644,huxi_cvr:6.573,zhibo_ctr:2.890,zhibo_cvr:2.004,fans:34.4,fansT:3.7,b56:101,totalMer:516,gmvShare:54.0,
-    context:'CVR/转化高于基准，CTR=1.18%是显著弱点。关键：呼吸灯CVR=6.57%全行业最高（进来就买），但呼吸灯CTR=0.64%极低——门槛高、进来就买的模式，优化重点在入口CTR。',
-    actions:['①CTR是核心断点：优化直播间封面（食品类突出视觉诱惑感）','②呼吸灯CTR=0.64%极低但CVR=6.57%极高：重点提升呼吸灯点击率','③直播卡CTR=2.89%尚可，继续维持']},
-  {name:'一组（文玩玉翠）',type:'店播主导',gmv:2.29,gmvT:7.9,exp:8.58,expT:1.9,hexp:4893,hexpT:-2.3,avgdur:5842,avgdurT:4.3,avgsess:17.7,avgsessT:-14.6,ctr:3.975,cvr:1.030,conv:1.921,aov:1717.4,aovT:-3.7,gpm:60.9,huxi_ctr:2.172,huxi_cvr:1.175,zhibo_ctr:5.300,zhibo_cvr:0.936,fans:53.9,fansT:-34.4,b56:395,totalMer:847,gmvShare:45.4,
-    context:'GMV+7.9%正增长。CTR=3.98%极高，但CVR/转化低——文玩¥1717高客单非标品，进播用户需长时间品鉴才下单，CVR天然低是品类特性。',
-    actions:['①单h曝光偏低：GMV+7.9%但曝光仅+1.9%，争取更多分发资源','②接受CVR低：优化直播间成交节奏（鉴定环节/历史成交展示）','③场次跌-14.6%：保持高质量主播开播频率']},
-  {name:'六组（生鲜）',type:'混合',gmv:2.18,gmvT:-4.2,exp:9.70,expT:-3.7,hexp:14048,hexpT:-40.0,avgdur:2303,avgdurT:60.5,avgsess:14.6,avgsessT:-13.3,ctr:1.523,cvr:1.870,conv:4.784,aov:52.9,aovT:7.3,gpm:28.6,huxi_ctr:0.844,huxi_cvr:3.629,zhibo_ctr:3.641,zhibo_cvr:0.779,fans:95.8,fansT:85.9,b56:62,totalMer:284,gmvShare:48.3,
-    context:'涨粉+85.9%全行业第一，开播时长+60.5%（供给大增）。但单h曝光跌-40%——供给增加但分发没有跟上，算法稀释。',
-    actions:['①单h曝光跌-40%是根本问题：优化直播间质量分而非单纯增加时长','②直播卡CVR=0.79%极低：检查直播卡素材是否与直播间内容匹配','③涨粉+85.9%是优势：加强私域运营转化新粉']},
-  {name:'十二组（手工）',type:'店播主导',gmv:2.01,gmvT:-6.5,exp:8.35,expT:8.2,hexp:7641,hexpT:-1.1,avgdur:3644,avgdurT:9.4,avgsess:17.2,avgsessT:-5.0,ctr:3.641,cvr:2.221,conv:4.246,aov:236.5,aovT:1.0,gpm:44.1,huxi_ctr:1.814,huxi_cvr:2.989,zhibo_ctr:5.200,zhibo_cvr:2.125,fans:47.8,fansT:-13.9,b56:70,totalMer:562,gmvShare:68.0,
-    context:'CTR=3.64%极高，商品转化4.25%高于基准。单h曝光=7641次低于基准，是主要制约。直播卡CTR=5.2%极高，是优势入口。',
-    actions:['①单h曝光7641次：优质开播素材提升质量分','②CVR=2.22%：优化进播后商品讲解（制作过程+材质说明）','③直播卡CTR=5.2%极高：充分利用直播卡入口扩大触达']},
-  {name:'十组（家饰）',type:'店播主导',gmv:1.73,gmvT:-1.9,exp:8.50,expT:-25.4,hexp:11290,hexpT:-34.3,avgdur:2508,avgdurT:13.5,avgsess:17.4,avgsessT:-11.6,ctr:2.490,cvr:1.662,conv:3.455,aov:107.2,aovT:28.3,gpm:39.5,huxi_ctr:1.552,huxi_cvr:3.616,zhibo_ctr:4.250,zhibo_cvr:1.680,fans:49.0,fansT:-43.0,b56:30,totalMer:231,gmvShare:67.4,
-    context:'客单+28.3%是本期最大亮点，GMV-1.9%仅轻微下滑。CTR=2.49%高于基准，但单h曝光跌-34.3%，涨粉跌-43%。',
-    actions:['①单h曝光跌-34.3%：排查直播间分类/标签问题','②涨粉跌-43%：加大直播卡投入（zhibo_ctr=4.25%已高，可以放量）','③品均爆灯+29.9%是正向信号：继续维持']},
-  {name:'四组（大健康）',type:'混合',gmv:1.47,gmvT:-12.8,exp:5.33,expT:-32.5,hexp:9711,hexpT:-19.4,avgdur:1830,avgdurT:-16.2,avgsess:21.0,avgsessT:2.8,ctr:1.735,cvr:0.940,conv:2.734,aov:238.4,aovT:-10.2,gpm:62.0,huxi_ctr:0.382,huxi_cvr:3.961,zhibo_ctr:4.203,zhibo_cvr:0.237,fans:13.3,fansT:-36.8,b56:78,totalMer:288,gmvShare:54.6,
-    context:'CVR=0.94%明显低于基准，商品转化2.73%低于基准。呼吸灯CTR=0.38%全行业最低，直播卡CVR=0.24%也极低。双入口均弱，全链路承压。开播时长跌-16.2%（供给在收缩）。',
-    actions:['①CVR=0.94%最核心断点：更强信任建立（KOL背书/使用前后对比/成分讲解）','②呼吸灯CTR=0.38%全行业最低：重新设计封面（突出"功效结果"）','③开播时长跌-16.2%：激励商家恢复开播时长']},
-  {name:'十组（家纺）',type:'混合',gmv:1.38,gmvT:3.2,exp:6.76,expT:10.1,hexp:8802,hexpT:-18.3,avgdur:2562,avgdurT:34.8,avgsess:18.8,avgsessT:-4.0,ctr:2.063,cvr:2.201,conv:4.077,aov:168.6,aovT:-4.9,gpm:47.4,huxi_ctr:1.113,huxi_cvr:2.999,zhibo_ctr:3.465,zhibo_cvr:2.071,fans:35.4,fansT:-27.3,b56:63,totalMer:295,gmvShare:74.5,
-    context:'GMV+3.2%正增长，漏斗整体健康。CTR/CVR/转化均高于基准。开播时长+34.8%。单h曝光8802次略低于基准是唯一轻微短板。',
-    actions:['①关注单h曝光趋势（若继续下滑会影响GMV）','②涨粉跌-27.3%：加大直播卡触达（直播卡CTR/CVR均不错）','③维持高时长开播策略，争取算法权重']},
-  {name:'八组（消费电子）',type:'商卡主导',gmv:1.36,gmvT:-5.4,exp:11.21,expT:-13.9,hexp:17844,hexpT:-18.5,avgdur:2094,avgdurT:5.5,avgsess:19.2,avgsessT:6.4,ctr:1.293,cvr:1.255,conv:1.663,aov:112.5,aovT:8.9,gpm:23.1,huxi_ctr:0.850,huxi_cvr:2.587,zhibo_ctr:2.906,zhibo_cvr:0.529,fans:44.7,fansT:-29.7,b56:40,totalMer:268,gmvShare:33.0,
-    context:'商品转化=1.66%远低于3.6%基准——全行业漏斗中最明显的转化断点之一。CVR=1.26%也低于基准。直播卡CVR=0.53%极低，呼吸灯CVR=2.59%相对好。',
-    actions:['①商品转化1.66%核心战役：直播需要"实测+对比+参数讲解"，至少1-2分钟/件','②CVR=1.26%：增强进播后留存（提问互动/实时演示）','③直播卡CVR=0.53%极低：检查直播卡定向精准度']},
-  {name:'十三组（教育）',type:'混合',gmv:1.19,gmvT:45.1,exp:5.05,expT:-12.2,hexp:14789,hexpT:-6.6,avgdur:1138,avgdurT:-6.0,avgsess:12.3,avgsessT:-12.7,ctr:1.518,cvr:0.388,conv:5.378,aov:391.1,aovT:-53.0,gpm:55.4,huxi_ctr:0.445,huxi_cvr:1.997,zhibo_ctr:3.971,zhibo_cvr:0.227,fans:17.3,fansT:-16.1,b56:35,totalMer:187,gmvShare:62.1,
-    context:'GMV+45.1%全行业最高增长，但几乎全靠K播。店播CVR=0.39%全行业最低，直播卡CVR=0.23%也全行业最低。最大灾难：客单价跌-53%（¥391）。',
-    actions:['①客单价跌-53%最紧急：引入高客单课程/系列课调整价格结构','②CVR=0.39%极低：内容驱动成交（试听/学员展示/效果对比）','③品均爆灯-44.2%：优化直播节奏，更多样化的选品展示']},
-  {name:'三组（宠物）',type:'混合',gmv:0.96,gmvT:-1.6,exp:2.23,expT:35.8,hexp:5734,hexpT:-10.9,avgdur:1298,avgdurT:52.5,avgsess:15.3,avgsessT:0.0,ctr:2.022,cvr:1.130,conv:4.492,aov:109.5,aovT:2.2,gpm:55.8,huxi_ctr:0.796,huxi_cvr:3.747,zhibo_ctr:4.286,zhibo_cvr:0.739,fans:7.0,fansT:-18.1,b56:8,totalMer:120,gmvShare:82.1,
-    context:'店播是宠物行业绝对主导（占GMV 82.1%）。CTR=2.02%健康，商品转化4.49%高于基准，但CVR=1.13%低于基准。开播时长+52.5%但曝光没同步增加（算法稀释）。',
-    actions:['①CVR=1.13%：优化直播间开场（萌宠出镜/互动/即时福利）增强首几秒留存','②单h曝光偏低+开播时长+52%：优化互动指标（评论/点赞率）争取算法权重','③直播卡CVR=0.74%：定向更精准（有宠物用户画像）']},
-  {name:'十四组（二奢）',type:'店播主导',gmv:0.87,gmvT:-9.3,exp:2.66,expT:-14.5,hexp:4317,hexpT:-19.5,avgdur:2055,avgdurT:6.2,avgsess:18.4,avgsessT:4.4,ctr:2.847,cvr:0.136,conv:0.158,aov:4891.0,aovT:-11.8,gpm:10.4,huxi_ctr:2.202,huxi_cvr:0.171,zhibo_ctr:3.953,zhibo_cvr:0.084,fans:9.4,fansT:-39.1,b56:39,totalMer:227,gmvShare:72.3,
-    context:'CTR=2.85%高于基准，但CVR=0.14%全行业最低，商品转化0.16%几乎为零——¥4891超高客单二奢在直播间无法即时成交。单h曝光=4317次偏低，涨粉跌-39.1%。',
-    actions:['①接受CVR/转化极低是品类特性：直播间作为"品鉴展示"，引导至1对1私域成交','②单h曝光=4317次：差异化内容（鉴定现场/海外溯源/真假对比）获取算法分发','③GPM=10.4极低：重新评估直播间资源投入ROI']},
-  {name:'七组（家具）',type:'K播主导',gmv:0.83,gmvT:-9.3,exp:4.02,expT:-20.0,hexp:9027,hexpT:-15.0,avgdur:1483,avgdurT:-5.9,avgsess:17.7,avgsessT:-5.1,ctr:1.526,cvr:0.811,conv:1.520,aov:479.1,aovT:-16.5,gpm:38.4,huxi_ctr:0.918,huxi_cvr:2.282,zhibo_ctr:3.248,zhibo_cvr:0.370,fans:19.6,fansT:-37.0,b56:60,totalMer:192,gmvShare:49.9,
-    context:'CVR=0.81%低于基准，商品转化1.52%低于基准。家具¥479高客单直播间转化天然困难。开播时长和场次均在下滑（商家在退出），客单跌-16.5%。',
-    actions:['①家具店播定位：高客单难靠店播直接成交，直播间应以设计方案展示为内容，引导预约到店','②客单跌-16.5%：引导商家在直播间展示高客单主力品','③开播供给在萎缩：评估是否需要激励政策']},
-  {name:'十三组（图书）',type:'笔记主导',gmv:0.21,gmvT:-0.6,exp:1.54,expT:-12.9,hexp:5504,hexpT:-26.4,avgdur:932,avgdurT:18.3,avgsess:14.8,avgsessT:11.3,ctr:1.047,cvr:1.445,conv:3.166,aov:145.2,aovT:-8.3,gpm:36.2,huxi_ctr:0.537,huxi_cvr:3.755,zhibo_ctr:2.526,zhibo_cvr:1.123,fans:2.9,fansT:-38.0,b56:18,totalMer:117,gmvShare:11.2,
-    context:'图书是笔记主导行业，店播占GMV仅11.2%。CTR=1.05%低于基准，开播时长仅932s（不到16分钟，供给极不充分）。',
-    actions:['①图书店播定位：笔记的辅助补充，聚焦书单推荐/作者直播等高价值内容形式','②CTR=1.05%：封面突出"书单主题/知识点"而非书籍封面图','③重心放在笔记端（图书笔记占GMV 52.5%）']},
-  {name:'十五组（酒旅）',type:'店播主导',gmv:0.21,gmvT:17.8,exp:9.73,expT:157.9,hexp:17837,hexpT:-19.2,avgdur:1818,avgdurT:219.0,avgsess:15.0,avgsessT:-2.2,ctr:0.973,cvr:1.616,conv:3.558,aov:680.2,aovT:-67.5,gpm:28.0,huxi_ctr:0.311,huxi_cvr:4.326,zhibo_ctr:1.575,zhibo_cvr:1.101,fans:17.1,fansT:42.4,b56:41,totalMer:122,gmvShare:14.7,
-    context:'GMV+17.8%正增长，靠开播时长+219%驱动曝光爆增+157.9%。但CTR=0.97%全行业最低，大量曝光没有转化为点击。最大灾难：客单价跌-67.5%（¥680），货盘向低价位移。',
-    actions:['①CTR=0.97%全行业最低：重新设计封面（突出"限时特价/目的地/出行场景"）','②客单价跌-67.5%最紧急：货盘干预，引导商家回归高客单套餐','③呼吸灯CTR=0.31%全行业最低：把资源集中到直播卡（CVR=1.1%相对更好）']},
-  {name:'八组（家电）',type:'混合',gmv:0.19,gmvT:25.7,exp:1.43,expT:15.3,hexp:5009,hexpT:-15.6,avgdur:949,avgdurT:36.7,avgsess:17.2,avgsessT:0.0,ctr:1.128,cvr:0.938,conv:2.485,aov:1137.1,aovT:24.7,gpm:177.3,huxi_ctr:0.535,huxi_cvr:1.619,zhibo_ctr:2.638,zhibo_cvr:0.595,fans:3.9,fansT:-18.3,b56:37,totalMer:112,gmvShare:19.8,
-    context:'GMV+25.7%高增长，GPM=177.3全行业最高（客单¥1137.1且+24.7%）。CVR=0.94%和转化=2.49%均低于基准——家电¥1137超高客单直播间决策困难，是品类特性。整体体量小（112家商家）。',
-    actions:['①GPM=177.3是宝贵资产：优先做大开播商家基数（当前仅112家）','②CVR偏低是品类特性：需要实测+拆箱+对比演示，至少5-8分钟讲品','③直播卡CTR=2.64%：继续用直播卡引入精准家电买家']},
-  {name:'十一组（虚拟）',type:'笔记主导',gmv:0.11,gmvT:-4.5,exp:3.85,expT:40.5,hexp:16050,hexpT:-68.4,avgdur:800,avgdurT:344.1,avgsess:7.5,avgsessT:54.3,ctr:1.513,cvr:1.663,conv:6.594,aov:67.1,aovT:-36.9,gpm:9.8,huxi_ctr:0.491,huxi_cvr:4.276,zhibo_ctr:2.580,zhibo_cvr:1.208,fans:23.0,fansT:68.8,b56:19,totalMer:89,gmvShare:10.4,
-    context:'开播时长+344%但单h曝光跌-68.4%——供给激增+算法严重稀释。商品转化6.59%全行业第二高，但客单¥67.1跌-36.9%，GPM=9.8全行业最低。',
-    actions:['①单h曝光跌-68.4%：虚拟直播供给严重过剩，收缩低质直播间','②客单价跌-36.9%：引导主推高价值产品（年卡/高级会员/课程包）','③评估店播ROI：资源应向笔记端倾斜']},
-];
-
-// ══════════════ 工具函数 ══════════════
-function getBarCls(v,b){if(!b)return'ok';return v>=b?'ok':v>=b*.7?'warn':'bad'}
-function getW(v,b,cap){const x=cap?Math.min(v,cap):v;return Math.min(95,Math.max(4,(b?x/b:0.5)*60))+'%'}
-
-function fRow(name,val,base,display,baseDsp,diff,diffDsp,cls,w,supply){
-  return `<div class="funnel-row">
-    <div class="funnel-left"><div class="funnel-name-label">${name}</div></div>
-    <div class="funnel-center"><div class="funnel-bar-bg">
-      <div class="funnel-fill ${supply?'supply':cls}" style="width:${w}"></div>
-      <div class="funnel-base-line" style="left:60%"></div>
-      <span class="funnel-val-overlay">${display}</span>
-    </div></div>
-    <div class="funnel-right">
-      <div class="funnel-compare">基准 ${baseDsp}</div>
-      <div class="funnel-yoy ${diff>=0?'up':'down'}">${diff>=0?'+':''}${diffDsp}</div>
-    </div></div>`;
+// ═══ 工具函数 ═══
+const CARRIER_CLS = {'店播主导':'cb-b','K播主导':'cb-p','商卡主导':'cb-g','笔记主导':'cb-o','混合':'cb-gr'};
+function bc(v,b){if(!b)return'ok';if(v>=b)return'ok';if(v>=b*.7)return'warn';return'bad';}
+function bw(v,b,cap){const vv=cap?Math.min(v,cap):v;const r=b?vv/b:0.5;return Math.min(95,Math.max(4,r*60))+'%';}
+function frow(lbl,val,base,dispV,dispB,diffStr,cls,width,isSup){
+  const cc=isSup?'sup':cls;
+  return `<div class="funnel-row"><div class="fl">${lbl}</div><div class="fc"><div class="fb"><div class="ff ${cc}" style="width:${width}"></div><div class="fbl" style="left:60%"></div><span class="fvo">${dispV}</span></div></div><div class="fr"><div class="fr-base">基准 ${dispB}</div><div class="fr-val ${diffStr.startsWith('-')||diffStr.startsWith('▼')?'dn':'up'}">${diffStr}</div></div></div>`;
 }
-function conn(label){return `<div class="funnel-connector"><div class="fcl"></div><div class="fcn">→ ${label}</div><div class="fcl"></div></div>`}
 
-// ══════════════ 笔记卡片 ══════════════
-function noteGetSev(d){
-  let n=0;
-  const npm=d.totalMer>0?Math.round(d.pub*10000/d.totalMer):0;
-  if(npm>NOTE_BASE.notePerMer*3)n++;
-  if(d.pv<NOTE_BASE.pv*.8)n++;
-  if(d.ctr1<NOTE_BASE.ctr1*.9)n++;
-  if(d.ctr2<NOTE_BASE.ctr2*.85)n++;
-  if(d.cvr<NOTE_BASE.cvr*.7)n++;
-  if(d.aov<NOTE_BASE.aov*.7)n++;
-  return Math.min(3,n);
-}
-function noteTags(d){
-  const t=[];
-  const npm=d.totalMer>0?Math.round(d.pub*10000/d.totalMer):0;
-  if(npm>NOTE_BASE.notePerMer*4)t.push('<span class="tag tag-orange">⚡ 供给严重内卷</span>');
-  else if(npm>NOTE_BASE.notePerMer*1.8)t.push('<span class="tag tag-yellow">⚡ 供给内卷</span>');
-  if(d.pv<40)t.push('<span class="tag tag-blue">🔵 流量严重稀释</span>');
-  else if(d.pv<NOTE_BASE.pv*.8)t.push('<span class="tag tag-blue">🔵 流量稀释</span>');
-  if(d.ctr1<12)t.push('<span class="tag tag-yellow">🟡 CTR1内容吸引力弱</span>');
-  else if(d.ctr1<NOTE_BASE.ctr1*.9)t.push('<span class="tag tag-yellow">🟡 CTR1略弱</span>');
-  if(d.ctr2<7)t.push('<span class="tag tag-orange">🟠 CTR2商卡引导严重弱</span>');
-  else if(d.ctr2<NOTE_BASE.ctr2*.85)t.push('<span class="tag tag-orange">🟠 CTR2商卡引导弱</span>');
-  if(d.cvr<2)t.push('<span class="tag tag-red">🔴 CVR极低（品类特性）</span>');
-  else if(d.cvr<NOTE_BASE.cvr*.7)t.push('<span class="tag tag-red">🔴 CVR转化弱</span>');
-  if(d.aov<NOTE_BASE.aov*.7)t.push('<span class="tag tag-purple">💜 客单价偏低</span>');
-  if(d.aovT<-20)t.push('<span class="tag tag-purple">💜 客单价暴跌</span>');
-  if(d.aovT>20)t.push('<span class="tag tag-green">💚 客单价大幅提升</span>');
-  if(!t.length)t.push('<span class="tag tag-green">✅ 漏斗整体健康</span>');
-  return t.join('');
-}
-const CBCLS={店播主导:'cb-blue',K播主导:'cb-purple',商卡主导:'cb-green',笔记主导:'cb-orange',混合:'cb-gray'};
+// ═══ 笔记漏斗卡片 ═══
+const NB={pv:62,notePerMer:373,ctr1:15.06,ctr2:9.13,cvr:6.53,aov:50.9,gpm:38.2};
+function nSev(d){let n=0;if(d.pavg<NB.pv*.8)n++;if(d.ctr1<NB.ctr1*.9)n++;if(d.ctr2<NB.ctr2*.85)n++;if(d.cvr<NB.cvr*.7)n++;if(d.aovT<-15)n++;return Math.min(3,n);}
+function nTags(d){const t=[];
+  if(d.pavg<40)t.push('<span class="tag tr">🔵 流量严重稀释</span>');
+  else if(d.pavg<NB.pv*.8)t.push('<span class="tag tb">🔵 流量稀释</span>');
+  if(d.ctr1<12)t.push('<span class="tag ty">🟡 CTR1内容吸引力弱</span>');
+  else if(d.ctr1<NB.ctr1*.9)t.push('<span class="tag ty">🟡 CTR1略弱</span>');
+  if(d.ctr2<7)t.push('<span class="tag to">🟠 CTR2商卡严重弱</span>');
+  else if(d.ctr2<NB.ctr2*.85)t.push('<span class="tag to">🟠 CTR2偏弱</span>');
+  if(d.cvr<2)t.push('<span class="tag tr">🔴 CVR极低(品类特性)</span>');
+  else if(d.cvr<NB.cvr*.7)t.push('<span class="tag tr">🔴 CVR弱</span>');
+  if(d.aovT<-30)t.push('<span class="tag tp">💜 客单暴跌</span>');
+  else if(d.aovT<-10)t.push('<span class="tag tp">💜 客单下滑</span>');
+  if(d.gmv_y<-15)t.push('<span class="tag tr">📉 GMV YoY严重跌</span>');
+  if(d.aovT>15)t.push('<span class="tag tg">💚 客单大幅提升</span>');
+  if(!t.length)t.push('<span class="tag tg">✅ 漏斗健康</span>');
+  return t.join('');}
 
-function buildNoteCard(d,rank){
-  const sev=noteGetSev(d);
-  const npm=d.totalMer>0?Math.round(d.pub*10000/d.totalMer):0;
-  const sevTxt=['✅ 全链路健康','🟡 轻微问题','🟠 中等问题','🔴 严重断点'][sev];
-  const sevCls=['sev-label-0','sev-label-1','sev-label-2','sev-label-3'][sev];
-  return `<div class="diag-card sev-${sev}" data-gmv="${d.gmv}" data-sev="${sev}" data-pv="${d.pv}">
+function buildNCard(d,rank){
+  const sev=nSev(d);const scls=['sl0','sl1','sl2','sl3'][sev];const stxt=['✅ 健康','🟡 轻微','🟠 中等','🔴 严重'][sev];
+  const npm=Math.round(d.pub*10000/d.totalMer);
+  const aovBarCls=d.aov>=NB.aov?'ok':d.aov>=NB.aov*.7?'warn':'bad';
+  const aovW=bw(d.aov,NB.aov,500);
+  const lowPills=(d.low||[]).map(x=>`<span class="diag-pill low">${x}</span>`).join('');
+  const yoyPills=(d.yoy_bad||[]).map(x=>`<span class="diag-pill yoy">${x}</span>`).join('');
+  const actionHtml=(d.actions||[]).map(a=>`<div style="margin-bottom:3px">${a}</div>`).join('');
+  const hasYoy=yoyPills.length>0;
+
+  return `<div class="diag-card sev-${sev}" data-gmv="${d.gmv}" data-sev="${sev}" data-pv="${d.pavg}">
   <div class="card-header">
     <div class="card-rank">#${rank}</div>
     <div class="card-name-block">
-      <div class="card-name">${d.name}</div>
+      <div class="card-name">${d.n}</div>
       <div class="card-meta">
-        <span><span class="carrier-badge ${CBCLS[d.type]||'cb-gray'}">${d.type}</span></span>
-        <span>笔记GMV <b>${d.gmv}亿</b> <span class="${d.gmvT>=0?'up':'down'}">${d.gmvT>=0?'+':''}${d.gmvT}%</span></span>
-        <span>占行业 <b>${d.gmvShare}%</b></span>
-        <span>发布 <b>${d.pub}万条</b> <span class="${d.pubT>=0?'up':'down'}">${d.pubT>=0?'+':''}${d.pubT}%</span></span>
-        <span>总曝光 <b>${d.expo}亿</b></span>
-        <span>商家 <b>${d.totalMer}</b>家</span>
-        <span>B5/6 <b>${d.b56}</b>家</span>
+        <span><span class="${CARRIER_CLS[d.type]||'cb-gr'}">${d.type}</span></span>
+        <span>笔记GMV <b>${d.gmv}亿</b> <span class="${d.gmv_y>=0?'up':'dn'}">YoY${d.gmv_y>=0?'+':''}${d.gmv_y}%</span></span>
+        <span>发布量 <b>${d.pub}万条</b></span>
+        <span>商家 <b>${d.totalMer}</b>家 · B5/6 <b>${d.b56}</b>家</span>
+        <span>笔记/商家 <b>${npm}条</b></span>
       </div>
     </div>
-    <div class="card-severity"><span class="severity-label ${sevCls}">${sevTxt}</span></div>
+    <div class="card-severity"><span class="severity-label ${scls}">${stxt}</span></div>
   </div>
   <div class="card-body">
     <div class="funnel-visual">
-      <div style="font-size:10px;color:#94a3b8;margin-bottom:2px;padding-left:113px">← 不足 ｜ <span style="color:#6b7280">▏基准线</span> ｜ 达标 →</div>
-      ${fRow('笔记/商家',npm,NOTE_BASE.notePerMer,npm.toLocaleString()+'条',NOTE_BASE.notePerMer+'条',npm-NOTE_BASE.notePerMer,(npm-NOTE_BASE.notePerMer>0?'+':'')+Math.round(npm-NOTE_BASE.notePerMer)+'条',getBarCls(npm,NOTE_BASE.notePerMer*3<npm?npm:NOTE_BASE.notePerMer),getW(Math.min(npm,NOTE_BASE.notePerMer*2),NOTE_BASE.notePerMer,NOTE_BASE.notePerMer*2),'indigo',true)}
-      ${conn('篇均曝光（分发效率）')}
-      ${fRow('篇均曝光',d.pv,NOTE_BASE.pv,d.pv+'次',NOTE_BASE.pv+'次',d.pvT,d.pvT+'%',getBarCls(d.pv,NOTE_BASE.pv),getW(d.pv,NOTE_BASE.pv),false)}
-      ${conn('CTR1 阅读率')}
-      ${fRow('CTR1 阅读率',d.ctr1,NOTE_BASE.ctr1,d.ctr1.toFixed(2)+'%',NOTE_BASE.ctr1+'%',d.ctr1-NOTE_BASE.ctr1,(d.ctr1-NOTE_BASE.ctr1>=0?'+':'')+((d.ctr1-NOTE_BASE.ctr1).toFixed(2))+'%',getBarCls(d.ctr1,NOTE_BASE.ctr1),getW(d.ctr1,NOTE_BASE.ctr1),false)}
-      ${conn('CTR2 商卡点击')}
-      ${fRow('CTR2 商卡点击',d.ctr2,NOTE_BASE.ctr2,d.ctr2.toFixed(2)+'%',NOTE_BASE.ctr2+'%',d.ctr2-NOTE_BASE.ctr2,(d.ctr2-NOTE_BASE.ctr2>=0?'+':'')+((d.ctr2-NOTE_BASE.ctr2).toFixed(2))+'%',getBarCls(d.ctr2,NOTE_BASE.ctr2),getW(d.ctr2,NOTE_BASE.ctr2),false)}
-      ${conn('CVR 转化率')}
-      ${fRow('CVR 转化率',d.cvr,NOTE_BASE.cvr,d.cvr.toFixed(3)+'%',NOTE_BASE.cvr+'%',d.cvr-NOTE_BASE.cvr,(d.cvr-NOTE_BASE.cvr>=0?'+':'')+((d.cvr-NOTE_BASE.cvr).toFixed(3))+'%',getBarCls(d.cvr,NOTE_BASE.cvr),getW(d.cvr,NOTE_BASE.cvr),false)}
-      ${conn('客单价（vs中位数¥50.9）')}
-      ${fRow('客单价',d.aov,NOTE_BASE.aov,'¥'+d.aov,'¥'+NOTE_BASE.aov,d.aov-NOTE_BASE.aov,(d.aov-NOTE_BASE.aov>=0?'+¥':'-¥')+Math.abs(Math.round(d.aov-NOTE_BASE.aov)),getBarCls(d.aov,NOTE_BASE.aov),getW(d.aov,NOTE_BASE.aov,500),false)}
-      <div class="gpm-bar">
+      <div style="font-size:10px;color:#94a3b8;margin-bottom:2px;padding-left:108px">← 不足 ｜ ▌基准60% ｜ 达标 →</div>
+      ${frow('笔记/商家',npm,NB.notePerMer,npm+'条',NB.notePerMer+'条',npm>=NB.notePerMer?'+':''+Math.round(npm-NB.notePerMer)+'条',bc(npm,NB.notePerMer),bw(npm,NB.notePerMer,2000),true)}
+      <div class="conn"><div class="cl"></div><div class="cn">→ 篇均曝光</div><div class="cl"></div></div>
+      ${frow('篇均曝光',d.pavg,NB.pv,Math.round(d.pavg)+'次',NB.pv+'次',(d.pavg-NB.pv>=0?'+':'')+Math.round(d.pavg-NB.pv)+'次',bc(d.pavg,NB.pv),bw(d.pavg,NB.pv,300),false)}
+      <div class="conn"><div class="cl"></div><div class="cn">→ CTR1 阅读率</div><div class="cl"></div></div>
+      ${frow('CTR1 阅读率',d.ctr1,NB.ctr1,d.ctr1.toFixed(2)+'%',NB.ctr1+'%',(d.ctr1-NB.ctr1>=0?'+':'')+((d.ctr1-NB.ctr1).toFixed(2))+'%',bc(d.ctr1,NB.ctr1),bw(d.ctr1,NB.ctr1),false)}
+      <div class="conn"><div class="cl"></div><div class="cn">→ CTR2 商卡点击</div><div class="cl"></div></div>
+      ${frow('CTR2 商卡',d.ctr2,NB.ctr2,d.ctr2.toFixed(2)+'%',NB.ctr2+'%',(d.ctr2-NB.ctr2>=0?'+':'')+((d.ctr2-NB.ctr2).toFixed(2))+'%',bc(d.ctr2,NB.ctr2),bw(d.ctr2,NB.ctr2),false)}
+      <div class="conn"><div class="cl"></div><div class="cn">→ CVR 转化率</div><div class="cl"></div></div>
+      ${frow('CVR 转化率',d.cvr,NB.cvr,d.cvr.toFixed(3)+'%',NB.cvr+'%',(d.cvr-NB.cvr>=0?'+':'')+((d.cvr-NB.cvr).toFixed(3))+'%',bc(d.cvr,NB.cvr),bw(d.cvr,NB.cvr),false)}
+      <div class="conn"><div class="cl"></div><div class="cn">→ 客单价（基准¥${NB.aov}中位数）</div><div class="cl"></div></div>
+      ${frow('客单价',d.aov,NB.aov,'¥'+d.aov,'¥'+NB.aov,(d.aov-NB.aov>=0?'▲+':'▼')+Math.round(Math.abs(d.aov-NB.aov)),aovBarCls,aovW,false)}
+      <div class="gbar">
         <span style="font-size:11px;color:#6b7280">GPM：</span>
-        <span style="font-size:15px;font-weight:700;color:${d.gpm>=NOTE_BASE.gpm?'#16a34a':'#e8372c'}">${d.gpm}</span>
-        <span style="font-size:10px;color:#6b7280">/ 基准${NOTE_BASE.gpm}</span>
-        <div style="flex:1;height:7px;background:#f1f5f9;border-radius:3px;overflow:hidden;margin-left:6px">
-          <div style="width:${Math.min(100,d.gpm/NOTE_BASE.gpm*60+5)}%;height:100%;background:${d.gpm>=NOTE_BASE.gpm?'#16a34a':'#f97316'};border-radius:3px"></div>
+        <span style="font-size:15px;font-weight:700;color:${d.gpm>=NB.gpm?'#16a34a':'#e8372c'}">${d.gpm}</span>
+        <span style="font-size:10px;color:#6b7280">元 / 基准${NB.gpm}</span>
+        <div style="flex:1;height:7px;background:#f1f5f9;border-radius:4px;overflow:hidden;margin-left:6px">
+          <div style="width:${Math.min(100,d.gpm/NB.gpm*60+10)}%;height:100%;background:${d.gpm>=NB.gpm?'#16a34a':'#f97316'};border-radius:4px"></div>
         </div>
       </div>
     </div>
     <div class="right-panel">
-      <div class="tags-row">${noteTags(d)}</div>
-      <div class="conclusion-box"><div class="conclusion-title">🔍 问题诊断</div><div class="conclusion-text">${d.context}</div></div>
-      <div class="conclusion-box" style="border-left-color:#16a34a"><div class="conclusion-title" style="color:#16a34a">▶ 行动建议</div><div class="conclusion-text">${d.actions.map(a=>'<div style="margin-bottom:3px">'+a+'</div>').join('')}</div></div>
+      <div class="tags-row">${nTags(d)}</div>
+      <div class="diag-box">
+        <div class="diag-title">📋 问题诊断</div>
+        <div class="diag-issue">${d.issue||''}</div>
+        <div class="diag-kpi">${d.kpi||''}</div>
+        <div class="diag-rows">
+          ${lowPills?`<div class="diag-row low-row"><div class="diag-row-label">🟠 绝对值偏低</div><div class="diag-pills">${lowPills}</div></div>`:''}
+          ${hasYoy?`<div class="diag-row yoy-row"><div class="diag-row-label">📉 YoY跌幅严重</div><div class="diag-pills">${yoyPills}</div></div>`:''}
+          ${(!lowPills&&!hasYoy)?'<div style="font-size:11px;color:#16a34a;padding:4px 0">✅ 无显著异常，重点是维持当前趋势</div>':''}
+        </div>
+      </div>
+      <div class="action-box">
+        <div class="action-title">▶ 行动建议</div>
+        <div class="action-text">${actionHtml}</div>
+      </div>
     </div>
-  </div></div>`;
-}
+  </div>
+</div>`;}
 
-// ══════════════ 店播卡片 ══════════════
-function liveGetSev(d){
-  let n=0;
-  if(d.hexp<LIVE_BASE.hexp*.8)n++;
-  if(d.ctr<LIVE_BASE.ctr*.85)n++;
-  if(d.cvr<LIVE_BASE.cvr*.7)n++;
-  if(d.conv<LIVE_BASE.conv*.7)n++;
-  if(d.aov<LIVE_BASE.aov*.7)n++;
-  return Math.min(3,n);
-}
-function liveTags(d){
-  const t=[];
-  if(d.hexp<5000)t.push('<span class="tag tag-blue">🔵 流量严重稀释</span>');
-  else if(d.hexp<LIVE_BASE.hexp*.8)t.push('<span class="tag tag-blue">🔵 流量稀释</span>');
-  if(d.ctr<1.2)t.push('<span class="tag tag-yellow">🟡 CTR封面点击弱</span>');
-  else if(d.ctr<LIVE_BASE.ctr*.85)t.push('<span class="tag tag-yellow">🟡 CTR略弱</span>');
-  if(d.cvr<0.5)t.push('<span class="tag tag-orange">🟠 CVR进播率极低（品类特性）</span>');
-  else if(d.cvr<LIVE_BASE.cvr*.7)t.push('<span class="tag tag-orange">🟠 CVR进播率弱</span>');
-  if(d.conv<1.0)t.push('<span class="tag tag-red">🔴 商品转化极低</span>');
-  else if(d.conv<LIVE_BASE.conv*.7)t.push('<span class="tag tag-red">🔴 商品转化弱</span>');
-  if(d.aov<LIVE_BASE.aov*.5)t.push('<span class="tag tag-purple">💜 客单价偏低</span>');
-  if(d.aovT<-30)t.push('<span class="tag tag-purple">💜 客单价暴跌</span>');
-  else if(d.aovT<-10)t.push('<span class="tag tag-purple">💜 客单价下滑</span>');
-  if(d.avgdurT<-10)t.push('<span class="tag tag-yellow">⚠️ 开播时长萎缩</span>');
-  if(d.aovT>20)t.push('<span class="tag tag-green">💚 客单价大幅提升</span>');
-  if(!t.length)t.push('<span class="tag tag-green">✅ 漏斗整体健康</span>');
-  return t.join('');
-}
-function buildLiveCard(d,rank){
-  const sev=liveGetSev(d);
-  const sevTxt=['✅ 全链路健康','🟡 轻微问题','🟠 中等问题','🔴 严重断点'][sev];
-  const sevCls=['sev-label-0','sev-label-1','sev-label-2','sev-label-3'][sev];
-  const hcls=(v,lo,hi)=>v>=hi?'#16a34a':v>=lo?'#eab308':'#e8372c';
+// ═══ 店播漏斗卡片 ═══
+const LB={hexp:9711,ctr:1.6,cvr:1.6,conv:3.6,aov:168.6,gpm:44.1,avgdur:2094,avgsess:17.4};
+function lSev(d){let n=0;if(d.hexp<LB.hexp*.8)n++;if(d.ctr<LB.ctr*.85)n++;if(d.cvr<LB.cvr*.7)n++;if(d.conv<LB.conv*.7)n++;if(d.aovT<-15)n++;return Math.min(3,n);}
+function lTags(d){const t=[];
+  if(d.hexp<5000)t.push('<span class="tag tr">🔵 流量严重稀释</span>');
+  else if(d.hexp<LB.hexp*.8)t.push('<span class="tag tb">🔵 流量稀释</span>');
+  if(d.ctr<1.2)t.push('<span class="tag ty">🟡 CTR封面点击弱</span>');
+  else if(d.ctr<LB.ctr*.85)t.push('<span class="tag ty">🟡 CTR略弱</span>');
+  if(d.cvr<0.5)t.push('<span class="tag to">🟠 CVR进播极低(品类特性)</span>');
+  else if(d.cvr<LB.cvr*.7)t.push('<span class="tag to">🟠 CVR进播弱</span>');
+  if(d.conv<1.0)t.push('<span class="tag tr">🔴 商品转化极低</span>');
+  else if(d.conv<LB.conv*.7)t.push('<span class="tag tr">🔴 商品转化弱</span>');
+  if(d.aovT<-30)t.push('<span class="tag tp">💜 客单暴跌</span>');
+  else if(d.aovT<-10)t.push('<span class="tag tp">💜 客单下滑</span>');
+  if(d.aov<LB.aov*.5)t.push('<span class="tag tp">💜 客单偏低</span>');
+  if(d.gmv_y>20)t.push('<span class="tag tg">🚀 GMV高增长</span>');
+  if(!t.length)t.push('<span class="tag tg">✅ 漏斗健康</span>');
+  return t.join('');}
+
+function buildLCard(d,rank){
+  const sev=lSev(d);const scls=['sl0','sl1','sl2','sl3'][sev];const stxt=['✅ 健康','🟡 轻微','🟠 中等','🔴 严重'][sev];
+  const lowPills=(d.low||[]).map(x=>`<span class="diag-pill low">${x}</span>`).join('');
+  const yoyPills=(d.yoy_bad||[]).map(x=>`<span class="diag-pill yoy">${x}</span>`).join('');
+  const actionHtml=(d.actions||[]).map(a=>`<div style="margin-bottom:3px">${a}</div>`).join('');
+  const hasYoy=yoyPills.length>0;
+  const hxCls=c=>c>=(c>1?1:0.7)?'#16a34a':c>=0.4?'#eab308':'#e8372c';
+  const zbCls=c=>c>=2?'#16a34a':c>=1.2?'#eab308':'#e8372c';
+
   return `<div class="diag-card sev-${sev}" data-gmv="${d.gmv}" data-sev="${sev}" data-hexp="${d.hexp}">
   <div class="card-header">
     <div class="card-rank">#${rank}</div>
     <div class="card-name-block">
-      <div class="card-name">${d.name}</div>
+      <div class="card-name">${d.n}</div>
       <div class="card-meta">
-        <span><span class="carrier-badge ${CBCLS[d.type]||'cb-gray'}">${d.type}</span></span>
-        <span>店播GMV <b>${d.gmv}亿</b> <span class="${d.gmvT>=0?'up':'down'}">${d.gmvT>=0?'+':''}${d.gmvT}%</span></span>
-        <span>占行业 <b>${d.gmvShare}%</b></span>
-        <span>总曝光 <b>${d.exp}亿</b> <span class="${d.expT>=0?'up':'down'}">${d.expT>=0?'+':''}${d.expT}%</span></span>
-        <span>涨粉 <b>${d.fans}万</b> <span class="${d.fansT>=0?'up':'down'}">${d.fansT>=0?'+':''}${d.fansT}%</span></span>
+        <span><span class="${CARRIER_CLS[d.type]||'cb-gr'}">${d.type}</span></span>
+        <span>店播GMV <b>${d.gmv}亿</b> <span class="${d.gmv_y>=0?'up':'dn'}">${d.gmv_y>=0?'+':''}${d.gmv_y}%</span></span>
+        <span>占行业GMV <b>${d.gmvShare}%</b></span>
+        <span>总曝光 <b>${d.exp}亿</b> <span class="${d.expT>=0?'up':'dn'}">${d.expT>=0?'+':''}${d.expT}%</span></span>
         <span>商家 <b>${d.totalMer}</b>家</span>
+        <span>涨粉 <b>${d.fans}万</b> <span class="${d.fansT>=0?'up':'dn'}">${d.fansT>=0?'+':''}${d.fansT}%</span></span>
       </div>
     </div>
-    <div class="card-severity"><span class="severity-label ${sevCls}">${sevTxt}</span></div>
+    <div class="card-severity"><span class="severity-label ${scls}">${stxt}</span></div>
   </div>
   <div class="card-body">
     <div class="funnel-visual">
-      <div style="font-size:10px;color:#94a3b8;margin-bottom:2px;padding-left:113px">← 不足 ｜ <span style="color:#6b7280">▏基准线</span> ｜ 达标 →</div>
-      <div class="section-label">📦 供给层</div>
-      ${fRow('店均时长',d.avgdur,LIVE_BASE.avgdur,Math.round(d.avgdur/60)+'min',Math.round(LIVE_BASE.avgdur/60)+'min',d.avgdurT,d.avgdurT.toFixed(1)+'%','supply',getW(Math.min(d.avgdur,LIVE_BASE.avgdur*3),LIVE_BASE.avgdur,LIVE_BASE.avgdur*3),true)}
-      ${fRow('开播场次',d.avgsess,LIVE_BASE.avgsess,d.avgsess.toFixed(1)+'场',LIVE_BASE.avgsess+'场',d.avgsess-LIVE_BASE.avgsess,(d.avgsess-LIVE_BASE.avgsess>=0?'+':'')+((d.avgsess-LIVE_BASE.avgsess).toFixed(1))+'场','supply',getW(d.avgsess,LIVE_BASE.avgsess),true)}
-      ${conn('单h曝光（流量效率）')}
-      ${fRow('单h曝光',d.hexp,LIVE_BASE.hexp,Math.round(d.hexp).toLocaleString()+'次',Math.round(LIVE_BASE.hexp).toLocaleString()+'次',d.hexpT,d.hexpT.toFixed(1)+'%',getBarCls(d.hexp,LIVE_BASE.hexp),getW(d.hexp,LIVE_BASE.hexp,30000),false)}
-      ${conn('CTR 封面点击率')}
-      ${fRow('CTR 封面点击',d.ctr,LIVE_BASE.ctr,d.ctr.toFixed(3)+'%',LIVE_BASE.ctr+'%',d.ctr-LIVE_BASE.ctr,(d.ctr-LIVE_BASE.ctr>=0?'+':'')+((d.ctr-LIVE_BASE.ctr).toFixed(3))+'%',getBarCls(d.ctr,LIVE_BASE.ctr),getW(d.ctr,LIVE_BASE.ctr),false)}
-      <div class="dual-entry">
-        <div class="entry-box huxi"><div class="entry-title">🫧 呼吸灯入口</div>
-          <div class="entry-row"><span>CTR</span><span class="entry-val" style="color:${hcls(d.huxi_ctr,0.7,1.0)}">${d.huxi_ctr.toFixed(3)}%</span></div>
-          <div class="entry-row"><span>CVR</span><span class="entry-val" style="color:${hcls(d.huxi_cvr,2.0,3.0)}">${d.huxi_cvr.toFixed(3)}%</span></div>
-        </div>
-        <div class="entry-box zhibo"><div class="entry-title">📺 直播卡入口</div>
-          <div class="entry-row"><span>CTR</span><span class="entry-val" style="color:${hcls(d.zhibo_ctr,1.8,2.5)}">${d.zhibo_ctr.toFixed(3)}%</span></div>
-          <div class="entry-row"><span>CVR</span><span class="entry-val" style="color:${hcls(d.zhibo_cvr,1.0,1.5)}">${d.zhibo_cvr.toFixed(3)}%</span></div>
-        </div>
+      <div style="font-size:10px;color:#94a3b8;margin-bottom:2px;padding-left:108px">← 不足 ｜ ▌基准60% ｜ 达标 →</div>
+      <div class="sec-lbl">📦 供给层</div>
+      ${frow('店均时长',d.avgdur,LB.avgdur,Math.round(d.avgdur/60)+'min',Math.round(LB.avgdur/60)+'min',(d.avgdurT>=0?'+':'')+d.avgdurT+'%','sup',bw(d.avgdur,LB.avgdur,20000),true)}
+      ${frow('开播场次',d.avgsess,LB.avgsess,d.avgsess.toFixed(1)+'场',LB.avgsess+'场',(d.avgsess-LB.avgsess>=0?'+':'')+((d.avgsess-LB.avgsess).toFixed(1))+'场','sup',bw(d.avgsess,LB.avgsess),true)}
+      <div class="conn"><div class="cl"></div><div class="cn">→ 单h曝光（流量效率）</div><div class="cl"></div></div>
+      ${frow('单h曝光',d.hexp,LB.hexp,Math.round(d.hexp).toLocaleString()+'次',Math.round(LB.hexp).toLocaleString()+'次',(d.hexpT>=0?'+':'')+d.hexpT+'%',bc(d.hexp,LB.hexp),bw(d.hexp,LB.hexp,25000),false)}
+      <div class="conn"><div class="cl"></div><div class="cn">→ CTR 封面点击</div><div class="cl"></div></div>
+      ${frow('CTR 封面点击',d.ctr,LB.ctr,d.ctr.toFixed(3)+'%',LB.ctr+'%',(d.ctr-LB.ctr>=0?'+':'')+((d.ctr-LB.ctr).toFixed(3))+'%',bc(d.ctr,LB.ctr),bw(d.ctr,LB.ctr),false)}
+      <div class="dual-e">
+        <div class="eb hx"><div class="eb-title">🫧 呼吸灯</div><div class="eb-row"><span>CTR</span><span class="eb-val" style="color:${hxCls(d.huxi_ctr)}">${d.huxi_ctr.toFixed(3)}%</span></div><div class="eb-row"><span>CVR</span><span class="eb-val" style="color:${hxCls(d.huxi_cvr)}">${d.huxi_cvr.toFixed(3)}%</span></div></div>
+        <div class="eb zb"><div class="eb-title">📺 直播卡</div><div class="eb-row"><span>CTR</span><span class="eb-val" style="color:${zbCls(d.zhibo_ctr)}">${d.zhibo_ctr.toFixed(3)}%</span></div><div class="eb-row"><span>CVR</span><span class="eb-val" style="color:${zbCls(d.zhibo_cvr)}">${d.zhibo_cvr.toFixed(3)}%</span></div></div>
       </div>
-      ${conn('CVR 进播率')}
-      ${fRow('CVR 进播率',d.cvr,LIVE_BASE.cvr,d.cvr.toFixed(3)+'%',LIVE_BASE.cvr+'%',d.cvr-LIVE_BASE.cvr,(d.cvr-LIVE_BASE.cvr>=0?'+':'')+((d.cvr-LIVE_BASE.cvr).toFixed(3))+'%',getBarCls(d.cvr,LIVE_BASE.cvr),getW(d.cvr,LIVE_BASE.cvr),false)}
-      ${conn('商品转化率')}
-      ${fRow('商品转化率',d.conv,LIVE_BASE.conv,d.conv.toFixed(3)+'%',LIVE_BASE.conv+'%',d.conv-LIVE_BASE.conv,(d.conv-LIVE_BASE.conv>=0?'+':'')+((d.conv-LIVE_BASE.conv).toFixed(3))+'%',getBarCls(d.conv,LIVE_BASE.conv),getW(d.conv,LIVE_BASE.conv),false)}
-      ${conn('客单价（vs中位数¥168.6）')}
-      ${fRow('客单价',d.aov,LIVE_BASE.aov,'¥'+d.aov.toLocaleString(),'¥'+LIVE_BASE.aov,d.aov-LIVE_BASE.aov,(d.aov-LIVE_BASE.aov>=0?'+¥':'-¥')+Math.abs(Math.round(d.aov-LIVE_BASE.aov)),getBarCls(d.aov,LIVE_BASE.aov),getW(d.aov,LIVE_BASE.aov,2000),false)}
-      <div class="gpm-bar">
+      <div class="conn"><div class="cl"></div><div class="cn">→ CVR 进播率</div><div class="cl"></div></div>
+      ${frow('CVR 进播率',d.cvr,LB.cvr,d.cvr.toFixed(3)+'%',LB.cvr+'%',(d.cvr-LB.cvr>=0?'+':'')+((d.cvr-LB.cvr).toFixed(3))+'%',bc(d.cvr,LB.cvr),bw(d.cvr,LB.cvr),false)}
+      <div class="conn"><div class="cl"></div><div class="cn">→ 商品转化率</div><div class="cl"></div></div>
+      ${frow('商品转化率',d.conv,LB.conv,d.conv.toFixed(3)+'%',LB.conv+'%',(d.conv-LB.conv>=0?'+':'')+((d.conv-LB.conv).toFixed(3))+'%',bc(d.conv,LB.conv),bw(d.conv,LB.conv),false)}
+      <div class="conn"><div class="cl"></div><div class="cn">→ 客单价（基准¥${LB.aov}中位数）</div><div class="cl"></div></div>
+      ${frow('客单价',d.aov,LB.aov,'¥'+d.aov,'¥'+LB.aov,(d.aov-LB.aov>=0?'▲+':'▼')+Math.round(Math.abs(d.aov-LB.aov)),bc(d.aov,LB.aov),bw(d.aov,LB.aov,2000),false)}
+      <div class="gbar">
         <span style="font-size:11px;color:#6b7280">GPM：</span>
-        <span style="font-size:15px;font-weight:700;color:${d.gpm>=38?'#16a34a':'#e8372c'}">${d.gpm}</span>
-        <span style="font-size:10px;color:#6b7280">/ 基准~44元</span>
-        <div style="flex:1;height:7px;background:#f1f5f9;border-radius:3px;overflow:hidden;margin-left:6px">
-          <div style="width:${Math.min(100,d.gpm/44*60+5)}%;height:100%;background:${d.gpm>=44?'#16a34a':'#f97316'};border-radius:3px"></div>
+        <span style="font-size:15px;font-weight:700;color:${d.gpm>=LB.gpm?'#16a34a':'#e8372c'}">${d.gpm}</span>
+        <span style="font-size:10px;color:#6b7280">元 / 基准${LB.gpm}</span>
+        <div style="flex:1;height:7px;background:#f1f5f9;border-radius:4px;overflow:hidden;margin-left:6px">
+          <div style="width:${Math.min(100,d.gpm/LB.gpm*60+10)}%;height:100%;background:${d.gpm>=LB.gpm?'#16a34a':'#f97316'};border-radius:4px"></div>
         </div>
       </div>
     </div>
     <div class="right-panel">
-      <div class="tags-row">${liveTags(d)}</div>
-      <div class="conclusion-box"><div class="conclusion-title">🔍 问题诊断</div><div class="conclusion-text">${d.context}</div></div>
-      <div class="conclusion-box" style="border-left-color:#16a34a"><div class="conclusion-title" style="color:#16a34a">▶ 行动建议</div><div class="conclusion-text">${d.actions.map(a=>'<div style="margin-bottom:3px">'+a+'</div>').join('')}</div></div>
+      <div class="tags-row">${lTags(d)}</div>
+      <div class="diag-box">
+        <div class="diag-title">📋 问题诊断</div>
+        <div class="diag-issue">${d.issue||''}</div>
+        <div class="diag-kpi">${d.kpi||''}</div>
+        <div class="diag-rows">
+          ${lowPills?`<div class="diag-row low-row"><div class="diag-row-label">🟠 绝对值偏低</div><div class="diag-pills">${lowPills}</div></div>`:''}
+          ${hasYoy?`<div class="diag-row yoy-row"><div class="diag-row-label">📉 市占/趋势跌幅严重</div><div class="diag-pills">${yoyPills}</div></div>`:''}
+          ${(!lowPills&&!hasYoy)?'<div style="font-size:11px;color:#16a34a;padding:4px 0">✅ 无显著异常，重点是维持当前趋势</div>':''}
+        </div>
+      </div>
+      <div class="action-box">
+        <div class="action-title">▶ 行动建议</div>
+        <div class="action-text">${actionHtml}</div>
+      </div>
     </div>
-  </div></div>`;
+  </div>
+</div>`;}
+
+// ═══ ECharts 图表 ═══
+function mkBarChart(elId,data,base,unit,colorBase){
+  const sorted=[...data].sort((a,b)=>a[1]-b[1]);
+  const names=sorted.map(x=>x[0]);
+  const vals=sorted.map(x=>x[1]);
+  const colors=vals.map(v=>v>=base?'#16a34a':v>=base*.7?'#eab308':'#e8372c');
+  const c=echarts.init(document.getElementById(elId));
+  c.setOption({
+    grid:{left:'2%',right:'12%',top:'2%',bottom:'2%',containLabel:true},
+    tooltip:{trigger:'axis',formatter:p=>p[0].name+'<br/>'+p[0].value.toFixed(2)+unit},
+    xAxis:{type:'value',axisLabel:{formatter:v=>v+unit},splitLine:{lineStyle:{type:'dashed'}}},
+    yAxis:{type:'category',data:names,axisLabel:{fontSize:11}},
+    series:[{type:'bar',data:vals.map((v,i)=>({value:v,itemStyle:{color:colors[i]}})),barMaxWidth:20,
+      markLine:{silent:true,data:[{xAxis:base,lineStyle:{color:'#6366f1',type:'dashed',width:2},label:{formatter:'基准\n'+base+unit,position:'end',fontSize:10}}]}}]
+  });
 }
 
-// ══════════════ 渲染卡片 ══════════════
-function renderNoteCards(key){
-  const s=[...noteData];
-  if(key==='gmv')s.sort((a,b)=>b.gmv-a.gmv);
-  else if(key==='sev')s.sort((a,b)=>noteGetSev(b)-noteGetSev(a)||b.gmv-a.gmv);
-  else if(key==='pv')s.sort((a,b)=>a.pv-b.pv);
-  document.getElementById('note-cards').innerHTML=s.map((d,i)=>buildNoteCard(d,i+1)).join('');
-}
-function renderLiveCards(key){
-  const s=[...liveData];
-  if(key==='gmv')s.sort((a,b)=>b.gmv-a.gmv);
-  else if(key==='sev')s.sort((a,b)=>liveGetSev(b)-liveGetSev(a)||b.gmv-a.gmv);
-  else if(key==='hexp')s.sort((a,b)=>a.hexp-b.hexp);
-  document.getElementById('live-cards').innerHTML=s.map((d,i)=>buildLiveCard(d,i+1)).join('');
-}
-function sortNote(key,btn){
-  document.querySelectorAll('#sort-note .sort-btn').forEach(b=>b.classList.remove('active-note'));
-  btn.classList.add('active-note');
-  renderNoteCards(key);
-}
-function sortLive(key,btn){
-  document.querySelectorAll('#sort-live .sort-btn').forEach(b=>b.classList.remove('active-live'));
-  btn.classList.add('active-live');
-  renderLiveCards(key);
+function mkBubble(elId,data,xField,yField,sizeField,xBase,yBase,xUnit,yUnit){
+  const c=echarts.init(document.getElementById(elId));
+  const scaleMax=Math.max(...data.map(d=>d[sizeField]));
+  const pts=data.map(d=>{
+    const x=d[xField],y=d[yField],s=d[sizeField];
+    const q=x>=xBase&&y>=yBase?'#16a34a':x<xBase&&y>=yBase?'#7c3aed':x>=xBase&&y<yBase?'#f97316':'#e8372c';
+    return {name:d.n,value:[x,y,s],symbolSize:Math.max(10,Math.sqrt(s/scaleMax)*80),itemStyle:{color:q+'cc',borderColor:q,borderWidth:1.5}};
+  });
+  c.setOption({
+    grid:{left:'8%',right:'5%',top:'8%',bottom:'8%'},
+    tooltip:{formatter:p=>`${p.data.name}<br/>曝光 ${p.data.value[0].toFixed(1)}${xUnit}<br/>GPM ${p.data.value[1].toFixed(1)}${yUnit}<br/>GMV ${p.data.value[2].toFixed(2)}亿`},
+    xAxis:{name:'总曝光('+xUnit+')',splitLine:{lineStyle:{type:'dashed'}},
+      axisLabel:{formatter:v=>v+xUnit},
+      markLine:{data:[{xAxis:xBase,lineStyle:{color:'#94a3b8',type:'dashed'}}]}},
+    yAxis:{name:'GPM('+yUnit+')',splitLine:{lineStyle:{type:'dashed'}},
+      axisLabel:{formatter:v=>v+yUnit}},
+    series:[{type:'scatter',data:pts,
+      label:{show:true,formatter:p=>p.data.name.replace(/^(.*?)（/,'').replace(/）.*/,'').replace(/组（?/,''),position:'right',fontSize:9,color:'#374151'}}]
+  });
+  // 象限标注
+  c.setOption({graphic:[
+    {type:'text',left:'72%',top:'10%',style:{text:'🟢 明星',fill:'#16a34a',fontSize:11,fontWeight:'bold'}},
+    {type:'text',left:'5%',top:'10%',style:{text:'🟣 高效精品',fill:'#7c3aed',fontSize:11,fontWeight:'bold'}},
+    {type:'text',left:'72%',top:'82%',style:{text:'🟠 流量洼地',fill:'#f97316',fontSize:11,fontWeight:'bold'}},
+    {type:'text',left:'5%',top:'82%',style:{text:'🔴 双弱待援',fill:'#e8372c',fontSize:11,fontWeight:'bold'}},
+  ]},true,false);
 }
 
-// ══════════════ Tab 切换 ══════════════
+// ═══ 排序 & 渲染 ═══
+let noteSort='gmv',liveSort='gmv';
+
+function renderNote(sort){
+  const sorted=[...noteData];
+  if(sort==='gmv')sorted.sort((a,b)=>b.gmv-a.gmv);
+  else if(sort==='sev')sorted.sort((a,b)=>nSev(b)-nSev(a)||b.gmv-a.gmv);
+  else if(sort==='pv')sorted.sort((a,b)=>a.pavg-b.pavg);
+  document.getElementById('n-cards').innerHTML=sorted.map((d,i)=>buildNCard(d,i+1)).join('');
+}
+function renderLive(sort){
+  const sorted=[...liveData];
+  if(sort==='gmv')sorted.sort((a,b)=>b.gmv-a.gmv);
+  else if(sort==='sev')sorted.sort((a,b)=>lSev(b)-lSev(a)||b.gmv-a.gmv);
+  else if(sort==='hexp')sorted.sort((a,b)=>a.hexp-b.hexp);
+  document.getElementById('l-cards').innerHTML=sorted.map((d,i)=>buildLCard(d,i+1)).join('');
+}
+
+function sortNote(k,btn){
+  noteSort=k;
+  document.querySelectorAll('#s-note .sort-btn').forEach(b=>b.classList.remove('an'));
+  btn.classList.add('an');renderNote(k);
+}
+function sortLive(k,btn){
+  liveSort=k;
+  document.querySelectorAll('#s-live .sort-btn').forEach(b=>b.classList.remove('al'));
+  btn.classList.add('al');renderLive(k);
+}
+
+let chartsInited={note:false,live:false};
 function switchTab(tab){
   document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-  document.getElementById('sort-note').style.display='none';
-  document.getElementById('sort-live').style.display='none';
-  document.getElementById('panel-'+tab).classList.add('active');
-  document.getElementById('tab-'+tab).classList.add('active');
-  document.getElementById('sort-'+tab).style.display='flex';
-  if(tab==='note')initNoteCharts();
-  else initLiveCharts();
-}
-
-// ══════════════ ECharts ══════════════
-let noteChartsInited=false, liveChartsInited=false;
-
-function barChart(domId, data, baseVal, color, unit){
-  const sorted=[...data].sort((a,b)=>a.val-b.val);
-  const ch=echarts.init(document.getElementById(domId));
-  ch.setOption({
-    grid:{left:'2%',right:'12%',top:'2%',bottom:'2%',containLabel:true},
-    tooltip:{trigger:'axis',formatter:p=>`${p[0].name}<br/><b>${p[0].value}${unit}</b>`},
-    xAxis:{type:'value',splitLine:{lineStyle:{type:'dashed'}},axisLabel:{formatter:v=>v+unit}},
-    yAxis:{type:'category',data:sorted.map(d=>d.name),axisLabel:{fontSize:10,width:100,overflow:'break'}},
-    series:[{
-      type:'bar',barMaxWidth:16,
-      data:sorted.map(d=>({value:d.val,itemStyle:{color:d.val>=baseVal?'#16a34a':d.val>=baseVal*.7?'#eab308':'#e8372c'}})),
-      markLine:{silent:true,data:[{xAxis:baseVal}],lineStyle:{color:'#6366f1',type:'dashed',width:2},label:{formatter:'基准 '+baseVal+unit,color:'#6366f1'}}
-    }]
-  });
-}
-
-function bubbleChart(domId, items, expBase, gpmBase, expUnit, gpmUnit){
-  const ch=echarts.init(document.getElementById(domId));
-  const q=[{n:'🟢 明星（高曝光+高GPM）',c:'#16a34a'},{n:'🟣 高效精品（低曝光+高GPM）',c:'#7c3aed'},
-           {n:'🟠 流量洼地（高曝光+低GPM）',c:'#f97316'},{n:'🔴 双弱待援（低曝光+低GPM）',c:'#e8372c'}];
-  const series=items.map(d=>{
-    const hi_exp=d.exp>=expBase, hi_gpm=d.gpm>=gpmBase;
-    const qi=hi_exp&&hi_gpm?0:!hi_exp&&hi_gpm?1:hi_exp&&!hi_gpm?2:3;
-    return {name:q[qi].n,type:'scatter',
-      symbolSize: v=>Math.max(14,Math.sqrt(v[2])*38),
-      data:[[d.exp,d.gpm,d.gmv,d.name]],
-      itemStyle:{color:q[qi].c,opacity:.8},
-      label:{show:true,position:'top',formatter:p=>p.data[3].replace(/\d+组（/,'').replace('）',''),fontSize:10,color:'#1a1a2e'},
-      tooltip:{formatter:p=>`${p.data[3]}<br/>曝光: ${p.data[0]}${expUnit}<br/>GPM: ${p.data[1]}${gpmUnit}<br/>GMV: ${p.data[2]}亿`}
-    };
-  });
-  ch.setOption({
-    legend:{data:q.map(x=>x.n),bottom:0,textStyle:{fontSize:10}},
-    grid:{left:'8%',right:'5%',top:'5%',bottom:'60px',containLabel:true},
-    tooltip:{trigger:'item'},
-    xAxis:{name:'总曝光('+expUnit+')',nameLocation:'end',splitLine:{lineStyle:{type:'dashed'}},
-      axisLabel:{formatter:v=>v+expUnit}},
-    yAxis:{name:'GPM',nameLocation:'end',splitLine:{lineStyle:{type:'dashed'}}},
-    series:[
-      ...series,
-      {type:'line',markLine:{silent:true,data:[{xAxis:expBase},{yAxis:gpmBase}],lineStyle:{color:'#94a3b8',type:'dashed',width:1.5},label:{color:'#6b7280',fontSize:9}}}
-    ]
-  });
+  document.querySelectorAll('.tab-btn').forEach(b=>b.className='tab-btn');
+  document.getElementById('p-'+tab).classList.add('active');
+  document.getElementById('tb-'+tab).classList.add('active-'+tab);
+  document.getElementById('s-note').style.display=tab==='note'?'flex':'none';
+  document.getElementById('s-live').style.display=tab==='live'?'flex':'none';
+  if(tab==='note'&&!chartsInited.note){initNoteCharts();chartsInited.note=true;}
+  if(tab==='live'&&!chartsInited.live){initLiveCharts();chartsInited.live=true;}
 }
 
 function initNoteCharts(){
-  if(noteChartsInited)return;
-  noteChartsInited=true;
-  const expData=noteData.map(d=>({name:d.name.replace(/\d+组（/,'').replace('）',''),val:d.expo}));
-  const gpmData=noteData.map(d=>({name:d.name.replace(/\d+组（/,'').replace('）',''),val:d.gpm}));
-  const gmvData=noteData.map(d=>({name:d.name.replace(/\d+组（/,'').replace('）',''),val:d.gmv}));
-  barChart('note-bar-exp',expData,6.31,'#3b82f6','亿');
-  barChart('note-bar-gpm',gpmData,38.2,'#16a34a','元');
-  barChart('note-bar-gmv',gmvData,0.27,'#6366f1','亿');
-  const bubItems=noteData.map(d=>({name:d.name,exp:d.expo,gpm:d.gpm,gmv:d.gmv}));
-  bubbleChart('note-bubble',bubItems,6.31,38.2,'亿','元');
+  mkBubble('n-bubble',noteData,'expo','gpm','gmv',6.31,38.2,'亿','元');
+  mkBarChart('n-bar-exp',noteData.map(d=>[d.n,d.expo]),6.31,'亿','note');
+  mkBarChart('n-bar-gpm',noteData.map(d=>[d.n,d.gpm]),38.2,'元','note');
+  mkBarChart('n-bar-gmv',noteData.map(d=>[d.n,d.gmv]),0.27,'亿','note');
 }
-
 function initLiveCharts(){
-  if(liveChartsInited)return;
-  liveChartsInited=true;
-  const expData=liveData.map(d=>({name:d.name.replace(/\d+组（/,'').replace('）',''),val:d.exp}));
-  const gpmData=liveData.map(d=>({name:d.name.replace(/\d+组（/,'').replace('）',''),val:d.gpm}));
-  const gmvData=liveData.map(d=>({name:d.name.replace(/\d+组（/,'').replace('）',''),val:d.gmv}));
-  barChart('live-bar-exp',expData,8.35,'#3b82f6','亿');
-  barChart('live-bar-gpm',gpmData,44.1,'#16a34a','元');
-  barChart('live-bar-gmv',gmvData,1.19,'#6366f1','亿');
-  const bubItems=liveData.map(d=>({name:d.name,exp:d.exp,gpm:d.gpm,gmv:d.gmv}));
-  bubbleChart('live-bubble',bubItems,8.35,44.1,'亿','元');
+  mkBubble('l-bubble',liveData,'exp','gpm','gmv',8.35,44.1,'亿','元');
+  mkBarChart('l-bar-exp',liveData.map(d=>[d.n,d.exp]),8.35,'亿','live');
+  mkBarChart('l-bar-gpm',liveData.map(d=>[d.n,d.gpm]),44.1,'元','live');
+  mkBarChart('l-bar-gmv',liveData.map(d=>[d.n,d.gmv]),1.19,'亿','live');
 }
 
 // 初始化
-renderNoteCards('gmv');
-renderLiveCards('gmv');
+renderNote('gmv');
 initNoteCharts();
+chartsInited.note=true;
 </script>
 </body>
 </html>
