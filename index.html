@@ -526,8 +526,14 @@ function switchTab(tab){
   document.getElementById('tb-'+tab).classList.add('active-'+tab);
   document.getElementById('s-note').style.display=tab==='note'?'flex':'none';
   document.getElementById('s-live').style.display=tab==='live'?'flex':'none';
-  if(tab==='note'&&!chartsInited.note){initNoteCharts();chartsInited.note=true;}
-  if(tab==='live'&&!chartsInited.live){initLiveCharts();chartsInited.live=true;}
+  if(tab==='note'&&!chartsInited.note){
+    requestAnimationFrame(()=>{initNoteCharts();chartsInited.note=true;});
+  }
+  if(tab==='live'&&!chartsInited.live){
+    requestAnimationFrame(()=>{initLiveCharts();chartsInited.live=true;});
+  }
+  // resize所有已初始化的图表（tab切换后容器尺寸变化）
+  setTimeout(()=>echarts.getInstanceByDom&&[...(document.querySelectorAll('[_echarts_instance_]'))].forEach(el=>{const c=echarts.getInstanceByDom(el);if(c)c.resize();}),50);
 }
 
 function initNoteCharts(){
@@ -546,8 +552,15 @@ function initLiveCharts(){
 // 初始化
 renderNote('gmv');
 renderLive('gmv');
-initNoteCharts();
-chartsInited.note=true;
+// 延迟初始化：等DOM渲染完成后再init图表（避免容器宽高为0）
+window.addEventListener('DOMContentLoaded', function(){
+  requestAnimationFrame(function(){
+    requestAnimationFrame(function(){
+      initNoteCharts();
+      chartsInited.note=true;
+    });
+  });
+});
 </script>
 </body>
 </html>
