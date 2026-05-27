@@ -564,6 +564,8 @@ function buildCard(d, rank) {
         <div style="font-size:10px;color:#94a3b8;margin-bottom:4px;padding-left:110px">
           ← 严重不足 &nbsp;｜&nbsp; <span style="color:#6b7280">▏基准线</span> &nbsp;｜&nbsp; 达标 →
         </div>
+        ${funnelRow('笔记/商家', Math.min(d.notePerMer, 2000), BASE.notePerMer, '条', 0, '373条')}${d.notePerMer > 2000 ? `<div style="font-size:10px;color:#f97316;margin:-4px 0 4px 110px">⚡ 实际值 ${(d.notePerMer/10000).toFixed(1)}万条/商家（轴已截断至2000显示）</div>` : ''}
+        <div class="funnel-connector"><div class="funnel-connector-line"></div><div class="funnel-connector-label">分发效率↓</div><div class="funnel-connector-line"></div></div>
         ${funnelRow('篇均曝光', d.pv, BASE.pv, '次', 0, '62次')}
         <div class="funnel-connector"><div class="funnel-connector-line"></div><div class="funnel-connector-label">CTR1阅读率</div><div class="funnel-connector-line"></div></div>
         ${funnelRow('CTR1 阅读率', d.ctr1, BASE.ctr1, '%', 2, '15.06%')}
