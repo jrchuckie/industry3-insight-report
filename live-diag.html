@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>行业三部 · 店播漏斗逐行业诊断 2026-05-26</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif;background:#f0f2f5;color:#1a1a2e;font-size:13px}
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;background:#0f172a;padding:0 20px;height:50px;display:flex;align-items:center;gap:16px}
+.nav-title{color:#fff;font-weight:700;font-size:14px}
+.nav-sub{color:#94a3b8;font-size:12px}
+.nav-sort{margin-left:auto;display:flex;gap:6px}
+.sort-btn{padding:5px 12px;border:1px solid #374151;background:transparent;color:#94a3b8;cursor:pointer;font-size:11px;border-radius:6px;transition:all .2s}
+.sort-btn.active{background:#7c3aed;border-color:#7c3aed;color:#fff}
+.content{margin-top:50px;padding:16px}
+.summary-bar{background:#0f172a;border-radius:12px;padding:16px 20px;margin-bottom:16px;color:#fff}
+.summary-title{font-size:13px;color:#94a3b8;margin-bottom:10px}
+.summary-kpis{display:flex;gap:20px;flex-wrap:wrap}
+.summary-kpi{text-align:center}
+.summary-kpi-val{font-size:17px;font-weight:700}
+.summary-kpi-label{font-size:10px;color:#94a3b8;margin-top:2px}
+.funnel-ref{display:flex;align-items:center;margin-bottom:16px;background:#fff;border-radius:10px;padding:12px 16px;box-shadow:0 1px 4px rgba(0,0,0,.08);flex-wrap:wrap;gap:8px}
+.funnel-step{display:flex;align-items:center;gap:6px;font-size:11px}
+.funnel-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.funnel-arrow{color:#94a3b8;font-size:14px;margin:0 4px}
+.legend{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px;font-size:11px;color:#6b7280;align-items:center}
+.legend-item{display:flex;align-items:center;gap:5px}
+.legend-dot{width:10px;height:10px;border-radius:2px}
+.cards-container{display:grid;grid-template-columns:1fr;gap:14px}
+.diag-card{background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.08);border-left:6px solid #e5e7eb}
+.diag-card.sev-0{border-left-color:#16a34a}
+.diag-card.sev-1{border-left-color:#eab308}
+.diag-card.sev-2{border-left-color:#f97316}
+.diag-card.sev-3{border-left-color:#e8372c}
+.card-header{padding:14px 16px 10px;display:flex;align-items:flex-start;gap:12px;border-bottom:1px solid #f3f4f6}
+.card-rank{font-size:18px;font-weight:800;color:#94a3b8;width:28px;flex-shrink:0;line-height:1}
+.card-name-block{flex:1}
+.card-name{font-size:15px;font-weight:700;color:#1a1a2e}
+.card-meta{font-size:11px;color:#6b7280;margin-top:3px;display:flex;gap:10px;flex-wrap:wrap}
+.card-severity{margin-left:auto}
+.severity-label{font-size:11px;font-weight:700;padding:4px 10px;border-radius:10px}
+.sev-label-0{background:#dcfce7;color:#15803d}
+.sev-label-1{background:#fef9c3;color:#854d0e}
+.sev-label-2{background:#ffedd5;color:#c2410c}
+.sev-label-3{background:#fee2e2;color:#b91c1c}
+.card-body{padding:14px 16px;display:grid;grid-template-columns:1fr 340px;gap:16px}
+@media(max-width:900px){.card-body{grid-template-columns:1fr}}
+.funnel-visual{display:flex;flex-direction:column;gap:6px}
+.section-label{font-size:10px;font-weight:700;color:#6b7280;letter-spacing:.5px;padding:6px 0 2px 120px;text-transform:uppercase}
+.funnel-row{display:flex;align-items:stretch;gap:10px}
+.funnel-left{width:110px;flex-shrink:0;display:flex;align-items:center;justify-content:flex-end}
+.funnel-name-label{font-size:11px;color:#6b7280;text-align:right;line-height:1.3}
+.funnel-center{flex:1;position:relative}
+.funnel-bar-bg{height:30px;background:#f1f5f9;border-radius:6px;position:relative;overflow:hidden}
+.funnel-fill{height:100%;border-radius:6px}
+.funnel-fill.ok{background:linear-gradient(90deg,#16a34a,#4ade80)}
+.funnel-fill.warn{background:linear-gradient(90deg,#eab308,#fde047)}
+.funnel-fill.bad{background:linear-gradient(90deg,#e8372c,#f87171)}
+.funnel-fill.supply{background:linear-gradient(90deg,#3b82f6,#93c5fd)}
+.funnel-val-overlay{position:absolute;right:8px;top:50%;transform:translateY(-50%);font-size:12px;font-weight:700;color:#1a1a2e}
+.funnel-base-line{position:absolute;top:0;height:100%;width:2px;background:rgba(0,0,0,.2);z-index:2}
+.funnel-right{width:110px;flex-shrink:0;padding-left:6px;display:flex;flex-direction:column;justify-content:center}
+.funnel-compare{font-size:10px;color:#6b7280}
+.funnel-yoy{font-size:11px;font-weight:600;margin-top:1px}
+.funnel-connector{display:flex;align-items:center;padding:0 0 0 120px}
+.funnel-connector-line{flex:1;height:1px;background:#e5e7eb}
+.funnel-connector-label{font-size:10px;color:#6b7280;white-space:nowrap;padding:0 8px;background:#fff}
+/* 双入口 */
+.dual-entry{display:flex;gap:8px;padding-left:120px;margin:4px 0}
+.entry-box{flex:1;background:#f8fafc;border-radius:8px;padding:8px;border-top:2px solid #e5e7eb}
+.entry-box.huxi{border-top-color:#f97316}
+.entry-box.zhibo{border-top-color:#7c3aed}
+.entry-title{font-size:10px;font-weight:700;color:#6b7280;margin-bottom:4px}
+.entry-row{display:flex;justify-content:space-between;font-size:11px;margin-top:2px}
+.entry-val{font-weight:700}
+.right-panel{display:flex;flex-direction:column;gap:10px}
+.tags-row{display:flex;flex-wrap:wrap;gap:4px}
+.tag{display:inline-flex;align-items:center;gap:3px;padding:3px 9px;border-radius:8px;font-size:11px;font-weight:600}
+.tag-blue{background:#dbeafe;color:#1d4ed8}
+.tag-yellow{background:#fef9c3;color:#854d0e}
+.tag-orange{background:#ffedd5;color:#c2410c}
+.tag-red{background:#fee2e2;color:#b91c1c}
+.tag-purple{background:#ede9fe;color:#6d28d9}
+.tag-green{background:#dcfce7;color:#15803d}
+.conclusion-box{background:#f8fafc;border-radius:8px;padding:10px 12px;border-left:3px solid #7c3aed}
+.conclusion-title{font-size:10px;font-weight:700;color:#7c3aed;margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px}
+.conclusion-text{font-size:12px;color:#374151;line-height:1.6}
+.carrier-badge{display:inline-block;padding:2px 7px;border-radius:8px;font-size:10px;font-weight:600}
+.cb-blue{background:#dbeafe;color:#1d4ed8}
+.cb-purple{background:#ede9fe;color:#6d28d9}
+.cb-green{background:#dcfce7;color:#15803d}
+.cb-orange{background:#ffedd5;color:#c2410c}
+.cb-gray{background:#f3f4f6;color:#374151}
+.up{color:#16a34a}.down{color:#e8372c}
+.gpm-bar{margin-top:8px;display:flex;align-items:center;gap:10px;padding:8px 0 0 120px;border-top:1px dashed #e5e7eb}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <div>
+    <div class="nav-title">行业三部 · 店播漏斗逐行业诊断</div>
+    <div class="nav-sub">2026-04-27~05-26 · 含呼吸灯 vs 直播卡双入口拆解</div>
+  </div>
+  <div class="nav-sort">
+    <button class="sort-btn active" onclick="sortCards('gmv',this)">按店播GMV↓</button>
+    <button class="sort-btn" onclick="sortCards('sev',this)">按严重程度↓</button>
+    <button class="sort-btn" onclick="sortCards('hexp',this)">按单h曝光↑</button>
+  </div>
+</nav>
+
+<div class="content">
+  <div class="summary-bar">
+    <div class="summary-title">📡 店播大盘 · 2026-04-27~05-26 vs 上期</div>
+    <div class="summary-kpis">
+      <div class="summary-kpi"><div class="summary-kpi-val" style="color:#f87171">¥32.91亿</div><div class="summary-kpi-label">店播GMV · -3.3%</div></div>
+      <div class="summary-kpi"><div class="summary-kpi-val" style="color:#f87171">9,711</div><div class="summary-kpi-label">单h曝光基准（中位数）</div></div>
+      <div class="summary-kpi"><div class="summary-kpi-val">1.6%</div><div class="summary-kpi-label">CTR封面点击基准</div></div>
+      <div class="summary-kpi"><div class="summary-kpi-val">1.6%</div><div class="summary-kpi-label">CVR进播率基准</div></div>
+      <div class="summary-kpi"><div class="summary-kpi-val">3.6%</div><div class="summary-kpi-label">商品转化率基准</div></div>
+      <div class="summary-kpi"><div class="summary-kpi-val">¥168.6</div><div class="summary-kpi-label">客单价基准（中位数）</div></div>
+      <div class="summary-kpi"><div class="summary-kpi-val">2,094s</div><div class="summary-kpi-label">店均时长基准（中位数）</div></div>
+      <div class="summary-kpi"><div class="summary-kpi-val">17.4场</div><div class="summary-kpi-label">开播场次基准（中位数）</div></div>
+    </div>
+  </div>
+
+  <div class="funnel-ref">
+    <span style="font-size:11px;color:#6b7280;margin-right:4px"><b>店播漏斗：</b></span>
+    <div class="funnel-step"><div class="funnel-dot" style="background:#3b82f6"></div>店均时长+场次（供给）</div>
+    <span class="funnel-arrow">→</span>
+    <div class="funnel-step"><div class="funnel-dot" style="background:#6366f1"></div>单h曝光（流量效率）</div>
+    <span class="funnel-arrow">→</span>
+    <div class="funnel-step"><div class="funnel-dot" style="background:#eab308"></div>CTR 封面点击率</div>
+    <span class="funnel-arrow">→</span>
+    <div class="funnel-step"><div class="funnel-dot" style="background:#f97316"></div>CVR 进播率</div>
+    <span class="funnel-arrow">→</span>
+    <div class="funnel-step"><div class="funnel-dot" style="background:#e8372c"></div>商品转化率</div>
+    <span class="funnel-arrow">→</span>
+    <div class="funnel-step"><div class="funnel-dot" style="background:#7c3aed"></div>客单价（vs中位数基准）</div>
+    <span class="funnel-arrow">→</span>
+    <div class="funnel-step"><div class="funnel-dot" style="background:#16a34a"></div>GPM</div>
+    <div style="margin-left:auto;font-size:10px;color:#6b7280">CTR/CVR含呼吸灯 vs 直播卡双入口拆解</div>
+  </div>
+
+  <div class="legend">
+    <span>进度条颜色：</span>
+    <div class="legend-item"><div class="legend-dot" style="background:#16a34a"></div>达标（≥基准）</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#eab308"></div>偏弱（70~100%）</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#e8372c"></div>严重不足（&lt;70%）</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#3b82f6"></div>供给指标（中性）</div>
+    <div style="margin-left:auto;display:flex;gap:8px;flex-wrap:wrap">
+      <span style="background:#fee2e2;color:#b91c1c;padding:2px 8px;border-radius:4px;font-weight:600">🔴 严重 ≥3断点</span>
+      <span style="background:#ffedd5;color:#c2410c;padding:2px 8px;border-radius:4px;font-weight:600">🟠 中等 2断点</span>
+      <span style="background:#fef9c3;color:#854d0e;padding:2px 8px;border-radius:4px;font-weight:600">🟡 轻微 1断点</span>
+      <span style="background:#dcfce7;color:#15803d;padding:2px 8px;border-radius:4px;font-weight:600">✅ 健康</span>
+    </div>
+  </div>
+
+  <div class="cards-container" id="cards-container"></div>
+</div>
+
+<script>
+const BASE = {
+  avgdur: 2094,   // 店均开播时长s
+  avgsess: 17.4,  // 开播场次
+  hexp: 9711,     // 单h曝光
+  ctr: 1.6,       // 封面点击率%
+  cvr: 1.6,       // 进播率%
+  conv: 3.6,      // 商品转化率%
+  aov: 168.6,     // 客单价¥（中位数）
+};
+
+// 店播GMV数据（从综合洞察报告+B分层报告提取）
+// 格式：name, gmv(亿), gmvT(%), 总曝光(亿), 总曝光T(%)
+const industries = [
+  {
+    name:'九组（家用）', type:'混合',
+    gmv:5.12, gmvT:-1.3,
+    exp:17.80, expT:-11.3,
+    hexp:17127, hexpT:-15.3,
+    avgdur:3465, avgdurT:4.7,
+    avgsess:17.9, avgsessT:-2.0,
+    ctr:1.638, cvr:2.409, conv:4.216, aov:139.0, aovT:8.2, gpm:73.8,
+    huxi_ctr:1.085, huxi_cvr:4.046, zhibo_ctr:3.423, zhibo_cvr:1.914,
+    fans:93.9, fansT:-40.6, bdj:76.9, bdjT:8.0, rooms:1.759,
+    b56:98, totalMer:534, gmvShare:68.7,
+    context:'单h曝光17127次高于基准，供给稳健（时长3465s/场次17.9场均在基准附近）。CTR=1.64%接近基准，CVR=2.41%高于基准，商品转化4.22%高于基准。主要短板是客单价¥139低于中位数¥168.6——货盘客单偏低拖累GMV。整体漏斗相对健康，GMV-1.3%偏弱是大盘分发压缩所致，非漏斗断点。涨粉大幅跌-40.6%需关注（长期运营力信号）。',
+    actions:['①货盘升级：客单¥139偏低，引入高客单SKU提升客单价（家用品¥200+区间有大量可做空间）','②涨粉跌-40.6%：直播间内容对新用户吸引力下降，优化开场钩子和互动引导','③呼吸灯CTR=1.08%偏低：优化封面图/标题，提升用户在信息流中点击直播入口的意愿']
+  },
+  {
+    name:'二组（亲子生活）', type:'混合',
+    gmv:3.06, gmvT:-9.5,
+    exp:13.26, expT:-10.3,
+    hexp:10185, hexpT:-28.5,
+    avgdur:4340, avgdurT:25.4,
+    avgsess:20.3, avgsessT:1.5,
+    ctr:1.778, cvr:2.165, conv:3.188, aov:128.6, aovT:11.9, gpm:58.7,
+    huxi_ctr:1.230, huxi_cvr:3.833, zhibo_ctr:2.790, zhibo_cvr:2.277,
+    fans:57.9, fansT:-42.5, bdj:78.4, bdjT:3.6, rooms:2.235,
+    b56:97, totalMer:532, gmvShare:63.3,
+    context:'单h曝光10185次接近基准但环比跌-28.5%（趋势不好）。CTR=1.78%健康，CVR=2.17%高于基准，但商品转化3.19%低于3.6%基准——进播用户没有充分转化。开播时长+25.4%（供给在投入），但曝光跌、涨粉跌-42.5%，是"投入在增加但产出在下降"的信号。',
+    actions:['①商品转化3.19%是核心断点：优化直播间选品（聚焦亲子高频刚需品）和讲品节奏，减少同一SKU播出时间过长','②单h曝光趋势跌-28.5%：关注平台是否调整亲子品类分发权重，需向上确认','③涨粉跌-42.5%：直播间人群留存策略需要优化，增加互动环节（亲子话题/宝宝互动）']
+  },
+  {
+    name:'十一组（潮玩）', type:'店播主导',
+    gmv:2.73, gmvT:-7.5,
+    exp:17.80, expT:11.2,
+    hexp:4014, hexpT:-1.0,
+    avgdur:14781, avgdurT:12.3,
+    avgsess:13.5, avgsessT:4.6,
+    ctr:3.244, cvr:4.207, conv:8.993, aov:215.0, aovT:11.8, gpm:29.0,
+    huxi_ctr:1.532, huxi_cvr:3.180, zhibo_ctr:3.968, zhibo_cvr:2.200,
+    fans:98.2, fansT:-34.2, bdj:63.3, bdjT:-1.5, rooms:12.256,
+    b56:92, totalMer:886, gmvShare:54.4,
+    context:'CTR=3.24%全行业最高，CVR=4.21%全行业最高，商品转化8.99%全行业最高——漏斗效率极强。但单h曝光=4014次是全行业最低（严重稀释），开播间数12.3间/商家也极高（商家开了很多间但每间拿到的曝光极少）。GMV跌-7.5%完全是分发侧问题，不是漏斗问题。',
+    actions:['①流量分发是唯一核心问题：漏斗效率全行业最强，曝光是制约GMV的唯一瓶颈，需向上确认平台潮玩品类分发是否被压缩','②开播间数优化：12.3间/商家过多导致单间曝光极度稀释，建议集中资源做主播间（减量提质）','③品均爆灯次63次偏低：提升商品曝光频次（品均爆灯），增加商品展示机会']
+  },
+  {
+    name:'五组（休食）', type:'混合',
+    gmv:2.35, gmvT:-1.9,
+    exp:13.09, expT:-9.5,
+    hexp:12928, hexpT:-25.3,
+    avgdur:3375, avgdurT:21.1,
+    avgsess:18.4, avgsessT:0.9,
+    ctr:1.176, cvr:3.025, conv:5.839, aov:111.9, aovT:0.0, gpm:51.2,
+    huxi_ctr:0.644, huxi_cvr:6.573, zhibo_ctr:2.890, zhibo_cvr:2.004,
+    fans:34.4, fansT:3.7, bdj:77.2, bdjT:-10.3, rooms:1.339,
+    b56:101, totalMer:516, gmvShare:54.0,
+    context:'CVR=3.03%高于基准，商品转化5.84%高于基准，客单¥111.9接近基准。CTR=1.18%是显著弱点（封面点击率低于基准1.6%）。关键发现：呼吸灯CVR=6.57%全行业最高（进入直播间后转化极强），但呼吸灯CTR=0.64%极低——流量入口吸引力弱，但进来的用户转化好。典型的"门槛高、进来就买"模式，优化重点在入口CTR。',
+    actions:['①CTR是核心断点：封面点击率1.18%偏低，优化直播间封面（食品类要突出视觉诱惑感：大图食物特写/限时优惠字样）','②呼吸灯CTR=0.64%极低但CVR=6.57%极高：是已验证高转化入口，重点投入提升呼吸灯点击率（封面/标题/悬浮文案优化）','③直播卡CTR=2.89%尚可，继续维持直播卡推广节奏']
+  },
+  {
+    name:'一组（文玩玉翠）', type:'店播主导',
+    gmv:2.29, gmvT:7.9,
+    exp:8.58, expT:1.9,
+    hexp:4893, hexpT:-2.3,
+    avgdur:5842, avgdurT:4.3,
+    avgsess:17.7, avgsessT:-14.6,
+    ctr:3.975, cvr:1.030, conv:1.921, aov:1717.4, aovT:-3.7, gpm:60.9,
+    huxi_ctr:2.172, huxi_cvr:1.175, zhibo_ctr:5.300, zhibo_cvr:0.936,
+    fans:53.9, fansT:-34.4, bdj:1006.1, bdjT:0.5, rooms:3.910,
+    b56:395, totalMer:847, gmvShare:45.4,
+    context:'GMV+7.9%正增长（本期店播端最好的增长行业之一）。CTR=3.98%极高（直播间封面吸引力强），但CVR=1.03%和商品转化1.92%明显低于基准——文玩¥1717高客单非标品，进播用户需要长时间"品鉴"才能下单，CVR天然低是品类特性，不是漏斗问题。单h曝光=4893次偏低，是制约进一步增长的瓶颈。',
+    actions:['①单h曝光偏低：文玩GMV+7.9%但曝光仅+1.9%，需向上争取更多分发资源（文玩直播间高GPM应有分发加权）','②接受CVR低是品类特性：¥1717客单需要长时间信任建立，优化直播间成交节奏（鉴定环节+历史成交展示+用户证言）','③场次跌-14.6%：确认是否有商家退出，保持高质量主播的开播频率']
+  },
+  {
+    name:'六组（生鲜）', type:'混合',
+    gmv:2.18, gmvT:-4.2,
+    exp:9.70, expT:-3.7,
+    hexp:14048, hexpT:-40.0,
+    avgdur:2303, avgdurT:60.5,
+    avgsess:14.6, avgsessT:-13.3,
+    ctr:1.523, cvr:1.870, conv:4.784, aov:52.9, aovT:7.3, gpm:28.6,
+    huxi_ctr:0.844, huxi_cvr:3.629, zhibo_ctr:3.641, zhibo_cvr:0.779,
+    fans:95.8, fansT:85.9, bdj:79.6, bdjT:-4.4, rooms:0.823,
+    b56:62, totalMer:284, gmvShare:48.3,
+    context:'涨粉+85.9%全行业第一（直播间内容活跃度极高），开播时长+60.5%（供给在大幅增加）。但单h曝光跌-40%（供给增加但分发没有跟上），场次跌-13.3%。CTR=1.52%接近基准，CVR=1.87%接近基准，商品转化4.78%高于基准。核心矛盾：开播时长大增但单h曝光大跌，是典型的供给放量后算法稀释问题。',
+    actions:['①单h曝光跌-40%是根本问题：开播时长+60%但分发没跟上，优化直播间质量分（互动率/留存率）而非单纯增加时长','②直播卡CVR=0.78%极低：直播卡投放后进房间用户转化极差，检查直播卡素材是否与直播间内容匹配','③涨粉+85.9%是优势：大量新粉可转化为店播的精准触达人群，加强私域运营']
+  },
+  {
+    name:'十二组（手工）', type:'店播主导',
+    gmv:2.01, gmvT:-6.5,
+    exp:8.35, expT:8.2,
+    hexp:7641, hexpT:-1.1,
+    avgdur:3644, avgdurT:9.4,
+    avgsess:17.2, avgsessT:-5.0,
+    ctr:3.641, cvr:2.221, conv:4.246, aov:236.5, aovT:1.0, gpm:44.1,
+    huxi_ctr:1.814, huxi_cvr:2.989, zhibo_ctr:5.200, zhibo_cvr:2.125,
+    fans:47.8, fansT:-13.9, bdj:107.2, bdjT:4.5, rooms:2.947,
+    b56:70, totalMer:562, gmvShare:68.0,
+    context:'CTR=3.64%极高（手工直播间视觉内容吸引力强），商品转化4.25%高于基准。主要弱点：CVR=2.22%低于基准1.6%基准尚在，但单h曝光=7641次低于9711基准，且场次跌-5%。整体漏斗较健康，GMV跌-6.5%主要是单h曝光偏低和分发侧压力。客单¥236.5高于基准，是正向因素。',
+    actions:['①单h曝光7641次低于基准：投入优质开播素材提升直播间质量分，争取更高曝光权重','②CVR=2.22%接近基准但有提升空间：优化进播后的商品讲解（手工品注重制作过程展示+材质说明）','③直播卡CTR=5.2%极高：充分利用直播卡入口扩大触达，这是手工品类的优势入口']
+  },
+  {
+    name:'十组（家饰）', type:'店播主导',
+    gmv:1.73, gmvT:-1.9,
+    exp:8.50, expT:-25.4,
+    hexp:11290, hexpT:-34.3,
+    avgdur:2508, avgdurT:13.5,
+    avgsess:17.4, avgsessT:-11.6,
+    ctr:2.490, cvr:1.662, conv:3.455, aov:107.2, aovT:28.3, gpm:39.5,
+    huxi_ctr:1.552, huxi_cvr:3.616, zhibo_ctr:4.250, zhibo_cvr:1.680,
+    fans:49.0, fansT:-43.0, bdj:69.4, bdjT:29.9, rooms:2.095,
+    b56:30, totalMer:231, gmvShare:67.4,
+    context:'客单价+28.3%（¥107.2）是本期最大亮点，GMV-1.9%仅轻微下滑。CTR=2.49%高于基准，CVR=1.66%接近基准。但单h曝光跌-34.3%（平台分发减少），场次跌-11.6%，涨粉跌-43%。商品转化3.46%接近基准。整体偏健康，但涨粉和曝光的下滑需要关注。',
+    actions:['①单h曝光跌-34.3%：排查是否有直播间分类/标签问题，向上争取家饰品类分发资源','②涨粉跌-43%：新用户触达减少，加大直播卡投入（zhibo_ctr=4.25%已高，可以放量）','③品均爆灯+29.9%是正向信号：商品展示频次提升，继续维持这个节奏']
+  },
+  {
+    name:'四组（大健康）', type:'混合',
+    gmv:1.47, gmvT:-12.8,
+    exp:5.33, expT:-32.5,
+    hexp:9711, hexpT:-19.4,
+    avgdur:1830, avgdurT:-16.2,
+    avgsess:21.0, avgsessT:2.8,
+    ctr:1.735, cvr:0.940, conv:2.734, aov:238.4, aovT:-10.2, gpm:62.0,
+    huxi_ctr:0.382, huxi_cvr:3.961, zhibo_ctr:4.203, zhibo_cvr:0.237,
+    fans:13.3, fansT:-36.8, bdj:225.7, bdjT:-4.4, rooms:0.858,
+    b56:78, totalMer:288, gmvShare:54.6,
+    context:'CVR=0.94%明显低于1.6%基准（进播用户转化差），商品转化2.73%低于3.6%基准。开播时长跌-16.2%（供给在收缩）。关键异常：呼吸灯CTR=0.38%全行业最低（直播间在信息流几乎没人点），直播卡CVR=0.24%也极低。双入口均弱，是全链路承压型。客单¥238高于基准但跌-10.2%。',
+    actions:['①CVR=0.94%是最核心断点：大健康高客单需要更强的信任建立（KOL背书/使用前后对比/成分讲解），优化直播间讲品逻辑','②呼吸灯CTR=0.38%全行业最低：直播间封面完全没有点击吸引力，需重新设计封面（健康品类突出"功效结果"而非产品图）','③开播时长跌-16.2%：商家在减少投入，需判断是否是GMV跌导致的恶性循环，激励商家恢复开播时长']
+  },
+  {
+    name:'十组（家纺）', type:'混合',
+    gmv:1.38, gmvT:3.2,
+    exp:6.76, expT:10.1,
+    hexp:8802, hexpT:-18.3,
+    avgdur:2562, avgdurT:34.8,
+    avgsess:18.8, avgsessT:-4.0,
+    ctr:2.063, cvr:2.201, conv:4.077, aov:168.6, aovT:-4.9, gpm:47.4,
+    huxi_ctr:1.113, huxi_cvr:2.999, zhibo_ctr:3.465, zhibo_cvr:2.071,
+    fans:35.4, fansT:-27.3, bdj:92.5, bdjT:-1.5, rooms:1.670,
+    b56:63, totalMer:295, gmvShare:74.5,
+    context:'GMV+3.2%正增长（店播端少数正增长行业），漏斗整体健康。CTR=2.06%高于基准，CVR=2.20%高于基准，商品转化4.08%高于基准。客单¥168.6正好在基准水平。开播时长+34.8%（供给在积极投入）。单h曝光8802次略低于9711基准，是唯一轻微短板。',
+    actions:['①保持健康大盘，关注单h曝光趋势（8802次低于基准，若继续下滑会影响GMV）','②涨粉跌-27.3%：直播间新用户获取在减少，加大直播卡触达（直播卡CTR=3.47%/CVR=2.07%均不错）','③开播时长+34.8%是优势：继续维持高时长开播策略，争取更多算法权重']
+  },
+  {
+    name:'八组（消费电子）', type:'商卡主导',
+    gmv:1.36, gmvT:-5.4,
+    exp:11.21, expT:-13.9,
+    hexp:17844, hexpT:-18.5,
+    avgdur:2094, avgdurT:5.5,
+    avgsess:19.2, avgsessT:6.4,
+    ctr:1.293, cvr:1.255, conv:1.663, aov:112.5, aovT:8.9, gpm:23.1,
+    huxi_ctr:0.850, huxi_cvr:2.587, zhibo_ctr:2.906, zhibo_cvr:0.529,
+    fans:44.7, fansT:-29.7, bdj:119.0, bdjT:13.3, rooms:0.993,
+    b56:40, totalMer:268, gmvShare:33.0,
+    context:'商品转化=1.66%远低于3.6%基准——这是全行业漏斗中最明显的转化断点之一。CVR=1.26%也低于基准。消费电子¥112.5中高客单，但直播间讲品模式对决策力较弱（用户更倾向于去详情页研究参数）。直播卡CVR=0.53%极低，呼吸灯CVR=2.59%相对好。',
+    actions:['①商品转化1.66%是核心战役：消费电子直播需要"实测+对比+参数讲解"，优化直播间讲品深度（至少1-2分钟/件），增强现场决策力','②CVR=1.26%：进播后留存和互动需要增强（提问互动/实时演示），减少进播用户流失','③直播卡CVR=0.53%极低：直播卡引流来的用户转化极差，检查直播卡定向是否精准（消费电子需要精准人群定向）']
+  },
+  {
+    name:'十三组（教育）', type:'混合',
+    gmv:1.19, gmvT:45.1,
+    exp:5.05, expT:-12.2,
+    hexp:14789, hexpT:-6.6,
+    avgdur:1138, avgdurT:-6.0,
+    avgsess:12.3, avgsessT:-12.7,
+    ctr:1.518, cvr:0.388, conv:5.378, aov:391.1, aovT:-53.0, gpm:55.4,
+    huxi_ctr:0.445, huxi_cvr:1.997, zhibo_ctr:3.971, zhibo_cvr:0.227,
+    fans:17.3, fansT:-16.1, bdj:343.5, bdjT:-44.2, rooms:0.933,
+    b56:35, totalMer:187, gmvShare:62.1,
+    context:'GMV+45.1%全行业最高增长，但几乎全靠K播（K播占比极大）。店播本身漏斗中CVR=0.39%全行业最低（进播用户极难转化），直播卡CVR=0.23%也全行业最低。最大灾难：客单价跌-53%（¥391）——教育类课程/服务价格结构正在向低价位移。品均爆灯-44.2%（商品展示机会大幅减少）。',
+    actions:['①客单价跌-53%是最紧急问题：教育品类价格结构向低端位移，需调整直播间选品方向（引入高客单课程/系列课）','②CVR=0.39%极低：教育类直播成交需要"内容驱动"（试听/学员展示/效果对比），纯促销式直播转化极差','③品均爆灯-44.2%：商品展示次数大减，需优化直播节奏（更多样化的选品展示，不要只播少数几个产品）']
+  },
+  {
+    name:'三组（宠物）', type:'混合',
+    gmv:0.96, gmvT:-1.6,
+    exp:2.23, expT:35.8,
+    hexp:5734, hexpT:-10.9,
+    avgdur:1298, avgdurT:52.5,
+    avgsess:15.3, avgsessT:0.0,
+    ctr:2.022, cvr:1.130, conv:4.492, aov:109.5, aovT:2.2, gpm:55.8,
+    huxi_ctr:0.796, huxi_cvr:3.747, zhibo_ctr:4.286, zhibo_cvr:0.739,
+    fans:7.0, fansT:-18.1, bdj:83.3, bdjT:15.3, rooms:0.874,
+    b56:8, totalMer:120, gmvShare:82.1,
+    context:'店播是宠物行业绝对主导（占GMV 82.1%）。CTR=2.02%健康，商品转化4.49%高于基准，但CVR=1.13%低于基准——封面点击进来后有一部分流失，没能进入直播间。单h曝光=5734次偏低。开播时长+52.5%（供给投入大增），但曝光没有同步增加（算法稀释）。直播卡CVR=0.74%极低。',
+    actions:['①CVR=1.13%：用户被封面吸引点击后进播率偏低，优化直播间开场（萌宠出镜/互动游戏/即时福利）增强首几秒留存','②单h曝光偏低+开播时长+52%：供给放量但算法没有给更多分发，优化直播间互动指标（评论/点赞率）争取算法权重','③直播卡CVR=0.74%：直播卡定向可以更精准（有宠物的用户画像），避免泛流量进直播间后流失']
+  },
+  {
+    name:'十四组（二奢）', type:'店播主导',
+    gmv:0.87, gmvT:-9.3,
+    exp:2.66, expT:-14.5,
+    hexp:4317, hexpT:-19.5,
+    avgdur:2055, avgdurT:6.2,
+    avgsess:18.4, avgsessT:4.4,
+    ctr:2.847, cvr:0.136, conv:0.158, aov:4891.0, aovT:-11.8, gpm:10.4,
+    huxi_ctr:2.202, huxi_cvr:0.171, zhibo_ctr:3.953, zhibo_cvr:0.084,
+    fans:9.4, fansT:-39.1, bdj:4076.0, bdjT:-11.6, rooms:1.660,
+    b56:39, totalMer:227, gmvShare:72.3,
+    context:'CTR=2.85%高于基准（直播间封面有吸引力），但CVR=0.14%全行业最低（进播用户几乎没人留下来），商品转化0.16%几乎为零——¥4891超高客单的二奢在直播间无法即时成交，是严重的品类特性限制。单h曝光=4317次偏低（稀释明显），涨粉跌-39.1%。直播间对二奢来说更多是"展示窗口"而非"成交场景"。',
+    actions:['①接受CVR/转化极低是品类特性：¥4891二奢无法在直播间完成即时决策，直播间应作为"品鉴/鉴定"展示，引导至1对1私域完成成交','②单h曝光=4317次偏低：二奢直播需要差异化内容（鉴定现场/海外溯源/真假对比）获取算法分发支持','③GPM=10.4极低：在无法提升即时转化的情况下，重新评估直播间资源投入ROI（是否值得大量投入时长）']
+  },
+  {
+    name:'七组（家具）', type:'K播主导',
+    gmv:0.83, gmvT:-9.3,
+    exp:4.02, expT:-20.0,
+    hexp:9027, hexpT:-15.0,
+    avgdur:1483, avgdurT:-5.9,
+    avgsess:17.7, avgsessT:-5.1,
+    ctr:1.526, cvr:0.811, conv:1.520, aov:479.1, aovT:-16.5, gpm:38.4,
+    huxi_ctr:0.918, huxi_cvr:2.282, zhibo_ctr:3.248, zhibo_cvr:0.370,
+    fans:19.6, fansT:-37.0, bdj:389.6, bdjT:-7.5, rooms:0.852,
+    b56:60, totalMer:192, gmvShare:49.9,
+    context:'CVR=0.81%低于1.6%基准，商品转化1.52%低于3.6%基准——家具¥479高客单在直播间转化天然困难。单h曝光9027次接近基准但趋势跌-15%。开播时长和场次均在下滑（商家在退出），涨粉跌-37%。客单价跌-16.5%（货盘向低端位移）。店播对家具行业的直接GMV贡献只有49.9%，K播才是主场。',
+    actions:['①家具店播的角色定位：高客单家具难靠店播直接成交，直播间应以"设计方案展示/工厂溯源"为内容，引导用户预约到店或线上咨询','②客单跌-16.5%：货盘结构向低端位移，需引导商家在直播间展示高客单主力品而非促销小件','③开播供给在萎缩：商家在减少投入，评估是否需要激励政策保持店播生态']
+  },
+  {
+    name:'十三组（图书）', type:'笔记主导',
+    gmv:0.21, gmvT:-0.6,
+    exp:1.54, expT:-12.9,
+    hexp:5504, hexpT:-26.4,
+    avgdur:932, avgdurT:18.3,
+    avgsess:14.8, avgsessT:11.3,
+    ctr:1.047, cvr:1.445, conv:3.166, aov:145.2, aovT:-8.3, gpm:36.2,
+    huxi_ctr:0.537, huxi_cvr:3.755, zhibo_ctr:2.526, zhibo_cvr:1.123,
+    fans:2.9, fansT:-38.0, bdj:119.1, bdjT:0.0, rooms:0.347,
+    b56:18, totalMer:117, gmvShare:11.2,
+    context:'图书是笔记主导行业，店播占GMV仅11.2%。CTR=1.05%低于基准（直播间内容对图书用户吸引力有限），单h曝光=5504次偏低，开播时长仅932s（不到16分钟，供给极不充分）。图书在店播场景的转化链路尚不成熟。',
+    actions:['①图书店播定位：作为笔记的辅助补充，不宜大量投入，聚焦在书单推荐/作者直播等高价值内容形式','②CTR=1.05%偏低：图书直播封面要突出"书单主题/知识点"而非书籍封面图','③若商家投入意愿低：接受图书店播体量小的现实，重心放在笔记端（图书笔记占GMV 52.5%）']
+  },
+  {
+    name:'十五组（酒旅）', type:'店播主导',
+    gmv:0.21, gmvT:17.8,
+    exp:9.73, expT:157.9,
+    hexp:17837, hexpT:-19.2,
+    avgdur:1818, avgdurT:219.0,
+    avgsess:15.0, avgsessT:-2.2,
+    ctr:0.973, cvr:1.616, conv:3.558, aov:680.2, aovT:-67.5, gpm:28.0,
+    huxi_ctr:0.311, huxi_cvr:4.326, zhibo_ctr:1.575, zhibo_cvr:1.101,
+    fans:17.1, fansT:42.4, bdj:442.5, bdjT:-70.0, rooms:0.739,
+    b56:41, totalMer:122, gmvShare:14.7,
+    context:'GMV+17.8%正增长，主要靠酒旅商家大幅增加开播时长（+219%）驱动曝光爆增+157.9%。但CTR=0.97%全行业最低（直播间封面点击率极差），单h曝光虽高（17837次），大量曝光没有转化为点击。最大灾难：客单价跌-67.5%（¥680）——酒旅高客单品正在向低价格产品位移，拖累GMV质量。',
+    actions:['①CTR=0.97%全行业最低：酒旅直播间封面几乎没有人点击，重新设计封面（突出"限时特价/目的地/出行场景"），不要用酒店外景图','②客单价跌-67.5%是最紧急问题：从高客单旅游套餐位移到低价产品，需要货盘干预——引导商家直播间重回高客单品','③呼吸灯CTR=0.31%全行业最低：呼吸灯入口几乎无效，把资源集中到直播卡（直播卡CVR=1.1%相对更好）']
+  },
+  {
+    name:'八组（家电）', type:'混合',
+    gmv:0.19, gmvT:25.7,
+    exp:1.43, expT:15.3,
+    hexp:5009, hexpT:-15.6,
+    avgdur:949, avgdurT:36.7,
+    avgsess:17.2, avgsessT:0.0,
+    ctr:1.128, cvr:0.938, conv:2.485, aov:1137.1, aovT:24.7, gpm:177.3,
+    huxi_ctr:0.535, huxi_cvr:1.619, zhibo_ctr:2.638, zhibo_cvr:0.595,
+    fans:3.9, fansT:-18.3, bdj:1005.2, bdjT:3.0, rooms:0.331,
+    b56:37, totalMer:112, gmvShare:19.8,
+    context:'GMV+25.7%高增长，GPM=177.3全行业最高（客单¥1137.1且+24.7%）。但CVR=0.94%和商品转化=2.49%均低于基准——家电¥1137超高客单在直播间决策困难，是品类特性。单h曝光=5009次偏低，整体体量小。家电是高GPM低体量型，增长空间受制于商家数量（仅112家）。',
+    actions:['①GPM=177.3是宝贵资产：优先做大开播商家基数（当前只有112家），每增加一个有效商家GMV增量显著','②CVR偏低是品类特性：家电需要"实测+拆箱+对比演示"，至少5-8分钟讲品时间建立信任','③直播卡CTR=2.64%尚可：继续用直播卡引入精准家电买家（按家电购买意向定向）']
+  },
+  {
+    name:'十一组（虚拟）', type:'笔记主导',
+    gmv:0.11, gmvT:-4.5,
+    exp:3.85, expT:40.5,
+    hexp:16050, hexpT:-68.4,
+    avgdur:800, avgdurT:344.1,
+    avgsess:7.5, avgsessT:54.3,
+    ctr:1.513, cvr:1.663, conv:6.594, aov:67.1, aovT:-36.9, gpm:9.8,
+    huxi_ctr:0.491, huxi_cvr:4.276, zhibo_ctr:2.580, zhibo_cvr:1.208,
+    fans:23.0, fansT:68.8, bdj:61.3, bdjT:-17.3, rooms:0.584,
+    b56:19, totalMer:89, gmvShare:10.4,
+    context:'店播是虚拟行业的次要载体（笔记才是主场）。开播时长爆增+344%（虚拟商家大量开播），但单h曝光暴跌-68.4%——供给激增+算法稀释，单h曝光从5万次级别跌至16050次。商品转化6.59%是全行业第二高，但客单¥67.1跌-36.9%，GPM=9.8是全行业最低之一。',
+    actions:['①单h曝光跌-68.4%是核心问题：开播时长+344%但分发没有跟上，虚拟商品直播供给严重过剩，建议收缩低质直播间','②客单价跌-36.9%：虚拟商品向低价位移，引导商家主推高价值产品（年卡/高级会员/课程包）','③GPM=9.8极低：评估店播对虚拟行业的ROI，笔记端GPM更高，资源配置应向笔记端倾斜']
+  },
+];
+
+const CARRIER_CLASS = {
+  '店播主导':'cb-blue','K播主导':'cb-purple','商卡主导':'cb-green','笔记主导':'cb-orange','混合':'cb-gray'
+};
+
+function getBarClass(val, base) {
+  if (!base) return 'ok';
+  if (val >= base) return 'ok';
+  if (val >= base * 0.7) return 'warn';
+  return 'bad';
+}
+function getBarWidth(val, base, cap) {
+  const v = cap ? Math.min(val, cap) : val;
+  const ratio = base ? v / base : 0.5;
+  return Math.min(95, Math.max(4, ratio * 60)) + '%';
+}
+
+function getSeverity(d) {
+  let n = 0;
+  if (d.hexp < BASE.hexp * 0.8) n++;
+  if (d.ctr < BASE.ctr * 0.85) n++;
+  if (d.cvr < BASE.cvr * 0.7) n++;
+  if (d.conv < BASE.conv * 0.7) n++;
+  if (d.aov < BASE.aov * 0.7) n++;
+  return Math.min(3, n);
+}
+
+function buildTags(d) {
+  const t = [];
+  if (d.hexp < 5000) t.push('<span class="tag tag-blue">🔵 流量严重稀释</span>');
+  else if (d.hexp < BASE.hexp * 0.8) t.push('<span class="tag tag-blue">🔵 流量稀释</span>');
+  if (d.ctr < 1.2) t.push('<span class="tag tag-yellow">🟡 CTR封面点击弱</span>');
+  else if (d.ctr < BASE.ctr * 0.85) t.push('<span class="tag tag-yellow">🟡 CTR略弱</span>');
+  if (d.cvr < 0.5) t.push('<span class="tag tag-orange">🟠 CVR进播率极低(品类特性)</span>');
+  else if (d.cvr < BASE.cvr * 0.7) t.push('<span class="tag tag-orange">🟠 CVR进播率弱</span>');
+  if (d.conv < 1.0) t.push('<span class="tag tag-red">🔴 商品转化极低</span>');
+  else if (d.conv < BASE.conv * 0.7) t.push('<span class="tag tag-red">🔴 商品转化弱</span>');
+  if (d.aovT < -30) t.push('<span class="tag tag-purple">💜 客单价暴跌</span>');
+  else if (d.aovT < -10) t.push('<span class="tag tag-purple">💜 客单价下滑</span>');
+  if (d.aov < BASE.aov * 0.5) t.push('<span class="tag tag-purple">💜 客单价偏低</span>');
+  if (d.avgdurT < -10) t.push('<span class="tag tag-yellow">⚠️ 开播时长萎缩</span>');
+  if (d.aovT > 20) t.push('<span class="tag tag-green">💚 客单价大幅提升</span>');
+  if (!t.length) t.push('<span class="tag tag-green">✅ 漏斗整体健康</span>');
+  return t.join('');
+}
+
+function funnelRow(name, val, base, display, baseDisplay, diff, diffDisplay, cls, width) {
+  return `
+    <div class="funnel-row">
+      <div class="funnel-left"><div class="funnel-name-label">${name}</div></div>
+      <div class="funnel-center">
+        <div class="funnel-bar-bg">
+          <div class="funnel-fill ${cls}" style="width:${width}"></div>
+          <div class="funnel-base-line" style="left:60%"></div>
+          <span class="funnel-val-overlay">${display}</span>
+        </div>
+      </div>
+      <div class="funnel-right">
+        <div class="funnel-compare">基准 ${baseDisplay}</div>
+        <div class="funnel-yoy ${diff>=0?'up':'down'}">${diff>=0?'+':''}${diffDisplay}</div>
+      </div>
+    </div>`;
+}
+
+function buildCard(d, rank) {
+  const sev = getSeverity(d);
+  const sevClass = ['sev-label-0','sev-label-1','sev-label-2','sev-label-3'][sev];
+  const sevText = ['✅ 全链路健康','🟡 轻微问题','🟠 中等问题','🔴 严重断点'][sev];
+
+  // 供给行
+  const durW = getBarWidth(d.avgdur, BASE.avgdur, 20000);
+  const durCls = 'supply';
+  const sessW = getBarWidth(d.avgsess, BASE.avgsess);
+  const sessCls = 'supply';
+
+  // 漏斗行
+  const hexpW = getBarWidth(d.hexp, BASE.hexp, 25000);
+  const ctrW = getBarWidth(d.ctr, BASE.ctr);
+  const cvrW = getBarWidth(d.cvr, BASE.cvr);
+  const convW = getBarWidth(d.conv, BASE.conv);
+  const aovW = getBarWidth(d.aov, BASE.aov, 2000);
+
+  // 双入口格子 - 判断哪个更强
+  const huxiCls = d.huxi_ctr >= 1.0 ? '#16a34a' : d.huxi_ctr >= 0.7 ? '#eab308' : '#e8372c';
+  const zhibo_ctrCls = d.zhibo_ctr >= 2.5 ? '#16a34a' : d.zhibo_ctr >= 1.8 ? '#eab308' : '#e8372c';
+  const huxiCvrCls = d.huxi_cvr >= 3.0 ? '#16a34a' : d.huxi_cvr >= 2.0 ? '#eab308' : '#e8372c';
+  const zhibo_cvrCls = d.zhibo_cvr >= 1.5 ? '#16a34a' : d.zhibo_cvr >= 1.0 ? '#eab308' : '#e8372c';
+
+  return `
+  <div class="diag-card sev-${sev}" data-gmv="${d.gmv}" data-sev="${sev}" data-hexp="${d.hexp}">
+    <div class="card-header">
+      <div class="card-rank">#${rank}</div>
+      <div class="card-name-block">
+        <div class="card-name">${d.name}</div>
+        <div class="card-meta">
+          <span><span class="carrier-badge ${CARRIER_CLASS[d.type]||'cb-gray'}">${d.type}</span></span>
+          <span>店播GMV <b>${d.gmv}亿</b> <span class="${d.gmvT>=0?'up':'down'}">${d.gmvT>=0?'+':''}${d.gmvT}%</span></span>
+          <span>占行业GMV <b>${d.gmvShare}%</b></span>
+          <span>总曝光 <b>${d.exp}亿</b> <span class="${d.expT>=0?'up':'down'}">${d.expT>=0?'+':''}${d.expT}%</span></span>
+          <span>商家 <b>${d.totalMer}</b>家</span>
+          <span>涨粉 <b>${d.fans}万</b> <span class="${d.fansT>=0?'up':'down'}">${d.fansT>=0?'+':''}${d.fansT}%</span></span>
+        </div>
+      </div>
+      <div class="card-severity"><span class="severity-label ${sevClass}">${sevText}</span></div>
+    </div>
+
+    <div class="card-body">
+      <div class="funnel-visual">
+        <div style="font-size:10px;color:#94a3b8;margin-bottom:2px;padding-left:120px">← 不足 ｜ <span style="color:#6b7280">▏基准线</span> ｜ 达标 →</div>
+
+        <div class="section-label">📦 供给层</div>
+        ${funnelRow('店均时长', d.avgdur, BASE.avgdur,
+          Math.round(d.avgdur/60)+'min', Math.round(BASE.avgdur/60)+'min',
+          d.avgdurT, d.avgdurT.toFixed(1)+'%', durCls, durW)}
+        ${funnelRow('开播场次', d.avgsess, BASE.avgsess,
+          d.avgsess.toFixed(1)+'场', BASE.avgsess+'场',
+          d.avgsess-BASE.avgsess, (d.avgsess-BASE.avgsess).toFixed(1)+'场', sessCls, sessW)}
+
+        <div class="funnel-connector"><div class="funnel-connector-line"></div><div class="funnel-connector-label">→ 单h曝光（流量效率）</div><div class="funnel-connector-line"></div></div>
+        ${funnelRow('单h曝光', d.hexp, BASE.hexp,
+          Math.round(d.hexp).toLocaleString()+'次', Math.round(BASE.hexp).toLocaleString()+'次',
+          d.hexpT, d.hexpT.toFixed(1)+'%', getBarClass(d.hexp,BASE.hexp), hexpW)}
+
+        <div class="funnel-connector"><div class="funnel-connector-line"></div><div class="funnel-connector-label">→ CTR 封面点击率</div><div class="funnel-connector-line"></div></div>
+        ${funnelRow('CTR 封面点击', d.ctr, BASE.ctr,
+          d.ctr.toFixed(3)+'%', BASE.ctr+'%',
+          d.ctr-BASE.ctr, (d.ctr-BASE.ctr).toFixed(3)+'%', getBarClass(d.ctr,BASE.ctr), ctrW)}
+
+        <!-- 双入口拆解 -->
+        <div class="dual-entry">
+          <div class="entry-box huxi">
+            <div class="entry-title">🫧 呼吸灯入口</div>
+            <div class="entry-row"><span>CTR</span><span class="entry-val" style="color:${huxiCls}">${d.huxi_ctr.toFixed(3)}%</span></div>
+            <div class="entry-row"><span>CVR</span><span class="entry-val" style="color:${huxiCvrCls}">${d.huxi_cvr.toFixed(3)}%</span></div>
+          </div>
+          <div class="entry-box zhibo">
+            <div class="entry-title">📺 直播卡入口</div>
+            <div class="entry-row"><span>CTR</span><span class="entry-val" style="color:${zhibo_ctrCls}">${d.zhibo_ctr.toFixed(3)}%</span></div>
+            <div class="entry-row"><span>CVR</span><span class="entry-val" style="color:${zhibo_cvrCls}">${d.zhibo_cvr.toFixed(3)}%</span></div>
+          </div>
+        </div>
+
+        <div class="funnel-connector"><div class="funnel-connector-line"></div><div class="funnel-connector-label">→ CVR 进播率</div><div class="funnel-connector-line"></div></div>
+        ${funnelRow('CVR 进播率', d.cvr, BASE.cvr,
+          d.cvr.toFixed(3)+'%', BASE.cvr+'%',
+          d.cvr-BASE.cvr, (d.cvr-BASE.cvr).toFixed(3)+'%', getBarClass(d.cvr,BASE.cvr), cvrW)}
+
+        <div class="funnel-connector"><div class="funnel-connector-line"></div><div class="funnel-connector-label">→ 商品转化率</div><div class="funnel-connector-line"></div></div>
+        ${funnelRow('商品转化率', d.conv, BASE.conv,
+          d.conv.toFixed(3)+'%', BASE.conv+'%',
+          d.conv-BASE.conv, (d.conv-BASE.conv).toFixed(3)+'%', getBarClass(d.conv,BASE.conv), convW)}
+
+        <div class="funnel-connector"><div class="funnel-connector-line"></div><div class="funnel-connector-label">→ 客单价（vs中位数¥168.6）</div><div class="funnel-connector-line"></div></div>
+        ${funnelRow('客单价', d.aov, BASE.aov,
+          '¥'+d.aov.toLocaleString(), '¥'+BASE.aov,
+          d.aov-BASE.aov, '¥'+(d.aov-BASE.aov>0?'+':'')+Math.round(d.aov-BASE.aov), getBarClass(d.aov,BASE.aov), aovW)}
+
+        <div class="gpm-bar">
+          <span style="font-size:11px;color:#6b7280">GPM结果：</span>
+          <span style="font-size:16px;font-weight:700;color:${d.gpm>=30?'#16a34a':'#e8372c'}">${d.gpm}</span>
+          <span style="font-size:10px;color:#6b7280">元 / 基准~38元</span>
+          <div style="flex:1;height:8px;background:#f1f5f9;border-radius:4px;overflow:hidden;margin-left:8px">
+            <div style="width:${Math.min(100,d.gpm/38*60+5)}%;height:100%;background:${d.gpm>=38?'#16a34a':'#f97316'};border-radius:4px"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="right-panel">
+        <div class="tags-row">${buildTags(d)}</div>
+        <div class="conclusion-box">
+          <div class="conclusion-title">🔍 问题诊断</div>
+          <div class="conclusion-text">${d.context}</div>
+        </div>
+        <div class="conclusion-box" style="border-left-color:#16a34a">
+          <div class="conclusion-title" style="color:#16a34a">▶ 行动建议</div>
+          <div class="conclusion-text">${d.actions.map(a=>'<div style="margin-bottom:4px">'+a+'</div>').join('')}</div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderCards(sortKey) {
+  const sorted = [...industries];
+  if (sortKey === 'gmv') sorted.sort((a,b) => b.gmv - a.gmv);
+  else if (sortKey === 'sev') sorted.sort((a,b) => getSeverity(b)-getSeverity(a)||b.gmv-a.gmv);
+  else if (sortKey === 'hexp') sorted.sort((a,b) => a.hexp - b.hexp);
+  document.getElementById('cards-container').innerHTML = sorted.map((d,i) => buildCard(d,i+1)).join('');
+}
+function sortCards(key, btn) {
+  document.querySelectorAll('.sort-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderCards(key);
+}
+renderCards('gmv');
+</script>
+</body>
+</html>
