@@ -4,7 +4,180 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>行业三部 · 商笔 & 店播漏斗诊断 2026-05-26</title>
-<script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js">
+// ─── diag层切换逻辑 ───
+function switchDiag(layerId, btn) {
+  // 隐藏笔记/店播panel，显示diag panel
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('p-gmv').classList.add('active');
+  // 切换layer
+  document.querySelectorAll('.layer').forEach(l => l.classList.remove('active'));
+  document.getElementById(layerId).classList.add('active');
+  // tab按钮高亮
+  document.querySelectorAll('.tab-btn').forEach(b => {
+    b.classList.remove('active-note','active-live','active-diag');
+  });
+  btn.classList.add('active-diag');
+  // 隐藏排序按钮
+  document.getElementById('s-note').style.display='none';
+  document.getElementById('s-live').style.display='none';
+}
+
+// 覆盖switchTab，保证diag tab取消高亮
+const _origSwitchTab = switchTab;
+switchTab = function(which) {
+  document.querySelectorAll('.tab-btn').forEach(b => {
+    b.classList.remove('active-diag');
+  });
+  _origSwitchTab(which);
+};
+
+<script>
+// ===== UTILITIES =====
+function showLayer(id,btn){
+  document.querySelectorAll('.layer').forEach(l=>l.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+function cc(v){return v>0?'up':v<0?'down':'flat'}
+function fmt(v,dec=1){return v>=0?'+'+v.toFixed(dec):v.toFixed(dec)}
+function fmtPct(v,dec=1){return (v>=0?'+':'')+v.toFixed(dec)+'%'}
+function colorClass(s){return s.startsWith('+')||s.startsWith('+')?'up':s.startsWith('-')?'down':'flat'}
+
+// ===== SHARED DATA =====
+const industries=[
+  'one','eleven_play','nine','five','twelve','two','ten_f','four','eight_ce','fifteen','seven','six','thirteen_e','eleven_v','fourteen','ten_d','eight_he','three','thirteen_b'
+];
+
+// Layer 1 data (sorted by GMV desc)
+const l1Data=[
+  {n:'一组（文玩玉翠）',gmv:100299,gt:-3.68,dian:71,k:18,shang:9,bi:2,type:'店播主导'},
+  {n:'十一组（潮玩）',gmv:46226,gt:-5.38,dian:61,k:5,shang:20,bi:14,type:'店播主导'},
+  {n:'九组（家用）',gmv:25633,gt:2.80,dian:34,k:22,shang:17,bi:27,type:'混合'},
+  {n:'五组（休食）',gmv:23595,gt:-3.25,dian:26,k:15,shang:27,bi:32,type:'混合'},
+  {n:'十二组（手工）',gmv:22473,gt:-5.31,dian:65,k:5,shang:18,bi:12,type:'店播主导'},
+  {n:'二组（亲子生活）',gmv:22190,gt:-15.74,dian:38,k:21,shang:21,bi:21,type:'混合'},
+  {n:'十组（家纺）',gmv:17524,gt:11.16,dian:31,k:20,shang:22,bi:27,type:'混合'},
+  {n:'四组（大健康）',gmv:16372,gt:0,dian:20,k:31,shang:27,bi:23,type:'混合'},
+  {n:'八组（消费电子）',gmv:16192,gt:10.73,dian:19,k:8,shang:51,bi:22,type:'商卡主导'},
+  {n:'十五组（酒旅）',gmv:14658,gt:-15.73,dian:61,k:7,shang:26,bi:6,type:'店播主导'},
+  {n:'七组（家具）',gmv:13585,gt:27.00,dian:23,k:57,shang:15,bi:5,type:'K播主导'},
+  {n:'六组（生鲜）',gmv:13208,gt:-3.53,dian:28,k:14,shang:27,bi:30,type:'混合'},
+  {n:'十三组（教育）',gmv:12729,gt:45.10,dian:14,k:38,shang:23,bi:24,type:'混合'},
+  {n:'十一组（虚拟）',gmv:10672,gt:4.55,dian:9,k:9,shang:28,bi:54,type:'笔记主导'},
+  {n:'十四组（二奢）',gmv:10332,gt:-9.46,dian:76,k:1,shang:20,bi:3,type:'店播主导'},
+  {n:'十组（家饰）',gmv:9182,gt:-1.79,dian:57,k:10,shang:16,bi:16,type:'店播主导'},
+  {n:'八组（家电）',gmv:8726,gt:24.33,dian:23,k:34,shang:25,bi:17,type:'混合'},
+  {n:'三组（宠物）',gmv:5129,gt:-0.58,dian:17,k:6,shang:36,bi:41,type:'混合'},
+  {n:'十三组（图书）',gmv:4613,gt:-18.91,dian:13,k:19,shang:16,bi:52,type:'笔记主导'},
+];
+const typeClass={
+  '店播主导':'badge-blue','K播主导':'badge-purple','商卡主导':'badge-green','笔记主导':'badge-orange','混合':'badge-gray'
+};
+const tbody1=document.getElementById('l1-tbody');
+l1Data.forEach((d,i)=>{
+  const gtc=d.gt>0?'up':d.gt<0?'down':'flat';
+  tbody1.innerHTML+=`<tr>
+    <td>${i+1}</td><td><b>${d.n}</b></td>
+    <td>${d.gmv.toLocaleString()}</td>
+    <td class="${gtc}">${d.gt>0?'+':''}${d.gt.toFixed(2)}%</td>
+    <td>
+      <div class="carrier-mini">
+        <div class="carrier-mini-seg" style="width:${d.dian}%;background:#2563eb"></div>
+        <div class="carrier-mini-seg" style="width:${d.k}%;background:#7c3aed"></div>
+        <div class="carrier-mini-seg" style="width:${d.shang}%;background:#16a34a"></div>
+        <div class="carrier-mini-seg" style="width:${d.bi}%;background:#f97316"></div>
+      </div>
+    </td>
+    <td><span class="badge ${typeClass[d.type]}">${d.type}</span></td>
+    <td>${d.dian}%</td><td>${d.k}%</td><td>${d.shang}%</td><td>${d.bi}%</td>
+  </tr>`;
+});
+
+// Layer 2 data
+const l2Data=[
+  {n:'八组（家电）',b56:37,avgT:19.02,deg:9.68,leap:19.64,diag:'头部稳定 腰部激活',sig:'green'},
+  {n:'四组（大健康）',b56:78,avgT:1.31,deg:18.42,leap:12.15,diag:'头部稳定 腰部偏弱',sig:'green'},
+  {n:'一组（文玩玉翠）',b56:395,avgT:-2.66,deg:19.90,leap:15.58,diag:'头部稳定',sig:'green'},
+  {n:'七组（家具）',b56:60,avgT:12.14,deg:15.91,leap:21.88,diag:'腰部激活强 头部稳',sig:'green'},
+  {n:'五组（休食）',b56:101,avgT:8.84,deg:26.61,leap:10.08,diag:'头部有压 腰部弱',sig:'yellow'},
+  {n:'九组（家用）',b56:98,avgT:5.75,deg:27.66,leap:19.10,diag:'头部小幅流失',sig:'yellow'},
+  {n:'十二组（手工）',b56:70,avgT:-0.96,deg:27.78,leap:17.62,diag:'头部承压',sig:'yellow'},
+  {n:'十五组（酒旅）',b56:41,avgT:-23.14,deg:24.32,leap:13.11,diag:'头部GMV暴跌',sig:'yellow'},
+  {n:'十四组（二奢）',b56:39,avgT:-11.84,deg:33.33,leap:17.18,diag:'头部松动 逼近红线',sig:'yellow'},
+  {n:'八组（消费电子）',b56:40,avgT:34.34,deg:32.50,leap:11.19,diag:'头部分化 强者跑出',sig:'yellow'},
+  {n:'十一组（虚拟）',b56:19,avgT:11.28,deg:22.22,leap:34.83,diag:'腰部激活强劲',sig:'yellow'},
+  {n:'十一组（潮玩）',b56:92,avgT:-9.56,deg:46.67,leap:32.05,diag:'⚠️头部严重出血',sig:'red'},
+  {n:'十三组（教育）',b56:35,avgT:109.38,deg:44.12,leap:29.41,diag:'头部剧烈分化 强者涌现',sig:'red'},
+  {n:'二组（亲子生活）',b56:97,avgT:-11.15,deg:40.16,leap:12.41,diag:'⚠️头部萎缩 腰部乏力',sig:'red'},
+  {n:'十组（家纺）',b56:63,avgT:32.02,deg:40.00,leap:19.66,diag:'降级高但均值升 两极分化',sig:'red'},
+  {n:'六组（生鲜）',b56:62,avgT:5.69,deg:38.36,leap:21.13,diag:'头部流失严重',sig:'red'},
+  {n:'十组（家饰）',b56:30,avgT:0.94,deg:37.50,leap:20.78,diag:'头部大幅降级',sig:'red'},
+  {n:'三组（宠物）',b56:8,avgT:10.70,deg:42.86,leap:15.83,diag:'头部极少且出血',sig:'red'},
+  {n:'十三组（图书）',b56:18,avgT:-22.76,deg:40.91,leap:19.66,diag:'⚠️头部出血+GMV双跌',sig:'red'},
+];
+const tbody2=document.getElementById('l2-tbody');
+l2Data.forEach(d=>{
+  const tc=d.avgT>0?'up':d.avgT<0?'down':'flat';
+  const dc=d.deg<20?'#16a34a':d.deg<35?'#eab308':'#e8372c';
+  const degPct=Math.min(100,d.deg);
+  const diagClass=d.sig==='red'?'badge-red':d.sig==='yellow'?'badge badge-gray':'badge-green';
+  tbody2.innerHTML+=`<tr>
+    <td><span class="signal signal-${d.sig}"></span></td>
+    <td><b>${d.n}</b></td>
+    <td>${d.b56}</td>
+    <td class="${tc}">${d.avgT>0?'+':''}${d.avgT.toFixed(2)}%</td>
+    <td style="color:${dc};font-weight:700">${d.deg.toFixed(1)}%</td>
+    <td>
+      <div style="display:flex;align-items:center;gap:6px">
+        <div style="flex:1;height:12px;background:#f1f5f9;border-radius:3px;overflow:hidden">
+          <div style="width:${degPct}%;height:100%;background:${dc};border-radius:3px"></div>
+        </div>
+        <span style="font-size:10px;color:${dc}">${d.deg.toFixed(1)}%</span>
+      </div>
+    </td>
+    <td class="${d.leap>18.93?'up':'flat'}">${d.leap.toFixed(1)}%</td>
+    <td><span class="badge ${diagClass}">${d.diag}</span></td>
+  </tr>`;
+});
+
+// Layer 3 carrier data
+const l3Data=l1Data.map(d=>({...d,
+  dianT: d.gt<0?`${d.gt.toFixed(1)}%`:`+${d.gt.toFixed(1)}%`,
+  kT:'-',shT:'-',biT:'-'
+}));
+const overrideT={
+  '七组（家具）':{kT:'+27.0%'},
+  '十三组（教育）':{kT:'+45.1%',biT:'+42.9%'},
+  '八组（家电）':{kT:'+24.3%'},
+  '八组（消费电子）':{shT:'+10.7%'},
+};
+const tbody3=document.getElementById('l3-tbody');
+l1Data.forEach(d=>{
+  const ov=overrideT[d.n]||{};
+  const dT=d.gt>=0?`+${d.gt.toFixed(1)}%`:`${d.gt.toFixed(1)}%`;
+  const kT=ov.kT||'-';const shT=ov.shT||'-';const biT=ov.biT||'-';
+  tbody3.innerHTML+=`<tr>
+    <td><b>${d.n}</b></td>
+    <td>
+      <div class="carrier-row" style="width:200px">
+        <div class="carrier-seg" style="width:${d.dian}%;background:#2563eb">${d.dian>10?d.dian+'%':''}</div>
+        <div class="carrier-seg" style="width:${d.k}%;background:#7c3aed">${d.k>10?d.k+'%':''}</div>
+        <div class="carrier-seg" style="width:${d.shang}%;background:#16a34a">${d.shang>10?d.shang+'%':''}</div>
+        <div class="carrier-seg" style="width:${d.bi}%;background:#f97316">${d.bi>10?d.bi+'%':''}</div>
+      </div>
+    </td>
+    <td><span class="badge ${typeClass[d.type]}">${d.type}</span></td>
+    <td class="${colorClass(dT)}">${dT}</td>
+    <td class="${colorClass(kT)}">${kT}</td>
+    <td class="${colorClass(shT)}">${shT}</td>
+    <td class="${colorClass(biT)}">${biT}</td>
+  </tr>`;
+});
+
+
+</script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif;background:#f0f2f5;color:#1a1a2e;font-size:13px}
@@ -14,6 +187,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei
 .tab-bar{position:fixed;top:50px;left:0;right:0;z-index:190;background:#1e293b;display:flex;align-items:center;border-bottom:2px solid #334155;height:44px}
 .tab-btn{padding:0 28px;cursor:pointer;font-size:13px;font-weight:600;color:#94a3b8;border:none;background:transparent;border-bottom:3px solid transparent;height:44px;margin-bottom:-2px;transition:all .2s}
 .tab-btn.active-note{color:#fff;border-bottom-color:#2563eb}
+.tab-btn.active-diag{color:#fff;border-bottom-color:#10b981}
 .tab-btn.active-live{color:#fff;border-bottom-color:#7c3aed}
 .tab-sort{margin-left:auto;display:flex;gap:6px;padding-right:16px}
 .sort-btn{padding:4px 10px;border:1px solid #374151;background:transparent;color:#94a3b8;cursor:pointer;font-size:11px;border-radius:6px;transition:all .2s}
@@ -122,6 +296,35 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei
 .cb-o{background:#ffedd5;color:#c2410c;display:inline-block;padding:2px 6px;border-radius:7px;font-size:10px;font-weight:600}
 .cb-gr{background:#f3f4f6;color:#374151;display:inline-block;padding:2px 6px;border-radius:7px;font-size:10px;font-weight:600}
 .up{color:#16a34a}.dn{color:#e8372c}
+
+/* ─── diag层 额外样式 ─── */
+.section-title{font-size:13px;font-weight:700;color:#1a1a2e;margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid #e5e7eb}
+.kpi-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.kpi-row .kpi{background:#f8fafc;border-radius:10px;padding:10px 14px;min-width:120px;text-align:center}
+.kpi-label{font-size:10px;color:#6b7280;margin-bottom:3px}
+.kpi-value{font-size:16px;font-weight:800;color:#1a1a2e}
+.kpi-sub{font-size:11px;margin-top:2px}
+.tbl-wrap{overflow-x:auto;margin-bottom:10px;border-radius:8px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{background:#1e293b;color:#fff;padding:7px 10px;text-align:left;font-weight:600;white-space:nowrap}
+td{padding:6px 10px;border-bottom:1px solid #f1f5f9;vertical-align:middle}
+tr:hover td{background:#f8fafc}
+.up{color:#16a34a;font-weight:600}.down{color:#e8372c;font-weight:600}.flat{color:#6b7280}
+.badge{display:inline-block;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:700}
+.badge-blue{background:#dbeafe;color:#1d4ed8}
+.badge-purple{background:#ede9fe;color:#6d28d9}
+.badge-green{background:#dcfce7;color:#15803d}
+.badge-orange{background:#ffedd5;color:#c2410c}
+.badge-gray{background:#f3f4f6;color:#374151}
+.badge-red{background:#fee2e2;color:#b91c1c}
+.signal{display:inline-block;width:10px;height:10px;border-radius:50%}
+.signal-green{background:#16a34a}.signal-yellow{background:#eab308}.signal-red{background:#e8372c}
+.carrier-row{display:flex;height:18px;border-radius:4px;overflow:hidden}
+.carrier-seg{display:flex;align-items:center;justify-content:center;font-size:9px;color:#fff;font-weight:700}
+.carrier-mini{display:flex;height:14px;border-radius:3px;overflow:hidden;width:160px}
+.carrier-mini-seg{height:100%}
+.layer{display:none}.layer.active{display:block}
+
 </style>
 </head>
 <body>
@@ -130,9 +333,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei
   <div class="nav-sub">2026-04-27~05-26 · GMV YoY 为年同比，漏斗指标为环比上期</div>
 </nav>
 <div class="tab-bar">
-  <button class="tab-btn active-note" id="tb-note" onclick="switchTab('note')">📝 笔记诊断</button>
+  <button class="tab-btn active-diag" id="tb-gmv" onclick="switchDiag('l1',this)">📊 GMV大盘</button>
+  <button class="tab-btn" id="tb-blevel" onclick="switchDiag('l2',this)">🏷️ 商家分层</button>
+  <button class="tab-btn" id="tb-carrier" onclick="switchDiag('l3',this)">📦 载体结构</button>
+  <button class="tab-btn" id="tb-note" onclick="switchTab('note')">📝 笔记诊断</button>
   <button class="tab-btn" id="tb-live" onclick="switchTab('live')">📡 店播诊断</button>
-  <div class="tab-sort" id="s-note">
+  <div class="tab-sort" id="s-note" style="display:none">
     <button class="sort-btn an" onclick="sortNote('gmv',this)">按GMV↓</button>
     <button class="sort-btn" onclick="sortNote('sev',this)">按严重程度↓</button>
     <button class="sort-btn" onclick="sortNote('pv',this)">按篇均曝光↑</button>
@@ -145,8 +351,72 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei
 </div>
 
 <div class="content">
+<!-- ── GMV大盘 ── -->
+<div class="tab-panel active" id="p-gmv">
+  <div style="background:#fff;border-radius:14px;padding:16px 20px;box-shadow:0 2px 8px rgba(0,0,0,.08)">
+<div class="layer active" id="l1">
+  <div class="section-title">① GMV 大盘总览 · 2026-04-27~05-26</div>
+  <div class="kpi-row">
+    <div class="kpi"><div class="kpi-label">整体GMV</div><div class="kpi-value">¥39.33亿</div><div class="kpi-sub down">环比 -1.30%</div></div>
+    <div class="kpi"><div class="kpi-label">店播 GMV</div><div class="kpi-value">¥18.45亿</div><div class="kpi-sub down">-3.3%</div></div>
+    <div class="kpi"><div class="kpi-label">K播 GMV</div><div class="kpi-value">¥6.64亿</div><div class="kpi-sub up">+5.2% ✅唯一正增</div></div>
+    <div class="kpi"><div class="kpi-label">商卡 GMV</div><div class="kpi-value">¥7.77亿</div><div class="kpi-sub up">+0.8%</div></div>
+    <div class="kpi"><div class="kpi-label">笔记 GMV</div><div class="kpi-value">¥6.42亿</div><div class="kpi-sub down">-3.5%</div></div>
+  </div>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>#</th><th>行业组</th><th>总GMV(万)</th><th>环比</th><th>载体分布</th><th>主导</th><th>店播占比</th><th>K播占比</th><th>商卡占比</th><th>笔记占比</th></tr></thead>
+    <tbody id="l1-tbody"></tbody>
+  </table></div>
+  <div style="background:#fff;border-radius:10px;padding:14px;box-shadow:0 1px 4px rgba(0,0,0,.08);font-size:12px;line-height:1.8">
+    ✅ <b>增长：</b>教育+45% · 家具+27% · 家电+24% · 家纺+11% · 消费电子+11%（均由K播/商卡驱动）<br>
+    🔴 <b>失血：</b>图书-19% · 酒旅-16% · 亲子-16% · 二奢-9%（主要是店播GMV下滑）<br>
+    ⚠️ K播是本月唯一正增长载体(+5.2%)；供给放量但分发跟不上是大盘核心矛盾
+  </div>
+</div>
+
+<!-- L2 商家分层 -->
+<div class="layer" id="l2">
+  <div class="section-title">② 商家分层健康度 · B5/6降级率 + B4跃迁率</div>
+  <div class="kpi-row">
+    <div class="kpi"><div class="kpi-label">B5/6商家数</div><div class="kpi-value">1,383家</div><div class="kpi-sub">降级405家 <span class="down">(28.6%)</span></div></div>
+    <div class="kpi"><div class="kpi-label">B4跃迁基准</div><div class="kpi-value">18.93%</div><div class="kpi-sub flat">行业整体</div></div>
+    <div class="kpi"><div class="kpi-label">🔴 红线</div><div class="kpi-value" style="color:#e8372c">>35%降级</div><div class="kpi-sub down">8个行业触发</div></div>
+    <div class="kpi"><div class="kpi-label">🟡 黄线</div><div class="kpi-value" style="color:#eab308">20-35%</div><div class="kpi-sub flat">7个行业在此</div></div>
+  </div>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>健康度</th><th>行业组</th><th>B5/6数</th><th>店均GMV环比</th><th>降级率</th><th>降级率可视化</th><th>跃迁率</th><th>诊断</th></tr></thead>
+    <tbody id="l2-tbody"></tbody>
+  </table></div>
+</div>
+
+<!-- L3 载体结构 -->
+<div class="layer" id="l3">
+  <div class="section-title">③ 各行业载体结构 · 四载体占比与趋势</div>
+  <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:10px">
+    <div style="display:flex;align-items:center;gap:5px;font-size:11px"><div style="width:12px;height:12px;border-radius:2px;background:#2563eb"></div>店播</div>
+    <div style="display:flex;align-items:center;gap:5px;font-size:11px"><div style="width:12px;height:12px;border-radius:2px;background:#7c3aed"></div>K播</div>
+    <div style="display:flex;align-items:center;gap:5px;font-size:11px"><div style="width:12px;height:12px;border-radius:2px;background:#16a34a"></div>商卡</div>
+    <div style="display:flex;align-items:center;gap:5px;font-size:11px"><div style="width:12px;height:12px;border-radius:2px;background:#f97316"></div>笔记</div>
+  </div>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>行业组</th><th>载体占比分布</th><th>主导</th><th>店播趋势</th><th>K播趋势</th><th>商卡趋势</th><th>笔记趋势</th></tr></thead>
+    <tbody id="l3-tbody"></tbody>
+  </table></div>
+  <div style="background:#fff;border-radius:10px;padding:14px;box-shadow:0 1px 4px rgba(0,0,0,.08);font-size:12px;line-height:1.8">
+    🔵 <b>店播主导(&gt;50%)：</b>二奢76% · 文玩玉翠71% · 手工65% · 潮玩61% · 酒旅61% · 家饰57%<br>
+    🟣 <b>K播主导：</b>家具57% — 全行业K播最高，高度依赖头K能力<br>
+    🟢 <b>商卡主导：</b>消费电子51% — 标品搜索属性强<br>
+    🟠 <b>笔记主导：</b>虚拟54% · 图书52% — 低客单强种草品类
+  </div>
+</div>
+
+<!-- L4 店播诊断 -->
+
+  </div>
+</div>
+
 <!-- ── 笔记 ── -->
-<div class="tab-panel active" id="p-note">
+<div class="tab-panel" id="p-note">
   <div class="summary-bar note">
     <div class="summary-title">📝 商笔大盘 · 2026-04-27~05-26（GMV YoY为年同比）</div>
     <div class="summary-kpis">
