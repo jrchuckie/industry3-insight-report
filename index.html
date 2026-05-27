@@ -477,16 +477,15 @@ function mkBubble(elId,data,xField,yField,sizeField,xBase,yBase,xUnit,yUnit){
       axisLabel:{formatter:v=>v+xUnit}},
     yAxis:{name:'GPM('+yUnit+')',splitLine:{lineStyle:{type:'dashed'}},
       axisLabel:{formatter:v=>v+yUnit}},
+    graphic:[
+      {type:'text',left:'72%',top:'10%',style:{text:'🟢 明星',fill:'#16a34a',fontSize:11,fontWeight:'bold'}},
+      {type:'text',left:'5%',top:'10%',style:{text:'🟣 高效精品',fill:'#7c3aed',fontSize:11,fontWeight:'bold'}},
+      {type:'text',left:'72%',top:'82%',style:{text:'🟠 流量洼地',fill:'#f97316',fontSize:11,fontWeight:'bold'}},
+      {type:'text',left:'5%',top:'82%',style:{text:'🔴 双弱待援',fill:'#e8372c',fontSize:11,fontWeight:'bold'}},
+    ],
     series:[{type:'scatter',data:pts,
       label:{show:true,formatter:p=>p.data.name.replace(/^(.*?)（/,'').replace(/）.*/,'').replace(/组（?/,''),position:'right',fontSize:9,color:'#374151'}}]
   });
-  // 象限标注
-  c.setOption({graphic:[
-    {type:'text',left:'72%',top:'10%',style:{text:'🟢 明星',fill:'#16a34a',fontSize:11,fontWeight:'bold'}},
-    {type:'text',left:'5%',top:'10%',style:{text:'🟣 高效精品',fill:'#7c3aed',fontSize:11,fontWeight:'bold'}},
-    {type:'text',left:'72%',top:'82%',style:{text:'🟠 流量洼地',fill:'#f97316',fontSize:11,fontWeight:'bold'}},
-    {type:'text',left:'5%',top:'82%',style:{text:'🔴 双弱待援',fill:'#e8372c',fontSize:11,fontWeight:'bold'}},
-  ]},true,false);
 }
 
 // ═══ 排序 & 渲染 ═══
