@@ -262,12 +262,12 @@ function bc(v,b){if(!b)return'ok';if(v>=b)return'ok';if(v>=b*.7)return'warn';ret
 function bw(v,b,cap){const vv=cap?Math.min(v,cap):v;const r=b?vv/b:0.5;return Math.min(95,Math.max(4,r*60))+'%';}
 function frow(lbl,val,base,dispV,dispB,diffStr,cls,width,isSup){
   const cc=isSup?'sup':cls;
-  return `<div class="funnel-row"><div class="fl">${lbl}</div><div class="fc"><div class="fb"><div class="ff ${cc}" style="width:${width}"></div><div class="fbl" style="left:60%"></div><span class="fvo">${dispV}</span></div></div><div class="fr"><div class="fr-base">基准 ${dispB}</div><div class="fr-val ${diffStr.startsWith('-')||diffStr.startsWith('▼')?'dn':'up'}">${diffStr}</div></div></div>`;
+  return `<div class="funnel-row"><div class="fl">${lbl}</div><div class="fc"><div class="fb"><div class="ff ${cc}" style="width:${width}"></div><div class="fbl" style="left:60%"></div><span class="fvo">${dispV}</span></div></div><div class="fr"><div class="fr-base">基准 ${dispB}</div><div class="fr-val ${diffStr.startsWith('-')||diffStr.startsWith('▼')?'dn':'up'}">vs基: ${diffStr}</div></div></div>`;
 }
 
 // ═══ 笔记漏斗卡片 ═══
 const NB={pv:62,notePerMer:373,ctr1:15.06,ctr2:9.13,cvr:6.53,aov:50.9,gpm:38.2};
-function nSev(d){let n=0;if(d.pavg<NB.pv*.8)n++;if(d.ctr1<NB.ctr1*.9)n++;if(d.ctr2<NB.ctr2*.85)n++;if(d.cvr<NB.cvr*.7)n++;if(d.aovT<-15)n++;return Math.min(3,n);}
+function nSev(d){let n=0;if(d.pavg<NB.pv*.8)n++;if(d.ctr1<NB.ctr1*.9)n++;if(d.ctr2<NB.ctr2*.85)n++;if(d.cvr<NB.cvr*.7)n++;if(d.aov<NB.aov*0.7)n++;return Math.min(3,n);}
 function nTags(d){const t=[];
   if(d.pavg<40)t.push('<span class="tag tr">🔵 流量严重稀释</span>');
   else if(d.pavg<NB.pv*.8)t.push('<span class="tag tb">🔵 流量稀释</span>');
@@ -280,7 +280,8 @@ function nTags(d){const t=[];
   if(d.aovT<-30)t.push('<span class="tag tp">💜 客单暴跌</span>');
   else if(d.aovT<-10)t.push('<span class="tag tp">💜 客单下滑</span>');
   if(d.gmv_y<-15)t.push('<span class="tag tr">📉 GMV YoY严重跌</span>');
-  if(d.aovT>15)t.push('<span class="tag tg">💚 客单大幅提升</span>');
+  if(d.aov>=NB.aov*1.3)t.push('<span class="tag tg">💚 客单显著高于基准</span>');
+  else if(d.aov>=NB.aov*1.1)t.push('<span class="tag tg">💚 客单高于基准</span>');
   if(!t.length)t.push('<span class="tag tg">✅ 漏斗健康</span>');
   return t.join('');}
 
@@ -322,7 +323,7 @@ function buildNCard(d,rank){
       <div class="conn"><div class="cl"></div><div class="cn">→ CVR 转化率</div><div class="cl"></div></div>
       ${frow('CVR 转化率',d.cvr,NB.cvr,d.cvr.toFixed(3)+'%',NB.cvr+'%',(d.cvr-NB.cvr>=0?'+':'')+((d.cvr-NB.cvr).toFixed(3))+'%',bc(d.cvr,NB.cvr),bw(d.cvr,NB.cvr),false)}
       <div class="conn"><div class="cl"></div><div class="cn">→ 客单价（基准¥${NB.aov}中位数）</div><div class="cl"></div></div>
-      ${frow('客单价',d.aov,NB.aov,'¥'+d.aov,'¥'+NB.aov,(d.aov-NB.aov>=0?'▲+':'▼')+Math.round(Math.abs(d.aov-NB.aov)),aovBarCls,aovW,false)}
+      ${frow('客单价',d.aov,NB.aov,'¥'+d.aov,'¥'+NB.aov,(d.aov-NB.aov>=0?'▲+':'▼')+Math.round(Math.abs(d.aov-NB.aov))+'元 环比'+(d.aovT>=0?'+':'')+d.aovT+'%',aovBarCls,aovW,false)}
       <div class="gbar">
         <span style="font-size:11px;color:#6b7280">GPM：</span>
         <span style="font-size:15px;font-weight:700;color:${d.gpm>=NB.gpm?'#16a34a':'#e8372c'}">${d.gpm}</span>
@@ -415,7 +416,7 @@ function buildLCard(d,rank){
       <div class="conn"><div class="cl"></div><div class="cn">→ 商品转化率</div><div class="cl"></div></div>
       ${frow('商品转化率',d.conv,LB.conv,d.conv.toFixed(3)+'%',LB.conv+'%',(d.conv-LB.conv>=0?'+':'')+((d.conv-LB.conv).toFixed(3))+'%',bc(d.conv,LB.conv),bw(d.conv,LB.conv),false)}
       <div class="conn"><div class="cl"></div><div class="cn">→ 客单价（基准¥${LB.aov}中位数）</div><div class="cl"></div></div>
-      ${frow('客单价',d.aov,LB.aov,'¥'+d.aov,'¥'+LB.aov,(d.aov-LB.aov>=0?'▲+':'▼')+Math.round(Math.abs(d.aov-LB.aov)),bc(d.aov,LB.aov),bw(d.aov,LB.aov,2000),false)}
+      ${frow('客单价',d.aov,LB.aov,'¥'+d.aov,'¥'+LB.aov,(d.aov-LB.aov>=0?'▲+':'▼')+Math.round(Math.abs(d.aov-LB.aov))+'元 环比'+(d.aovT>=0?'+':'')+d.aovT+'%',bc(d.aov,LB.aov),bw(d.aov,LB.aov,2000),false)}
       <div class="gbar">
         <span style="font-size:11px;color:#6b7280">GPM：</span>
         <span style="font-size:15px;font-weight:700;color:${d.gpm>=LB.gpm?'#16a34a':'#e8372c'}">${d.gpm}</span>
