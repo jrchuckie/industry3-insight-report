@@ -3,973 +3,710 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>行业三部经营洞察报告 · 2026-05-26</title>
+<title>行业三部 · 商笔 & 店播漏斗诊断 2026-05-26</title>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
 <style>
-  :root {
-    --red: #e8372c;
-    --red-light: #fef2f1;
-    --orange: #f97316;
-    --orange-light: #fff7ed;
-    --green: #16a34a;
-    --green-light: #f0fdf4;
-    --blue: #2563eb;
-    --blue-light: #eff6ff;
-    --yellow: #ca8a04;
-    --yellow-light: #fefce8;
-    --gray: #6b7280;
-    --gray-light: #f9fafb;
-    --border: #e5e7eb;
-    --text: #111827;
-    --text-muted: #6b7280;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
-    background: #f3f4f6;
-    color: var(--text);
-    font-size: 14px;
-    line-height: 1.6;
-  }
-  /* Header */
-  .header {
-    background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
-    color: #fff;
-    padding: 32px 40px 24px;
-  }
-  .header-meta { font-size: 12px; color: #94a3b8; margin-bottom: 6px; letter-spacing: 0.05em; }
-  .header h1 { font-size: 26px; font-weight: 700; letter-spacing: -0.02em; }
-  .header-sub { font-size: 13px; color: #cbd5e1; margin-top: 6px; }
-  .period-badge {
-    display: inline-block;
-    background: rgba(255,255,255,0.12);
-    border: 1px solid rgba(255,255,255,0.2);
-    border-radius: 6px;
-    padding: 3px 10px;
-    font-size: 12px;
-    margin-top: 10px;
-  }
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif;background:#f0f2f5;color:#1a1a2e;font-size:13px}
 
-  /* Nav */
-  .nav {
-    background: #fff;
-    border-bottom: 1px solid var(--border);
-    padding: 0 40px;
-    display: flex;
-    gap: 0;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    overflow-x: auto;
-  }
-  .nav a {
-    display: block;
-    padding: 12px 16px;
-    font-size: 13px;
-    color: var(--text-muted);
-    text-decoration: none;
-    border-bottom: 2px solid transparent;
-    white-space: nowrap;
-    font-weight: 500;
-  }
-  .nav a:hover { color: var(--blue); border-bottom-color: var(--blue); }
+/* ── NAV ── */
+.nav{position:fixed;top:0;left:0;right:0;z-index:200;background:#0f172a;height:50px;display:flex;align-items:center;padding:0 20px;gap:16px}
+.nav-title{color:#fff;font-weight:700;font-size:14px;white-space:nowrap}
+.nav-sub{color:#94a3b8;font-size:11px}
 
-  /* Main layout */
-  .container { max-width: 1100px; margin: 0 auto; padding: 28px 20px 60px; }
+/* ── TABS ── */
+.tab-bar{position:fixed;top:50px;left:0;right:0;z-index:190;background:#1e293b;display:flex;border-bottom:2px solid #334155}
+.tab-btn{flex:1;max-width:200px;padding:12px 24px;cursor:pointer;font-size:13px;font-weight:600;color:#94a3b8;border:none;background:transparent;border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .2s;text-align:center}
+.tab-btn.active{color:#fff;border-bottom-color:#6366f1}
+.tab-btn:hover:not(.active){color:#cbd5e1}
 
-  /* Section */
-  .section { margin-bottom: 36px; }
-  .section-title {
-    font-size: 17px;
-    font-weight: 700;
-    color: var(--text);
-    margin-bottom: 16px;
-    padding-bottom: 10px;
-    border-bottom: 2px solid var(--border);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .section-title .icon { font-size: 18px; }
+.tab-sort{margin-left:auto;display:flex;gap:6px;padding:6px 20px 6px 0}
+.sort-btn{padding:4px 10px;border:1px solid #374151;background:transparent;color:#94a3b8;cursor:pointer;font-size:11px;border-radius:6px;transition:all .2s;white-space:nowrap}
+.sort-btn.active-note{background:#2563eb;border-color:#2563eb;color:#fff}
+.sort-btn.active-live{background:#7c3aed;border-color:#7c3aed;color:#fff}
 
-  /* Alert banner */
-  .alert {
-    border-radius: 10px;
-    padding: 16px 20px;
-    margin-bottom: 20px;
-    display: flex;
-    gap: 12px;
-    align-items: flex-start;
-  }
-  .alert-red { background: var(--red-light); border-left: 4px solid var(--red); }
-  .alert-orange { background: var(--orange-light); border-left: 4px solid var(--orange); }
-  .alert-green { background: var(--green-light); border-left: 4px solid var(--green); }
-  .alert-blue { background: var(--blue-light); border-left: 4px solid var(--blue); }
-  .alert-icon { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
-  .alert-body strong { display: block; font-size: 14px; margin-bottom: 3px; }
-  .alert-body p { font-size: 13px; color: #374151; }
+.content{margin-top:100px;padding:16px}
+.tab-panel{display:none}.tab-panel.active{display:block}
 
-  /* KPI row */
-  .kpi-row {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    gap: 14px;
-    margin-bottom: 20px;
-  }
-  .kpi-card {
-    background: #fff;
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 16px;
-  }
-  .kpi-label { font-size: 11px; color: var(--text-muted); font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 6px; }
-  .kpi-value { font-size: 22px; font-weight: 700; line-height: 1.1; }
-  .kpi-sub { font-size: 12px; margin-top: 4px; }
-  .up { color: var(--green); }
-  .down { color: var(--red); }
-  .flat { color: var(--gray); }
-  .kpi-card.warn { border-color: var(--red); background: var(--red-light); }
-  .kpi-card.good { border-color: var(--green); background: var(--green-light); }
+/* ── CHARTS SECTION ── */
+.charts-section{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
+.chart-card{background:#fff;border-radius:12px;padding:14px 16px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.chart-title{font-size:12px;font-weight:700;color:#1a1a2e;margin-bottom:4px}
+.chart-sub{font-size:10px;color:#6b7280;margin-bottom:10px}
+.chart-box{width:100%}
+.bubble-card{grid-column:1/-1}
+@media(max-width:900px){.charts-section{grid-template-columns:1fr}.bubble-card{grid-column:1}}
 
-  /* Story block */
-  .story {
-    background: #fff;
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 24px;
-    margin-bottom: 20px;
-  }
-  .story-header {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 16px;
-  }
-  .story-emoji { font-size: 22px; }
-  .story h3 { font-size: 15px; font-weight: 700; }
-  .story h3 small { font-size: 12px; font-weight: 400; color: var(--text-muted); margin-left: 6px; }
+/* ── SUMMARY BAR ── */
+.summary-bar{border-radius:12px;padding:14px 20px;margin-bottom:14px;color:#fff}
+.summary-bar.note{background:#1a1a2e}
+.summary-bar.live{background:#0f172a}
+.summary-title{font-size:12px;color:#94a3b8;margin-bottom:8px}
+.summary-kpis{display:flex;gap:18px;flex-wrap:wrap}
+.kpi{text-align:center}
+.kpi-val{font-size:16px;font-weight:700}
+.kpi-label{font-size:10px;color:#94a3b8;margin-top:1px}
 
-  /* Insight list */
-  .insight-list { list-style: none; }
-  .insight-list li {
-    padding: 10px 0;
-    border-bottom: 1px solid #f3f4f6;
-    display: flex;
-    gap: 10px;
-    align-items: flex-start;
-    font-size: 13px;
-  }
-  .insight-list li:last-child { border-bottom: none; }
-  .insight-list .bullet {
-    flex-shrink: 0;
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    margin-top: 6px;
-  }
-  .bullet-red { background: var(--red); }
-  .bullet-green { background: var(--green); }
-  .bullet-orange { background: var(--orange); }
-  .bullet-blue { background: var(--blue); }
+/* ── FUNNEL CARDS ── */
+.cards-container{display:grid;grid-template-columns:1fr;gap:12px}
+.diag-card{background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.08);border-left:6px solid #e5e7eb}
+.diag-card.sev-0{border-left-color:#16a34a}
+.diag-card.sev-1{border-left-color:#eab308}
+.diag-card.sev-2{border-left-color:#f97316}
+.diag-card.sev-3{border-left-color:#e8372c}
+.card-header{padding:12px 16px 10px;display:flex;align-items:flex-start;gap:10px;border-bottom:1px solid #f3f4f6}
+.card-rank{font-size:17px;font-weight:800;color:#94a3b8;width:26px;flex-shrink:0;line-height:1}
+.card-name-block{flex:1}
+.card-name{font-size:14px;font-weight:700}
+.card-meta{font-size:11px;color:#6b7280;margin-top:3px;display:flex;gap:10px;flex-wrap:wrap}
+.card-severity{margin-left:auto;flex-shrink:0}
+.severity-label{font-size:11px;font-weight:700;padding:3px 9px;border-radius:10px}
+.sev-label-0{background:#dcfce7;color:#15803d}
+.sev-label-1{background:#fef9c3;color:#854d0e}
+.sev-label-2{background:#ffedd5;color:#c2410c}
+.sev-label-3{background:#fee2e2;color:#b91c1c}
+.card-body{padding:12px 16px;display:grid;grid-template-columns:1fr 320px;gap:14px}
+@media(max-width:900px){.card-body{grid-template-columns:1fr}}
 
-  /* Action table */
-  .action-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  .action-table th {
-    text-align: left;
-    padding: 10px 14px;
-    background: #f8fafc;
-    border: 1px solid var(--border);
-    font-weight: 600;
-    font-size: 12px;
-    color: var(--text-muted);
-    letter-spacing: 0.03em;
-  }
-  .action-table td {
-    padding: 11px 14px;
-    border: 1px solid var(--border);
-    vertical-align: top;
-    line-height: 1.5;
-  }
-  .action-table tr:nth-child(even) td { background: #fafafa; }
-  .priority-high {
-    display: inline-block;
-    background: #fef2f1;
-    color: var(--red);
-    font-size: 11px;
-    font-weight: 700;
-    padding: 2px 7px;
-    border-radius: 4px;
-    white-space: nowrap;
-  }
-  .priority-med {
-    display: inline-block;
-    background: var(--yellow-light);
-    color: var(--yellow);
-    font-size: 11px;
-    font-weight: 700;
-    padding: 2px 7px;
-    border-radius: 4px;
-    white-space: nowrap;
-  }
-  .priority-low {
-    display: inline-block;
-    background: #f0fdf4;
-    color: var(--green);
-    font-size: 11px;
-    font-weight: 700;
-    padding: 2px 7px;
-    border-radius: 4px;
-    white-space: nowrap;
-  }
+/* ── FUNNEL BARS ── */
+.funnel-visual{display:flex;flex-direction:column;gap:5px}
+.section-label{font-size:10px;font-weight:700;color:#6b7280;letter-spacing:.5px;padding:4px 0 2px 110px;text-transform:uppercase}
+.funnel-row{display:flex;align-items:center;gap:8px}
+.funnel-left{width:105px;flex-shrink:0;text-align:right}
+.funnel-name-label{font-size:11px;color:#6b7280;line-height:1.3}
+.funnel-center{flex:1;position:relative}
+.funnel-bar-bg{height:28px;background:#f1f5f9;border-radius:5px;position:relative;overflow:hidden}
+.funnel-fill{height:100%;border-radius:5px}
+.funnel-fill.ok{background:linear-gradient(90deg,#16a34a,#4ade80)}
+.funnel-fill.warn{background:linear-gradient(90deg,#eab308,#fde047)}
+.funnel-fill.bad{background:linear-gradient(90deg,#e8372c,#f87171)}
+.funnel-fill.supply{background:linear-gradient(90deg,#3b82f6,#93c5fd)}
+.funnel-fill.indigo{background:linear-gradient(90deg,#6366f1,#a5b4fc)}
+.funnel-val-overlay{position:absolute;right:6px;top:50%;transform:translateY(-50%);font-size:11px;font-weight:700;color:#1a1a2e}
+.funnel-base-line{position:absolute;top:0;height:100%;width:2px;background:rgba(0,0,0,.2);z-index:2}
+.funnel-right{width:105px;flex-shrink:0;padding-left:4px}
+.funnel-compare{font-size:10px;color:#6b7280}
+.funnel-yoy{font-size:11px;font-weight:600;margin-top:1px}
+.funnel-connector{display:flex;align-items:center;padding:0 0 0 113px}
+.fcl{flex:1;height:1px;background:#e5e7eb}
+.fcn{font-size:10px;color:#6b7280;white-space:nowrap;padding:0 6px;background:#fff}
 
-  /* Group matrix */
-  .group-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 14px;
-  }
-  .group-card {
-    background: #fff;
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 16px;
-  }
-  .group-card.urgent { border-color: var(--red); }
-  .group-card.growing { border-color: var(--green); }
-  .group-card.watch { border-color: var(--orange); }
-  .group-name {
-    font-weight: 700;
-    font-size: 14px;
-    margin-bottom: 8px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  .tag {
-    font-size: 11px;
-    font-weight: 600;
-    padding: 2px 8px;
-    border-radius: 4px;
-  }
-  .tag-red { background: var(--red-light); color: var(--red); }
-  .tag-green { background: var(--green-light); color: var(--green); }
-  .tag-orange { background: var(--orange-light); color: var(--orange); }
-  .tag-blue { background: var(--blue-light); color: var(--blue); }
-  .tag-gray { background: #f3f4f6; color: var(--gray); }
-  .group-metrics {
-    display: flex;
-    gap: 12px;
-    margin-bottom: 10px;
-    flex-wrap: wrap;
-  }
-  .group-metric { font-size: 12px; }
-  .group-metric .val { font-weight: 700; }
-  .group-rec {
-    font-size: 12px;
-    color: #374151;
-    background: #f8fafc;
-    border-radius: 6px;
-    padding: 8px 10px;
-    border-left: 3px solid var(--border);
-  }
-  .group-card.urgent .group-rec { border-left-color: var(--red); }
-  .group-card.growing .group-rec { border-left-color: var(--green); }
-  .group-card.watch .group-rec { border-left-color: var(--orange); }
+/* ── DUAL ENTRY ── */
+.dual-entry{display:flex;gap:6px;padding-left:113px;margin:3px 0}
+.entry-box{flex:1;background:#f8fafc;border-radius:7px;padding:7px;border-top:2px solid #e5e7eb}
+.entry-box.huxi{border-top-color:#f97316}
+.entry-box.zhibo{border-top-color:#7c3aed}
+.entry-title{font-size:10px;font-weight:700;color:#6b7280;margin-bottom:3px}
+.entry-row{display:flex;justify-content:space-between;font-size:11px;margin-top:2px}
+.entry-val{font-weight:700}
 
-  /* Signal board */
-  .signal-board {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 14px;
-    margin-bottom: 20px;
-  }
-  @media(max-width:640px) { .signal-board { grid-template-columns: 1fr; } }
-  .signal-col { background: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
-  .signal-col h4 { font-size: 13px; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
-  .signal-item {
-    display: flex;
-    gap: 8px;
-    align-items: flex-start;
-    padding: 7px 0;
-    border-bottom: 1px solid #f3f4f6;
-    font-size: 12px;
-  }
-  .signal-item:last-child { border-bottom: none; }
-  .signal-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 3px; }
-  .dot-red { background: var(--red); }
-  .dot-green { background: var(--green); }
-  .dot-orange { background: var(--orange); }
+/* ── RIGHT PANEL ── */
+.right-panel{display:flex;flex-direction:column;gap:8px}
+.tags-row{display:flex;flex-wrap:wrap;gap:4px}
+.tag{display:inline-flex;align-items:center;gap:3px;padding:3px 8px;border-radius:8px;font-size:11px;font-weight:600}
+.tag-blue{background:#dbeafe;color:#1d4ed8}
+.tag-yellow{background:#fef9c3;color:#854d0e}
+.tag-orange{background:#ffedd5;color:#c2410c}
+.tag-red{background:#fee2e2;color:#b91c1c}
+.tag-purple{background:#ede9fe;color:#6d28d9}
+.tag-green{background:#dcfce7;color:#15803d}
+.conclusion-box{background:#f8fafc;border-radius:8px;padding:9px 11px;border-left:3px solid #6366f1}
+.conclusion-title{font-size:10px;font-weight:700;color:#6366f1;margin-bottom:3px;text-transform:uppercase;letter-spacing:.5px}
+.conclusion-text{font-size:11px;color:#374151;line-height:1.6}
 
-  /* Quote box */
-  .quote-box {
-    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-    color: #fff;
-    border-radius: 12px;
-    padding: 24px 28px;
-    margin-bottom: 24px;
-    position: relative;
-  }
-  .quote-box::before {
-    content: '"';
-    position: absolute;
-    top: -10px;
-    left: 20px;
-    font-size: 80px;
-    color: rgba(255,255,255,0.1);
-    font-family: Georgia, serif;
-    line-height: 1;
-  }
-  .quote-box p { font-size: 15px; line-height: 1.7; color: #e2e8f0; }
-  .quote-box .quote-caption { margin-top: 12px; font-size: 12px; color: #64748b; }
+.carrier-badge{display:inline-block;padding:2px 6px;border-radius:7px;font-size:10px;font-weight:600}
+.cb-blue{background:#dbeafe;color:#1d4ed8}.cb-purple{background:#ede9fe;color:#6d28d9}
+.cb-green{background:#dcfce7;color:#15803d}.cb-orange{background:#ffedd5;color:#c2410c}
+.cb-gray{background:#f3f4f6;color:#374151}
+.up{color:#16a34a}.down{color:#e8372c}
+.gpm-bar{margin-top:6px;display:flex;align-items:center;gap:8px;padding:6px 0 0 113px;border-top:1px dashed #e5e7eb}
 
-  /* Footer */
-  .footer {
-    text-align: center;
-    padding: 24px;
-    color: var(--text-muted);
-    font-size: 12px;
-    border-top: 1px solid var(--border);
-    background: #fff;
-    margin-top: 40px;
-  }
-
-  /* Divider */
-  .divider { height: 1px; background: var(--border); margin: 28px 0; }
-  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-  @media(max-width:640px) { .two-col { grid-template-columns: 1fr; } }
+/* ── FUNNEL REF ── */
+.funnel-ref{display:flex;align-items:center;margin-bottom:12px;background:#fff;border-radius:10px;padding:10px 14px;box-shadow:0 1px 4px rgba(0,0,0,.06);flex-wrap:wrap;gap:6px;font-size:11px}
+.funnel-step{display:flex;align-items:center;gap:5px}
+.fdot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.farrow{color:#94a3b8;margin:0 3px}
 </style>
 </head>
 <body>
 
-<div class="header">
-  <div class="header-meta">DIBP · 行业运营三部 · 经营洞察报告</div>
-  <h1>📊 经营深度洞察 · Connecting the Dots</h1>
-  <div class="header-sub">商家分层 × 赛道载体 × 店播 × 商笔 — 四维交叉分析，产出可执行方向</div>
-  <div class="period-badge">本月 2026-04-26 ~ 05-25 vs 上月 2026-03-27 ~ 04-25</div>
-</div>
-
 <nav class="nav">
-  <a href="#story">📖 整体故事</a>
-  <a href="#signals">🚦 关键信号</a>
-  <a href="#tier">👥 商家分层</a>
-  <a href="#carrier">🎬 载体格局</a>
-  <a href="#live">📡 店播诊断</a>
-  <a href="#note">📝 商笔诊断</a>
-  <a href="#actions">🎯 行动建议</a>
-  <a href="#groups">🗂️ 各组策略</a>
+  <div class="nav-title">行业三部 · 商笔 & 店播漏斗诊断</div>
+  <div class="nav-sub">2026-04-27~05-26 · 逐行业漏斗下钻</div>
 </nav>
 
-<div class="container">
-
-  <!-- 整体故事 -->
-  <div id="story" class="section">
-    <div class="section-title"><span class="icon">📖</span>整体故事：这个月发生了什么</div>
-
-    <div class="quote-box">
-      <p>行业三部这个月的核心矛盾是<strong>「供给过剩，分发失效」</strong>——无论是店播还是商笔，商家在拼命开播、拼命发内容，但平台分发效率骤降，导致单位流量产出大幅摊薄。整体 GMV ¥39.33亿微跌 1.3%，表面平稳，实则内部分化剧烈：教育+45%的爆发式增长，和亲子生活/酒旅-16%的系统性崩盘同时存在。</p>
-      <div class="quote-caption">基于商家分层、载体分布、店播深度、商笔深度四份数据综合研判 · 2026-05-26</div>
-    </div>
-
-    <div class="kpi-row">
-      <div class="kpi-card warn">
-        <div class="kpi-label">整体 GMV</div>
-        <div class="kpi-value">¥39.33亿</div>
-        <div class="kpi-sub down">↓ -1.30% 环比</div>
-      </div>
-      <div class="kpi-card">
-        <div class="kpi-label">店播 GMV</div>
-        <div class="kpi-value">¥18.45亿</div>
-        <div class="kpi-sub down">↓ -3.3% | 开播间数 +17.1%</div>
-      </div>
-      <div class="kpi-card good">
-        <div class="kpi-label">K播 GMV</div>
-        <div class="kpi-value">¥6.64亿</div>
-        <div class="kpi-sub up">↑ +5.2% 唯一正增长载体</div>
-      </div>
-      <div class="kpi-card warn">
-        <div class="kpi-label">B5/6 头部商家</div>
-        <div class="kpi-value">1,383 家</div>
-        <div class="kpi-sub down">↓ -34 | 降级率 28.6%</div>
-      </div>
-      <div class="kpi-card">
-        <div class="kpi-label">新开商家</div>
-        <div class="kpi-value">5,538 家</div>
-        <div class="kpi-sub down">B4+ 仅 2.5%（140家）</div>
-      </div>
-      <div class="kpi-card warn">
-        <div class="kpi-label">单h曝光（店播）</div>
-        <div class="kpi-value">8,791</div>
-        <div class="kpi-sub down">↓ -96.8% 分发效率骤降</div>
-      </div>
-    </div>
-
-    <div class="alert alert-red">
-      <div class="alert-icon">🚨</div>
-      <div class="alert-body">
-        <strong>大盘核心矛盾：供给放量 vs 分发失速（需平台侧确认）</strong>
-        <p>店播开播间数 +17.1%、时长 +16.4%，但曝光 -2.7%、单h曝光 -96.8%；商笔发布量 +81.6%，但篇均曝光 -97.2%。大量新增直播间和笔记吃不到流量，是本期最需要向上确认的平台级问题。</p>
-      </div>
-    </div>
-
-    <div class="alert alert-orange">
-      <div class="alert-icon">⚠️</div>
-      <div class="alert-body">
-        <strong>结构性分化加剧：两组在下沉，两组在崛起</strong>
-        <p>亲子生活（-15.7%）和酒旅（-15.7%）是本期最大出血点，合计拖累大盘约1.7个点。而教育（+45.1%）和家具（+27%）正在崛起，但体量尚小，短期难以填补缺口。</p>
-      </div>
-    </div>
-
-    <div class="alert alert-blue">
-      <div class="alert-icon">💡</div>
-      <div class="alert-body">
-        <strong>K播是本期唯一结构性增量，是下阶段重点押注方向</strong>
-        <p>K播整体 +5.2%，教育K播 +89%、家具 +50%、大健康 +47%——高决策成本、知识驱动型品类在K播上找到了杠杆。这不是偶然，而是"品类内容化"趋势的持续验证。</p>
-      </div>
-    </div>
+<div class="tab-bar">
+  <button class="tab-btn active" id="tab-note" onclick="switchTab('note')">📝 笔记诊断</button>
+  <button class="tab-btn" id="tab-live" onclick="switchTab('live')">📡 店播诊断</button>
+  <div class="tab-sort" id="sort-note">
+    <button class="sort-btn active-note" onclick="sortNote('gmv',this)">按笔记GMV↓</button>
+    <button class="sort-btn" onclick="sortNote('sev',this)">按严重程度↓</button>
+    <button class="sort-btn" onclick="sortNote('pv',this)">按篇均曝光↑</button>
   </div>
-
-  <!-- 关键信号 -->
-  <div id="signals" class="section">
-    <div class="section-title"><span class="icon">🚦</span>关键信号看板</div>
-
-    <div class="signal-board">
-      <div class="signal-col">
-        <h4>🔴 风险信号（需立即处理）</h4>
-        <div class="signal-item">
-          <div class="signal-dot dot-red"></div>
-          <span><strong>店播单h曝光 -96.8%</strong>：供给放量但分发失速，开播即空播风险积累，需向上确认平台分发策略</span>
-        </div>
-        <div class="signal-item">
-          <div class="signal-dot dot-red"></div>
-          <span><strong>亲子生活全线 -15.7%</strong>：店播/K播/商卡/笔记全面下滑，属系统性问题，需品类级专项诊断</span>
-        </div>
-        <div class="signal-item">
-          <div class="signal-dot dot-red"></div>
-          <span><strong>潮玩头部降级率 46.7%</strong>：上月90家头部本月42家跌出，头部池快速流失，爆款依赖症明显</span>
-        </div>
-        <div class="signal-item">
-          <div class="signal-dot dot-red"></div>
-          <span><strong>酒旅 GMV -15.7%</strong>：店播GMV -21.6%，开播间数虽 +203% 但曝光 +157% 全被 GPM -57% 吃掉，量涨质崩</span>
-        </div>
-        <div class="signal-item">
-          <div class="signal-dot dot-red"></div>
-          <span><strong>图书 K播 -50%</strong>：笔记主导组K播大崩，品类流量被笔记/商卡截流，整体 -18.9% 持续恶化</span>
-        </div>
-        <div class="signal-item">
-          <div class="signal-dot dot-red"></div>
-          <span><strong>新商 B1 占比 75.8%</strong>：5538家新商中4199家沉在B1，激活漏斗在底层大面积断裂</span>
-        </div>
-      </div>
-      <div class="signal-col">
-        <h4>🟢 机会信号（可加速放大）</h4>
-        <div class="signal-item">
-          <div class="signal-dot dot-green"></div>
-          <span><strong>教育 +45.1%</strong>：K播+89%驱动，全载体协同增长，腰部跃迁率29.4%，是全行业最健康增长组</span>
-        </div>
-        <div class="signal-item">
-          <div class="signal-dot dot-green"></div>
-          <span><strong>家具 K播主导 +27%</strong>：K播+50% 验证达人讲解驱动家具成交的逻辑，可复制至家电</span>
-        </div>
-        <div class="signal-item">
-          <div class="signal-dot dot-green"></div>
-          <span><strong>消费电子商卡 +41%</strong>：标品"商品力+短链路"逻辑验证，GPM扩量空间大</span>
-        </div>
-        <div class="signal-item">
-          <div class="signal-dot dot-green"></div>
-          <span><strong>文玩玉翠笔记 GPM 90.4</strong>：笔记单位产出极高但曝光量极小，是可重点扩量的精品组</span>
-        </div>
-        <div class="signal-item">
-          <div class="signal-dot dot-green"></div>
-          <span><strong>家电店播 GMV +93.3%</strong>：低曝光高GPM精品组，加大投入 ROI 可期</span>
-        </div>
-        <div class="signal-item">
-          <div class="signal-dot dot-green"></div>
-          <span><strong>文玩玉翠新商店均 41.95万</strong>：新商孵化效率全行业最高，可提炼为输出标准</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="signal-board" style="margin-top: 0;">
-      <div class="signal-col">
-        <h4>🟠 观察信号（跟踪，未到处理阈值）</h4>
-        <div class="signal-item">
-          <div class="signal-dot dot-orange"></div>
-          <span><strong>亲子生活 B5/6 降级率 40%</strong>：头部流失严重但商家基数大（97家），需观察是否持续</span>
-        </div>
-        <div class="signal-item">
-          <div class="signal-dot dot-orange"></div>
-          <span><strong>二奢店播 CVR 0.14%</strong>：封面吸引力强但进播率极低，人群精准度问题待解</span>
-        </div>
-        <div class="signal-item">
-          <div class="signal-dot dot-orange"></div>
-          <span><strong>家纺 K播 +35%、店均 GMV +32%</strong>：腰部跃迁率 19.7%，趋势向好但规模待验证</span>
-        </div>
-        <div class="signal-item">
-          <div class="signal-dot dot-orange"></div>
-          <span><strong>休食跃迁率仅 10%</strong>：体量大（101家头部）但腰部流动性差，下一梯队培育不足</span>
-        </div>
-      </div>
-      <div class="signal-col" style="border-color: #f3f4f6;">
-        <h4>💡 跨维度洞察（Dots连接）</h4>
-        <div class="signal-item">
-          <div class="signal-dot dot-green"></div>
-          <span><strong>教育三维共振</strong>：K播+89% × 头部店均+109% × 腰部跃迁29.4%，说明整组在结构性上升通道</span>
-        </div>
-        <div class="signal-item">
-          <div class="signal-dot dot-red"></div>
-          <span><strong>虚拟/潮玩"量大效低"共性</strong>：新开量大（86%）但B1占比高、笔记/店播GPM均垫底，是长尾商家稀释效率的主因</span>
-        </div>
-        <div class="signal-item">
-          <div class="signal-dot dot-orange"></div>
-          <span><strong>高GPM组普遍低曝光</strong>：文玩玉翠（GPM 821/90.4）、二奢（287/61）、家电（168/90）——不缺转化效率，缺流量入口</span>
-        </div>
-        <div class="signal-item">
-          <div class="signal-dot dot-orange"></div>
-          <span><strong>双入口协同 = 店播做大的前提</strong>：五个店播主导组（潮玩/文玩/手工/家饰/二奢）全部是双入口协同强组，呼吸灯通路打通是核心</span>
-        </div>
-      </div>
-    </div>
+  <div class="tab-sort" id="sort-live" style="display:none">
+    <button class="sort-btn active-live" onclick="sortLive('gmv',this)">按店播GMV↓</button>
+    <button class="sort-btn" onclick="sortLive('sev',this)">按严重程度↓</button>
+    <button class="sort-btn" onclick="sortLive('hexp',this)">按单h曝光↑</button>
   </div>
-
-  <!-- 商家分层 -->
-  <div id="tier" class="section">
-    <div class="section-title"><span class="icon">👥</span>商家分层健康度</div>
-
-    <div class="alert alert-red">
-      <div class="alert-icon">🔍</div>
-      <div class="alert-body">
-        <strong>总体诊断：头不稳 · 腰有潜力 · 尾过重</strong>
-        <p>头部28.6%降级率（健康线~20%）持续流失底盘；腰部18.93%跃迁率尚可但分化严重；新商75.8%沉于B1，激活链路在底层断裂。</p>
-      </div>
-    </div>
-
-    <div class="two-col">
-      <div class="story">
-        <div class="story-header">
-          <span class="story-emoji">🏆</span>
-          <h3>B5/6 头部稳盘 <small>整体降级率 28.6%</small></h3>
-        </div>
-        <ul class="insight-list">
-          <li><div class="bullet bullet-red"></div><span><strong>高危：潮玩降级率 46.7%</strong>——上月90家头部，本月42家跌出。爆款驱动型商家头部流动性本就高，但近半头部掉档说明流量分配在向更新内容倾斜，老头部无法持续供给新内容。</span></li>
-          <li><div class="bullet bullet-red"></div><span><strong>教育内部两极分化</strong>——店均 +109% 与降级率 44% 并存：头部均值被少数明星商家拉升，但近半原头部商家正在滑落，增长掩盖了结构问题。</span></li>
-          <li><div class="bullet bullet-green"></div><span><strong>家电最稳（降级率 9.7%）</strong>——品牌护城河深，头部位置相对稳固；消费电子 +34% 也属强势。</span></li>
-          <li><div class="bullet bullet-orange"></div><span><strong>酒旅店均 -23%</strong>——头部规模小（41家）但单店体量大，酒旅品类受季节/外部因素影响明显，5月出行旺季反而环比下滑，需查是否有特殊事件。</span></li>
-        </ul>
-      </div>
-      <div class="story">
-        <div class="story-header">
-          <span class="story-emoji">📈</span>
-          <h3>B4/5/6 腰部跃迁 <small>整体跃迁率 18.93%</small></h3>
-        </div>
-        <ul class="insight-list">
-          <li><div class="bullet bullet-green"></div><span><strong>教育+家具+家电构成"跃迁黄金三角"</strong>——教育店均 +68.7% × 跃迁 29.4%，家具店均 +33% × 家电店均 +27%，这三组腰部正在快速往上走。</span></li>
-          <li><div class="bullet bullet-red"></div><span><strong>消费电子腰部"天花板效应"</strong>——店均 +26% 但跃迁仅 11.2%，成长中但层级未突破，可能被品牌商天然压制。</span></li>
-          <li><div class="bullet bullet-red"></div><span><strong>图书 -17.8% + 亲子 -11%</strong>——双重挤压：头部高降级 + 腰部负增长同时出现，需警惕"断层"——头部掉下来，腰部接不住。</span></li>
-          <li><div class="bullet bullet-orange"></div><span><strong>休食/大健康跃迁动能不足</strong>——休食 10.1%、大健康 12.2%，这两组体量大但商家流动性差，下一梯队培育明显滞后。</span></li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="story">
-      <div class="story-header">
-        <span class="story-emoji">🌱</span>
-        <h3>新开商家激活 <small>5,538 家新商 · 店均 2.14万 · B4+ 仅 2.5%</small></h3>
-      </div>
-      <ul class="insight-list">
-        <li><div class="bullet bullet-green"></div><span><strong>文玩玉翠是新商孵化标杆</strong>：122 家新商，店均 41.95万（均值 20x），B4+ 达 28 家。品类天然适合新商（低库存/高差异化/视觉驱动），应提炼冷启动 SOP 向全行业输出。</span></li>
-        <li><div class="bullet bullet-red"></div><span><strong>虚拟+潮玩占新商 86%（4,766家）</strong>：但店均 ≤1.27万、B1 占比极高，大量低质新商稀释整体激活率和运营效率，属"泡沫式供给"。</span></li>
-        <li><div class="bullet bullet-orange"></div><span><strong>激活链路断裂在 B1→B2 环节</strong>：B1 占 75.8%，说明新商开店后无法完成第一次有效增长，冷启动支持不足或选品匹配度差是核心原因（推测）。</span></li>
-      </ul>
-    </div>
-  </div>
-
-  <!-- 载体格局 -->
-  <div id="carrier" class="section">
-    <div class="section-title"><span class="icon">🎬</span>赛道 × 载体格局</div>
-
-    <div class="alert alert-blue">
-      <div class="alert-icon">🔑</div>
-      <div class="alert-body">
-        <strong>核心格局：K播是唯一结构性增量，店播在系统性失血</strong>
-        <p>K播+5.2% 成为本期唯一显著正增长载体，"品类内容化"趋势在教育/家具/大健康率先兑现。整体GMV-1.3%的小幅下滑，掩盖的是店播-3.3%和两个大行业-16%的严重分化。</p>
-      </div>
-    </div>
-
-    <div class="two-col">
-      <div class="story">
-        <div class="story-header"><span class="story-emoji">🏆</span><h3>增长组图谱</h3></div>
-        <ul class="insight-list">
-          <li><div class="bullet bullet-green"></div><span><strong>教育 +45.1%</strong>：K播+89%×笔记+43%双引擎，全载体协同最优，是行业三部当前最健康的增长结构</span></li>
-          <li><div class="bullet bullet-green"></div><span><strong>家具 +27%</strong>：K播主导（57%），达人讲解驱动高客单决策，验证"K播主导"可行性</span></li>
-          <li><div class="bullet bullet-green"></div><span><strong>家电 +24.3%</strong>：K播+商卡双轮驱动，低曝光高GPM精品组，扩量空间大</span></li>
-          <li><div class="bullet bullet-green"></div><span><strong>消费电子 +10.7%</strong>：商卡主导（51%），商卡+41%验证标品"短链路"成交逻辑</span></li>
-          <li><div class="bullet bullet-green"></div><span><strong>家纺 +11.2%</strong>：K播+35%、笔记GPM 56.2领跑，混合驱动结构均衡</span></li>
-        </ul>
-      </div>
-      <div class="story">
-        <div class="story-header"><span class="story-emoji">⚠️</span><h3>下跌组图谱</h3></div>
-        <ul class="insight-list">
-          <li><div class="bullet bullet-red"></div><span><strong>亲子生活 -15.7%</strong>：全载体下滑，K播-31%、店播-12%，属系统性问题，非单点故障</span></li>
-          <li><div class="bullet bullet-red"></div><span><strong>酒旅 -15.7%</strong>：店播主导（61%）但GPM仅92，高曝光低转化，品类决策链长与店播模式天然错配</span></li>
-          <li><div class="bullet bullet-red"></div><span><strong>图书 -18.9%</strong>：K播-50%为全行业最差，整体需求萎缩+被商卡/笔记截流</span></li>
-          <li><div class="bullet bullet-orange"></div><span><strong>文玩玉翠 -3.7%</strong>：最大盘（10亿+）微跌，K播-17%是隐患，但店播GPM 821仍是绝对第一</span></li>
-          <li><div class="bullet bullet-orange"></div><span><strong>二奢 -9.5%</strong>：店播 CVR 0.14% 极低，人群精准度是核心瓶颈</span></li>
-        </ul>
-      </div>
-    </div>
-  </div>
-
-  <!-- 店播诊断 -->
-  <div id="live" class="section">
-    <div class="section-title"><span class="icon">📡</span>店播深度诊断</div>
-
-    <div class="kpi-row">
-      <div class="kpi-card warn">
-        <div class="kpi-label">整体 GMV</div>
-        <div class="kpi-value">¥18.45亿</div>
-        <div class="kpi-sub down">↓ -3.3%</div>
-      </div>
-      <div class="kpi-card warn">
-        <div class="kpi-label">开播间数</div>
-        <div class="kpi-value">37.2万</div>
-        <div class="kpi-sub up">↑ +17.1% （但曝光↓）</div>
-      </div>
-      <div class="kpi-card warn">
-        <div class="kpi-label">单h曝光</div>
-        <div class="kpi-value">8,791</div>
-        <div class="kpi-sub down">↓ -96.8% 🚨核心矛盾</div>
-      </div>
-      <div class="kpi-card">
-        <div class="kpi-label">整体 CTR</div>
-        <div class="kpi-value">2.04%</div>
-        <div class="kpi-sub flat">CVR 2.20% | 转化 4.28%</div>
-      </div>
-    </div>
-
-    <div class="two-col">
-      <div class="story">
-        <div class="story-header"><span class="story-emoji">💎</span><h3>GPM 矩阵判定</h3></div>
-        <ul class="insight-list">
-          <li><div class="bullet bullet-green"></div><span><strong>🌟 高曝光高GPM（守住）</strong>：文玩玉翠 GPM 821（全行业第一）、手工 GPM 176——单位流量产出极高，应优先保住分发资源</span></li>
-          <li><div class="bullet bullet-green"></div><span><strong>💎 低曝光高GPM（扩量）</strong>：二奢 GPM 287、家电 GPM 168——不缺转化力，缺流量，加大投入 ROI 高确定性</span></li>
-          <li><div class="bullet bullet-red"></div><span><strong>⚠️ 高曝光低GPM（止血）</strong>：7组陷入"流量黑洞"——家用（GPM 58）、休食（GPM 45）、亲子（GPM 62）、家饰（GPM 62）、消费电子（GPM 25）、生鲜（GPM 31）、酒旅（GPM 92）。83亿曝光沉没，需优先提GPM而非追曝光</span></li>
-        </ul>
-      </div>
-      <div class="story">
-        <div class="story-header"><span class="story-emoji">🔗</span><h3>漏斗断点与入口策略</h3></div>
-        <ul class="insight-list">
-          <li><div class="bullet bullet-red"></div><span><strong>文玩玉翠漏斗断点</strong>：CTR 3.98%（高）→ CVR 1.03%（极低）。封面/标题强但进播承接差，前3秒留人是核心改善点</span></li>
-          <li><div class="bullet bullet-red"></div><span><strong>二奢漏斗断点</strong>：CTR 2.85%（高）→ CVR 0.14%（最低），高客单泛流量与精准购买人群严重错配，需加强前置种草和人群定向</span></li>
-          <li><div class="bullet bullet-green"></div><span><strong>潮玩是店播最优漏斗标杆</strong>：CTR 3.24% × CVR 4.21% × 转化率 8.99% 三高，应提炼 SOP 输出给同类组</span></li>
-          <li><div class="bullet bullet-orange"></div><span><strong>教育/大健康：直播卡主导，呼吸灯弱</strong>——缺乏笔记内容导流，是内容→直播联动的核心短板，需补强笔记侧投入打通呼吸灯通路</span></li>
-        </ul>
-      </div>
-    </div>
-  </div>
-
-  <!-- 商笔诊断 -->
-  <div id="note" class="section">
-    <div class="section-title"><span class="icon">📝</span>商笔深度诊断</div>
-
-    <div class="kpi-row">
-      <div class="kpi-card warn">
-        <div class="kpi-label">笔记 GMV</div>
-        <div class="kpi-value">¥6.42亿</div>
-        <div class="kpi-sub down">↓ -4.1%</div>
-      </div>
-      <div class="kpi-card warn">
-        <div class="kpi-label">笔记发布量</div>
-        <div class="kpi-value">429万</div>
-        <div class="kpi-sub up">↑ +81.6% （但曝光↓）</div>
-      </div>
-      <div class="kpi-card warn">
-        <div class="kpi-label">篇均曝光</div>
-        <div class="kpi-value">62次</div>
-        <div class="kpi-sub down">↓ -97.2% 🚨严重稀释</div>
-      </div>
-      <div class="kpi-card">
-        <div class="kpi-label">整体 CTR</div>
-        <div class="kpi-value">15.06%</div>
-        <div class="kpi-sub flat">商卡点击 9.13% | 转化 6.5%</div>
-      </div>
-    </div>
-
-    <div class="alert alert-orange">
-      <div class="alert-icon">⚠️</div>
-      <div class="alert-body">
-        <strong>虚拟/潮玩拖累整体：大量曝光被低GPM内容消耗</strong>
-        <p>虚拟发布160万条（+357%）占整体37%，但GPM仅14.5——大量内容内卷消耗了平台分发容量，却几乎没有GMV回报。潮玩曝光27.2亿但GPM 19.7同样低效，两组合计吸走61亿曝光（37%），是商笔大盘的主要拖累。</p>
-      </div>
-    </div>
-
-    <div class="two-col">
-      <div class="story">
-        <div class="story-header"><span class="story-emoji">✅</span><h3>笔记天然适配品类</h3></div>
-        <ul class="insight-list">
-          <li><div class="bullet bullet-green"></div><span><strong>亲子生活</strong>：高曝光（8亿）×高GPM（48.4），笔记内容与商品强匹配，视觉种草力强</span></li>
-          <li><div class="bullet bullet-green"></div><span><strong>家纺</strong>：高曝光（7.6亿）×高GPM（56.2），且环比显著提升（+60%），笔记生态健康</span></li>
-          <li><div class="bullet bullet-green"></div><span><strong>宠物</strong>：CTR 21.6%（最高），用户对宠物内容阅读意愿极强</span></li>
-          <li><div class="bullet bullet-green"></div><span><strong>图书/虚拟</strong>：笔记GMV占比50%+，是核心销售载体，客单低但走量</span></li>
-        </ul>
-      </div>
-      <div class="story">
-        <div class="story-header"><span class="story-emoji">💎</span><h3>低曝光高GPM精品组（待扩量）</h3></div>
-        <ul class="insight-list">
-          <li><div class="bullet bullet-blue"></div><span><strong>文玩玉翠 GPM 90.4</strong>：笔记客单¥384，高价值交易靠内容建立信任，但曝光量极小，是最大扩量机会</span></li>
-          <li><div class="bullet bullet-blue"></div><span><strong>酒旅 GPM 89.4</strong>：笔记内容种草价值高（用户攻略型消费），应加大优质内容激励</span></li>
-          <li><div class="bullet bullet-blue"></div><span><strong>家电 GPM 89.8</strong>：评测/对比型内容天然带货，可加大达人笔记补贴</span></li>
-          <li><div class="bullet bullet-blue"></div><span><strong>教育 GPM 43.4</strong>：笔记引流+K播转化链路正在成型，加大优质课程笔记供给</span></li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="alert alert-green">
-      <div class="alert-icon">🔗</div>
-      <div class="alert-body">
-        <strong>笔记→店播协同：高客单组是最大受益方</strong>
-        <p>文玩玉翠、二奢、酒旅的笔记客单价（¥334-472）高，用户需要内容种草建立信任再进入直播完成高价值转化——这正是"呼吸灯通路"的最大价值。这三组应作为内容→直播协同的优先示范组。</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- 行动建议 -->
-  <div id="actions" class="section">
-    <div class="section-title"><span class="icon">🎯</span>可执行行动建议</div>
-
-    <div class="alert alert-red">
-      <div class="alert-icon">🚨</div>
-      <div class="alert-body">
-        <strong>最高优先级（本周内需确认）：向平台确认分发策略是否有调整</strong>
-        <p>店播单h曝光 -96.8%、笔记篇均曝光 -97.2% 同时出现，两个场域同步骤降概率极低，大概率是平台侧分发策略调整所致。所有运营动作的有效性都建立在这个前提上，必须先确认再行动。</p>
-      </div>
-    </div>
-
-    <table class="action-table">
-      <thead>
-        <tr>
-          <th style="width:80px">优先级</th>
-          <th style="width:120px">行动类别</th>
-          <th>具体行动</th>
-          <th style="width:120px">目标组别</th>
-          <th style="width:90px">预期效果</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><span class="priority-high">🔴 高</span></td>
-          <td>平台确认</td>
-          <td>向平台侧确认本月分发策略是否有调整，拿到结论前不扩大无效供给投入</td>
-          <td>全行业三部</td>
-          <td>避免盲目加量</td>
-        </tr>
-        <tr>
-          <td><span class="priority-high">🔴 高</span></td>
-          <td>头部止血</td>
-          <td>针对潮玩（46.7%）、教育（44.1%）、图书（40.9%）、亲子（40.2%）、宠物（42.9%）降级商家逐一诊断，优先提供流量包+活动资源，目标将高危组降级率压降至30%以内</td>
-          <td>潮玩/教育/图书/亲子/宠物</td>
-          <td>头部减少流失</td>
-        </tr>
-        <tr>
-          <td><span class="priority-high">🔴 高</span></td>
-          <td>专项诊断</td>
-          <td>亲子生活全载体 -15.7% 是系统性问题，需专项诊断会：① 是否有竞品冲击；② 品类用户需求是否外流；③ 货盘是否与亲子用户需求错配</td>
-          <td>亲子生活</td>
-          <td>找到根因止血</td>
-        </tr>
-        <tr>
-          <td><span class="priority-high">🔴 高</span></td>
-          <td>专项诊断</td>
-          <td>酒旅 -15.7% 且开播间数 +203%、GPM 却 -57%（供给极度放量但效率崩盘），专项诊断低效直播间成因，暂停无效开播，转向商卡+笔记精准运营</td>
-          <td>酒旅</td>
-          <td>减少流量浪费</td>
-        </tr>
-        <tr>
-          <td><span class="priority-high">🔴 高</span></td>
-          <td>漏斗修复</td>
-          <td>文玩玉翠 CVR 仅 1.03%（点击不进播）：组织头部商家直播间诊断，优化前3秒留人脚本/主播话术/货品排品；二奢 CVR 0.14% 需加强人群定向和前置种草</td>
-          <td>文玩玉翠/二奢</td>
-          <td>CVR 提升至2%+</td>
-        </tr>
-        <tr>
-          <td><span class="priority-med">🟡 中</span></td>
-          <td>K播加速</td>
-          <td>将K播预算向教育/家具/大健康/家纺倾斜，引入垂类达人矩阵，推动知识驱动型品类的K播+笔记联动（现教育/大健康笔记→呼吸灯通路缺失）</td>
-          <td>教育/家具/大健康/家纺</td>
-          <td>K播增量扩量</td>
-        </tr>
-        <tr>
-          <td><span class="priority-med">🟡 中</span></td>
-          <td>精品扩量</td>
-          <td>低曝光高GPM组（二奢GPM 287/家电GPM 168）增加流量投入，验证扩量ROI；文玩玉翠笔记GPM 90.4 应加大达人内容激励，打通内容→直播高客单成交链路</td>
-          <td>二奢/家电/文玩玉翠</td>
-          <td>高效流量放大</td>
-        </tr>
-        <tr>
-          <td><span class="priority-med">🟡 中</span></td>
-          <td>腰部跃迁</td>
-          <td>消费电子腰部店均+26%但跃迁仅11.2%——诊断是否存在"品牌天花板"，制定腰部商家B4→B5专项冲刺计划；休食/大健康跃迁率<12%，组织专项诊断</td>
-          <td>消费电子/休食/大健康</td>
-          <td>跃迁率提升至15%+</td>
-        </tr>
-        <tr>
-          <td><span class="priority-med">🟡 中</span></td>
-          <td>新商管理</td>
-          <td>对虚拟/潮玩新开商家设差异化准入门槛：首月GMV≥1万进加速池，<0.5万进观察期；将文玩玉翠新商孵化路径（店均41.95万）提炼为《新商冷启动白皮书》</td>
-          <td>虚拟/潮玩/全行业新商</td>
-          <td>激活率提升</td>
-        </tr>
-        <tr>
-          <td><span class="priority-low">🟢 常规</span></td>
-          <td>标杆输出</td>
-          <td>将潮玩店播漏斗SOP（CTR 3.2%/CVR 4.2%/转化率9%三高）提炼方法论，输出给二奢/家饰等同类店播主导组；将家电降级率9.7%的稳盘经验梳理后向酒旅/二奢推广</td>
-          <td>二奢/家饰/酒旅</td>
-          <td>效率复制</td>
-        </tr>
-        <tr>
-          <td><span class="priority-low">🟢 常规</span></td>
-          <td>监控机制</td>
-          <td>建立分层健康度月度监控看板，设置预警线：降级率>30%、跃迁率<12%、新商B1占比>70%，实现异常自动告警</td>
-          <td>全行业三部</td>
-          <td>主动防御</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <!-- 各组策略 -->
-  <div id="groups" class="section">
-    <div class="section-title"><span class="icon">🗂️</span>各组个性化策略矩阵</div>
-
-    <div class="group-grid">
-
-      <div class="group-card growing">
-        <div class="group-name">🎓 十三组（教育）<span class="tag tag-green">进攻型</span></div>
-        <div class="group-metrics">
-          <span class="group-metric">总GMV <span class="val up">+45.1%</span></span>
-          <span class="group-metric">K播 <span class="val up">+89%</span></span>
-          <span class="group-metric">头部跃迁 <span class="val">29.4%</span></span>
-        </div>
-        <div class="group-rec">全行业最佳增长结构。加速K播达人矩阵建设，补强笔记→呼吸灯链路（当前直播卡主导但呼吸灯弱）。头部降级率44%是隐患，需专项保头部同时加速腰部跃迁。</div>
-      </div>
-
-      <div class="group-card growing">
-        <div class="group-name">🪑 七组（家具）<span class="tag tag-green">K播红利</span></div>
-        <div class="group-metrics">
-          <span class="group-metric">总GMV <span class="val up">+27%</span></span>
-          <span class="group-metric">K播 <span class="val up">+50%</span></span>
-          <span class="group-metric">腰部店均 <span class="val up">+33%</span></span>
-        </div>
-        <div class="group-rec">K播主导验证成功，继续加投达人矩阵。测试场景化店播（"逛展厅"风格）提升店播从23%至30%+。K播SOP可向家电等相近品类复制输出。</div>
-      </div>
-
-      <div class="group-card growing">
-        <div class="group-name">🔌 八组（家电）<span class="tag tag-green">精品扩量</span></div>
-        <div class="group-metrics">
-          <span class="group-metric">总GMV <span class="val up">+24.3%</span></span>
-          <span class="group-metric">店播GMV <span class="val up">+93.3%</span></span>
-          <span class="group-metric">降级率 <span class="val">9.7%（最低）</span></span>
-        </div>
-        <div class="group-rec">头部最稳、店播GMV最大增幅。低曝光高GPM（168），加大流量投入ROI高确定性。K播34%占比有扩张空间，参考家具K播成功路径。</div>
-      </div>
-
-      <div class="group-card growing">
-        <div class="group-name">📱 八组（消费电子）<span class="tag tag-blue">商卡聚焦</span></div>
-        <div class="group-metrics">
-          <span class="group-metric">总GMV <span class="val up">+10.7%</span></span>
-          <span class="group-metric">商卡 <span class="val up">+41%</span></span>
-          <span class="group-metric">商卡占比 <span class="val">51%</span></span>
-        </div>
-        <div class="group-rec">商卡主导逻辑验证，优化商卡投放素材提升GPM（当前25偏低）。引入家电K播达人评测模式扩大K播占比（当前仅8%）。腰部跃迁率11.2%需专项突破。</div>
-      </div>
-
-      <div class="group-card">
-        <div class="group-name">💎 一组（文玩玉翠）<span class="tag tag-orange">防守+修漏斗</span></div>
-        <div class="group-metrics">
-          <span class="group-metric">总GMV <span class="val">10.03亿（第一大组）</span></span>
-          <span class="group-metric">GMV <span class="val down">-3.7%</span></span>
-          <span class="group-metric">店播GPM <span class="val">821（第一）</span></span>
-        </div>
-        <div class="group-rec">核心任务：守住基本盘。修复CVR（1.03%→2%+）是首要——优化直播间前3秒和进播承接。K播-17%需引入垂直达人矩阵。笔记GPM 90.4是最大扩量机会。</div>
-      </div>
-
-      <div class="group-card">
-        <div class="group-name">🧸 十一组（潮玩）<span class="tag tag-orange">SOP输出+防降级</span></div>
-        <div class="group-metrics">
-          <span class="group-metric">总GMV <span class="val down">-5.4%</span></span>
-          <span class="group-metric">头部降级率 <span class="val down">46.7%（最高）</span></span>
-          <span class="group-metric">店播漏斗 <span class="val">行业最优</span></span>
-        </div>
-        <div class="group-rec">店播漏斗是全行业最优标杆，提炼SOP输出他组。头部降级率46.7%是核心风险，爆款生命周期管理是关键——需帮助商家建立持续内容输出能力而非单爆款依赖。</div>
-      </div>
-
-      <div class="group-card watch">
-        <div class="group-name">👶 二组（亲子生活）<span class="tag tag-red">全线诊断</span></div>
-        <div class="group-metrics">
-          <span class="group-metric">总GMV <span class="val down">-15.7%（最大跌幅）</span></span>
-          <span class="group-metric">K播 <span class="val down">-31%</span></span>
-          <span class="group-metric">头部降级率 <span class="val">40.2%</span></span>
-        </div>
-        <div class="group-rec">全载体下滑，系统性问题。本周内组织专项诊断会，重点：①竞品分析（是否有外部截流）；②品类用户需求是否迁移；③货盘与用户需求匹配度。笔记GPM 48.4是当前最健康的载体，重点守住。</div>
-      </div>
-
-      <div class="group-card watch">
-        <div class="group-name">✈️ 十五组（酒旅）<span class="tag tag-red">止血重构</span></div>
-        <div class="group-metrics">
-          <span class="group-metric">总GMV <span class="val down">-15.7%</span></span>
-          <span class="group-metric">开播间数 <span class="val down">+203%（但GPM -57%）</span></span>
-          <span class="group-metric">双入口效率均低</span>
-        </div>
-        <div class="group-rec">暂停低效店播扩量（开播+203%但效率崩盘）。酒旅品类决策周期长，更适合"内容蓄水+精准转化"——将资源转向商卡+笔记，优化高客单用户的内容种草链路。</div>
-      </div>
-
-      <div class="group-card watch">
-        <div class="group-name">📚 十三组（图书）<span class="tag tag-red">收缩精品</span></div>
-        <div class="group-metrics">
-          <span class="group-metric">总GMV <span class="val down">-18.9%（最大跌幅组）</span></span>
-          <span class="group-metric">K播 <span class="val down">-50%</span></span>
-          <span class="group-metric">笔记占比 <span class="val">52.5%</span></span>
-        </div>
-        <div class="group-rec">放弃店播（13%低效），K播大幅收缩。将资源集中在笔记内容种草（发布量-22%但占比52%，说明单篇效率高）+商卡搜索卡位。走"少而精"路线，聚焦高客单套装/教辅品类。</div>
-      </div>
-
-      <div class="group-card">
-        <div class="group-name">🌿 四组（大健康）<span class="tag tag-blue">K播加速</span></div>
-        <div class="group-metrics">
-          <span class="group-metric">总GMV <span class="val flat">+0.0%</span></span>
-          <span class="group-metric">K播 <span class="val up">+47%</span></span>
-          <span class="group-metric">腰部跃迁 <span class="val down">12.2%（偏低）</span></span>
-        </div>
-        <div class="group-rec">K播+47%与教育同步，知识驱动逻辑一致。加速科普/专家内容达人合作，补强笔记→呼吸灯导流链路（当前直播卡主导）。腰部跃迁率12.2%需专项突破。</div>
-      </div>
-
-      <div class="group-card">
-        <div class="group-name">🐾 三组（宠物）<span class="tag tag-orange">修漏斗底</span></div>
-        <div class="group-metrics">
-          <span class="group-metric">总GMV <span class="val flat">-0.6%</span></span>
-          <span class="group-metric">笔记CTR <span class="val up">21.6%（最高）</span></span>
-          <span class="group-metric">商卡点击率 <span class="val down">5.5%（低）</span></span>
-        </div>
-        <div class="group-rec">内容吸引力极强（CTR最高）但商品关联弱（商卡点击仅5.5%），种草到拔草链路断裂。核心动作：优化笔记挂载商品匹配度，提升商卡曝光位设置，将高阅读率转化为商品点击。</div>
-      </div>
-
-      <div class="group-card">
-        <div class="group-name">🛋️ 十四组（二奢）<span class="tag tag-orange">精准化改造</span></div>
-        <div class="group-metrics">
-          <span class="group-metric">总GMV <span class="val down">-9.5%</span></span>
-          <span class="group-metric">店播GPM <span class="val">287（精品）</span></span>
-          <span class="group-metric">CVR <span class="val down">0.14%（最低）</span></span>
-        </div>
-        <div class="group-rec">CVR极低是核心瓶颈——泛流量与高客单精准购买人群严重错配。加强前置笔记种草建立信任（呼吸灯CTR 2.2%表现好），强化店播人群定向，避免花高价流量打低效曝光。</div>
-      </div>
-
-    </div>
-  </div>
-
 </div>
 
-<div class="footer">
-  <p>行业运营三部 · 经营洞察报告 · 2026-05-26 · DIBP</p>
-  <p style="margin-top:4px;">数据来源：商家分层环比分析 / GMV载体分布 / 店播深度分析 / 商笔深度分析</p>
+<div class="content">
+
+<!-- ══════════════════ 笔记 TAB ══════════════════ -->
+<div class="tab-panel active" id="panel-note">
+
+  <div class="summary-bar note">
+    <div class="summary-title">📝 商笔大盘 · 2026-04-27~05-26 vs 上期</div>
+    <div class="summary-kpis">
+      <div class="kpi"><div class="kpi-val" style="color:#f87171">¥6.42亿</div><div class="kpi-label">笔记GMV · -4.1%</div></div>
+      <div class="kpi"><div class="kpi-val" style="color:#fb923c">429万</div><div class="kpi-label">发布量 · +81.6%（内卷）</div></div>
+      <div class="kpi"><div class="kpi-val" style="color:#f87171">165.1亿</div><div class="kpi-label">总曝光 · -10.9%</div></div>
+      <div class="kpi"><div class="kpi-val">62次/篇</div><div class="kpi-label">篇均曝光基准</div></div>
+      <div class="kpi"><div class="kpi-val">373条</div><div class="kpi-label">笔记/商家 中位数基准</div></div>
+      <div class="kpi"><div class="kpi-val">15.06%</div><div class="kpi-label">CTR1基准</div></div>
+      <div class="kpi"><div class="kpi-val">9.13%</div><div class="kpi-label">CTR2基准</div></div>
+      <div class="kpi"><div class="kpi-val">6.53%</div><div class="kpi-label">CVR基准</div></div>
+      <div class="kpi"><div class="kpi-val">¥50.9</div><div class="kpi-label">客单价基准（中位数）</div></div>
+    </div>
+  </div>
+
+  <!-- 图表区 -->
+  <div class="charts-section">
+    <div class="chart-card bubble-card">
+      <div class="chart-title">战略矩阵：总曝光 × GPM（气泡大小 = 笔记GMV）</div>
+      <div class="chart-sub">右上=明星行业 · 左上=高效精品 · 右下=流量洼地 · 左下=双弱待援</div>
+      <div class="chart-box" id="note-bubble" style="height:380px"></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">总曝光对比（亿次）</div>
+      <div class="chart-sub">基准线 = 6.31亿（中位数）</div>
+      <div class="chart-box" id="note-bar-exp" style="height:520px"></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">GPM 对比（元）</div>
+      <div class="chart-sub">基准线 = 38.2元（中位数）</div>
+      <div class="chart-box" id="note-bar-gpm" style="height:520px"></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">笔记 GMV 对比（亿元）</div>
+      <div class="chart-sub">基准线 = 0.27亿（中位数）</div>
+      <div class="chart-box" id="note-bar-gmv" style="height:520px"></div>
+    </div>
+  </div>
+
+  <div class="funnel-ref">
+    <b style="color:#6b7280;margin-right:6px">商笔漏斗：</b>
+    <div class="funnel-step"><div class="fdot" style="background:#6366f1"></div>笔记/商家</div><span class="farrow">→</span>
+    <div class="funnel-step"><div class="fdot" style="background:#3b82f6"></div>篇均曝光</div><span class="farrow">→</span>
+    <div class="funnel-step"><div class="fdot" style="background:#eab308"></div>CTR1</div><span class="farrow">→</span>
+    <div class="funnel-step"><div class="fdot" style="background:#f97316"></div>CTR2商卡点击</div><span class="farrow">→</span>
+    <div class="funnel-step"><div class="fdot" style="background:#e8372c"></div>CVR转化</div><span class="farrow">→</span>
+    <div class="funnel-step"><div class="fdot" style="background:#7c3aed"></div>客单价</div><span class="farrow">→</span>
+    <div class="funnel-step"><div class="fdot" style="background:#16a34a"></div>GPM</div>
+    <div style="margin-left:auto;font-size:10px;color:#6b7280">客单价基准=¥50.9中位数</div>
+  </div>
+
+  <div class="cards-container" id="note-cards"></div>
 </div>
 
+<!-- ══════════════════ 店播 TAB ══════════════════ -->
+<div class="tab-panel" id="panel-live">
+
+  <div class="summary-bar live">
+    <div class="summary-title">📡 店播大盘 · 2026-04-27~05-26 vs 上期</div>
+    <div class="summary-kpis">
+      <div class="kpi"><div class="kpi-val" style="color:#f87171">¥32.91亿</div><div class="kpi-label">店播GMV · -3.3%</div></div>
+      <div class="kpi"><div class="kpi-val">9,711次</div><div class="kpi-label">单h曝光基准</div></div>
+      <div class="kpi"><div class="kpi-val">1.6%</div><div class="kpi-label">CTR封面点击基准</div></div>
+      <div class="kpi"><div class="kpi-val">1.6%</div><div class="kpi-label">CVR进播率基准</div></div>
+      <div class="kpi"><div class="kpi-val">3.6%</div><div class="kpi-label">商品转化率基准</div></div>
+      <div class="kpi"><div class="kpi-val">¥168.6</div><div class="kpi-label">客单价基准（中位数）</div></div>
+      <div class="kpi"><div class="kpi-val">2,094s</div><div class="kpi-label">店均时长基准</div></div>
+    </div>
+  </div>
+
+  <!-- 图表区 -->
+  <div class="charts-section">
+    <div class="chart-card bubble-card">
+      <div class="chart-title">战略矩阵：总曝光 × GPM（气泡大小 = 店播GMV）</div>
+      <div class="chart-sub">右上=明星行业 · 左上=高效精品 · 右下=流量洼地 · 左下=双弱待援</div>
+      <div class="chart-box" id="live-bubble" style="height:380px"></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">总曝光对比（亿次）</div>
+      <div class="chart-sub">基准线 = 8.35亿（中位数）</div>
+      <div class="chart-box" id="live-bar-exp" style="height:520px"></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">GPM 对比（元）</div>
+      <div class="chart-sub">基准线 = 44.1元（中位数）</div>
+      <div class="chart-box" id="live-bar-gpm" style="height:520px"></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">店播 GMV 对比（亿元）</div>
+      <div class="chart-sub">基准线 = 1.19亿（中位数）</div>
+      <div class="chart-box" id="live-bar-gmv" style="height:520px"></div>
+    </div>
+  </div>
+
+  <div class="funnel-ref">
+    <b style="color:#6b7280;margin-right:6px">店播漏斗：</b>
+    <div class="funnel-step"><div class="fdot" style="background:#3b82f6"></div>时长+场次</div><span class="farrow">→</span>
+    <div class="funnel-step"><div class="fdot" style="background:#6366f1"></div>单h曝光</div><span class="farrow">→</span>
+    <div class="funnel-step"><div class="fdot" style="background:#eab308"></div>CTR封面</div><span class="farrow">→</span>
+    <div class="funnel-step"><div class="fdot" style="background:#f97316"></div>CVR进播</div><span class="farrow">→</span>
+    <div class="funnel-step"><div class="fdot" style="background:#e8372c"></div>商品转化</div><span class="farrow">→</span>
+    <div class="funnel-step"><div class="fdot" style="background:#7c3aed"></div>客单价</div><span class="farrow">→</span>
+    <div class="funnel-step"><div class="fdot" style="background:#16a34a"></div>GPM</div>
+    <div style="margin-left:auto;font-size:10px;color:#6b7280">含呼吸灯 vs 直播卡双入口拆解</div>
+  </div>
+
+  <div class="cards-container" id="live-cards"></div>
+</div>
+
+</div><!-- /content -->
+
+<script>
+// ══════════════ 笔记数据 ══════════════
+const NOTE_BASE = { notePerMer:373, pv:62, ctr1:15.06, ctr2:9.13, cvr:6.53, aov:50.9, gpm:38.2 };
+
+const noteData = [
+  {name:'五组（休食）',type:'混合',gmv:0.76,gmvT:-8.2,pub:19.2,pubT:25.0,totalMer:516,expo:17.97,expoT:-39.8,pv:100,pvT:-41.6,ctr1:16.52,ctr2:6.82,cvr:7.429,aov:43.1,aovT:22.3,gpm:36.1,b56:101,gmvShare:32.3,
+    context:'发布量+25%但篇均曝光-41.6%，内卷。CTR2=6.82%是核心短板（低于基准9.13%），用户读完但没点商卡。CVR=7.4%健康，客单+22.3%正向。',
+    actions:['①CTR2核心战役：黄金位置强化商卡引导（视频前5秒/图文首图）','②商卡价格力：胶囊显示价vs划线价对比、首单券要在商卡中可见','③控制内卷：收缩低质内容，优先产出高CES内容']},
+  {name:'九组（家用）',type:'混合',gmv:0.68,gmvT:-0.6,pub:20.4,pubT:21.3,totalMer:534,expo:15.43,expoT:-6.9,pv:92,pvT:-20.7,ctr1:18.77,ctr2:6.39,cvr:7.050,aov:45.2,aovT:4.3,gpm:38.2,b56:98,gmvShare:26.6,
+    context:'CTR1=18.77%显著高于均值（种草到位），但CTR2=6.39%明显低于基准——用户读完了但没点商卡，是"种草到位、引流断层"典型。',
+    actions:['①CTR2是唯一核心战役：商卡引导优化是重点','②胶囊价格力：显示价vs划线价对比、满减券要可见','③笔记选品精简：每篇2-3个主推SKU']},
+  {name:'十一组（潮玩）',type:'店播主导',gmv:0.66,gmvT:-7.1,pub:79.2,pubT:35.3,totalMer:886,expo:27.24,expoT:7.2,pv:55,pvT:-12.5,ctr1:15.17,ctr2:12.90,cvr:3.887,aov:25.9,aovT:2.7,gpm:19.7,b56:92,gmvShare:14.2,
+    context:'CTR1/CTR2漏斗健康，但CVR=3.9%偏弱，客单¥25.9全行业第二低，GPM=19.7远低于基准。货盘结构是核心问题——低客单品为主，店播才是潮玩主要成交场域。',
+    actions:['①货盘升级：引入高客单/高品质SKU','②笔记定位调整：种草引流至店播完成高客单成交','③CVR优化：突出稀缺性/限量/联名降低冲动购买门槛']},
+  {name:'十一组（虚拟）',type:'笔记主导',gmv:0.58,gmvT:-2.7,pub:160.3,pubT:357.3,totalMer:89,expo:33.76,expoT:74.8,pv:39,pvT:-50.1,ctr1:13.20,ctr2:8.31,cvr:13.200,aov:10.0,aovT:-5.8,gpm:14.5,b56:19,gmvShare:54.0,
+    context:'内卷最严重：发布+357%但篇均曝光仅+75%，降至39次。CVR=13.2%全行业最高（虚拟决策成本低），但客单¥10极低，GPM=14.5全行业最低。',
+    actions:['①收缩内卷：大量低质内容被低分发，优先提升单篇质量','②CTR1=13.2%低于均值：封面/标题钩子优化','③客单提升：引入课程包/会员年卡等高客单品']},
+  {name:'十组（家纺）',type:'混合',gmv:0.47,gmvT:8.3,pub:8.3,pubT:17.6,totalMer:295,expo:7.56,expoT:-34.8,pv:119,pvT:-46.2,ctr1:12.57,ctr2:12.76,cvr:4.113,aov:85.2,aovT:46.9,gpm:56.2,b56:63,gmvShare:26.7,
+    context:'本期少数GMV正增长（+8.3%）。客单+46.9%是核心驱动，GPM=56.2高于基准，篇均曝光119次全行业最高。CTR1=12.57%略低，CVR=4.1%偏弱，但客单和GPM弥补了中段损耗。',
+    actions:['①保持健康大盘，关注篇均曝光-46.2%是否持续','②CVR=4.1%：试用装/首单优惠降低¥85客单决策门槛','③CTR1小幅提升：测试更强视觉封面，但优先级低']},
+  {name:'二组（亲子生活）',type:'混合',gmv:0.46,gmvT:-9.4,pub:15.8,pubT:38.9,totalMer:532,expo:7.98,expoT:-9.3,pv:73,pvT:-23.0,ctr1:13.17,ctr2:11.17,cvr:4.848,aov:67.9,aovT:-2.6,gpm:48.4,b56:97,gmvShare:20.6,
+    context:'CTR1/CTR2/CVR三环节均略低于基准，全链路轻度承压。客单¥67.9健康，GPM=48.4高于基准。没有单一明显断点，是整体轻度下滑型。',
+    actions:['①视频形态测试：亲子场景视频CTR1通常高于图文','②CTR2=11.17%有提升空间：更自然植入商品引导','③CVR优化：入门款+试用装降低决策门槛']},
+  {name:'六组（生鲜）',type:'混合',gmv:0.40,gmvT:-10.7,pub:13.0,pubT:49.1,totalMer:284,expo:9.81,expoT:-27.7,pv:111,pvT:-47.4,ctr1:13.59,ctr2:7.77,cvr:7.118,aov:50.4,aovT:6.4,gpm:37.9,b56:62,gmvShare:30.2,
+    context:'发布+49%但曝光-27.7%，内卷。CTR1=13.59%和CTR2=7.77%均低于基准，双CTR偏弱。CVR=7.1%和客单¥50.4健康。',
+    actions:['①控制内卷：发布+49%但曝光下滑，收缩低质内容','②CTR1优化：突出新鲜度/产地/口感，视频展示食材处理过程','③CTR2优化：商卡突出价格力（克重单价/配送保障）']},
+  {name:'四组（大健康）',type:'混合',gmv:0.38,gmvT:-17.2,pub:12.4,pubT:0.6,totalMer:288,expo:7.64,expoT:-42.6,pv:81,pvT:-38.8,ctr1:14.42,ctr2:5.70,cvr:6.181,aov:78.2,aovT:-2.6,gpm:39.7,b56:78,gmvShare:23.0,
+    context:'发布量基本不变（+0.6%）但曝光大跌-42.6%——平台分发侧问题。CTR2=5.70%全行业倒数第二（健康品类商卡引导极弱）。',
+    actions:['①流量问题需向上确认：发布稳定但曝光跌-42%','②CTR2=5.7%核心战役：商卡突出功效差异化（成分/功效/人群适配）','③商业化补位：精准人群触达']},
+  {name:'八组（消费电子）',type:'商卡主导',gmv:0.35,gmvT:-10.2,pub:14.2,pubT:0.0,totalMer:268,expo:8.01,expoT:-32.9,pv:67,pvT:-43.4,ctr1:17.22,ctr2:10.00,cvr:4.158,aov:50.8,aovT:2.7,gpm:36.3,b56:40,gmvShare:21.8,
+    context:'CTR1=17.22%前三高，CTR2=10%高于基准。CVR=4.16%偏弱——用户被种草也点了商卡，但没下单。发布不变但曝光-32.9%，平台侧稀释。',
+    actions:['①CVR是核心断点：优化商品详情页（主图/参数对比/用户评价）','②流量稀释排查：CES分是否下降','③搜索场景强化：标题优化型号+使用场景关键词']},
+  {name:'三组（宠物）',type:'混合',gmv:0.21,gmvT:-8.4,pub:7.6,pubT:34.4,totalMer:120,expo:5.10,expoT:4.4,pv:68,pvT:-32.9,ctr1:21.58,ctr2:5.54,cvr:8.863,aov:35.5,aovT:-4.6,gpm:37.5,b56:8,gmvShare:41.0,
+    context:'CTR1=21.58%全行业最高，CVR=8.86%前三高。但CTR2=5.54%全行业最低——读完了但没点商卡，是最典型的"内容留人、商卡引导断层"。',
+    actions:['①CTR2是宠物商笔的唯一核心战役','②自然融入式商品引导："我家猫爱吃的粮就是这款"','③商卡价格力：折扣/满减/赠品信息要在胶囊中可见','④场景化选品：用场景词替代商品型号']},
+  {name:'十三组（教育）',type:'混合',gmv:0.31,gmvT:42.9,pub:29.2,pubT:484.6,totalMer:187,expo:4.04,expoT:22.6,pv:49,pvT:-59.8,ctr1:14.29,ctr2:6.48,cvr:9.328,aov:50.3,aovT:17.2,gpm:43.4,b56:35,gmvShare:24.3,
+    context:'GMV+42.9%笔记端最大增长，但发布+485%、篇均49次严重稀释。CTR2=6.48%低于基准，但CVR=9.33%极高（教育用户一旦触发决策转化极强）。',
+    actions:['①流量稀释最严重：收缩低质内容，集中资源高CES笔记','②CTR2=6.48%：商卡突出课程效果/学员案例/限时优惠','③CVR=9.3%是优势：把CTR2提上来，GMV还有大空间']},
+  {name:'十三组（图书）',type:'笔记主导',gmv:0.24,gmvT:-1.3,pub:11.6,pubT:-22.7,totalMer:117,expo:5.77,expoT:-29.8,pv:61,pvT:-46.5,ctr1:11.56,ctr2:7.49,cvr:8.019,aov:50.9,aovT:-8.5,gpm:35.4,b56:18,gmvShare:52.5,
+    context:'笔记主导行业（占GMV 52.5%），发布和曝光双降（-23%/-30%），供给收缩型。CTR1=11.56%全行业最低——图书内容封面吸引力天然弱。',
+    actions:['①CTR1核心战役：封面突出"结论/金句/改变"','②视频形态：图书视频CTR1通常远高于图文','③不应继续收缩供给：图书占GMV 52%']},
+  {name:'十二组（手工）',type:'店播主导',gmv:0.27,gmvT:-5.5,pub:7.9,pubT:47.6,totalMer:562,expo:6.31,expoT:-12.2,pv:82,pvT:-42.2,ctr1:19.55,ctr2:11.34,cvr:4.260,aov:36.2,aovT:14.6,gpm:34.2,b56:70,gmvShare:12.0,
+    context:'CTR1=19.55%全行业第二高，CTR2=11.34%健康。CVR=4.26%略偏弱，客单¥36偏低。发布+47.6%但曝光-12.2%，轻度内卷。整体相对健康。',
+    actions:['①CVR=4.3%：手工品细节质量感展示（材质特写/制作精度）','②适当收缩内卷：优先推高CES制作过程视频','③客单提升：引入定制款/高品质材料款']},
+  {name:'一组（文玩玉翠）',type:'店播主导',gmv:0.18,gmvT:6.6,pub:8.0,pubT:56.4,totalMer:847,expo:1.30,expoT:5.9,pv:46,pvT:-2.9,ctr1:10.90,ctr2:29.50,cvr:0.733,aov:383.5,aovT:15.1,gpm:90.4,b56:395,gmvShare:1.8,
+    context:'CTR2=29.50%全行业第一，GPM=90.4全行业第一。但CVR=0.73%全行业最低——¥384高客单非标品决策过程极长，笔记场景几乎不能完成最终转化。',
+    actions:['①接受CVR极低是品类特性：笔记作为"品鉴内容"种草引流至直播间','②笔记重新定位：展示文化/收藏/鉴别方法','③CTR1=10.9%偏低：封面需要更强视觉冲击']},
+  {name:'八组（家电）',type:'混合',gmv:0.15,gmvT:8.2,pub:3.6,pubT:20.7,totalMer:112,expo:1.34,expoT:-49.8,pv:62,pvT:-42.6,ctr1:13.69,ctr2:7.49,cvr:5.079,aov:172.6,aovT:14.7,gpm:89.8,b56:37,gmvShare:17.0,
+    context:'GPM=89.8全行业最高（客单¥172.6），GMV+8.2%正增长。但曝光大跌-49.8%（流量稀释而非内卷）。',
+    actions:['①流量问题优先：曝光-50%但发布仅+21%，疑似平台分发侧问题','②精品化策略：每篇对应一个具体型号/使用场景','③CVR优化：¥173客单需要更强使用测评内容']},
+  {name:'十组（家饰）',type:'店播主导',gmv:0.15,gmvT:-3.6,pub:6.6,pubT:50.1,totalMer:231,expo:3.97,expoT:-14.9,pv:84,pvT:-29.4,ctr1:11.37,ctr2:13.40,cvr:4.109,aov:52.9,aovT:-8.1,gpm:33.1,b56:30,gmvShare:16.3,
+    context:'CTR1=11.37%全行业倒数三（封面吸引力弱），但CTR2=13.40%全行业第三高（读完愿意点商卡）。CVR=4.1%偏弱。发布+50%但曝光-15%，轻度内卷。',
+    actions:['①CTR1是核心：家饰封面必须做"空间感"设计（实景效果图/前后对比）','②CVR优化：商品详情页降低高客单决策门槛','③内容绑定场景关键词：租房改造/北欧风/新婚装修']},
+  {name:'七组（家具）',type:'K播主导',gmv:0.07,gmvT:-9.0,pub:5.0,pubT:-10.4,totalMer:192,expo:1.03,expoT:-30.2,pv:37,pvT:-24.6,ctr1:14.11,ctr2:11.20,cvr:2.259,aov:127.4,aovT:-3.9,gpm:45.5,b56:60,gmvShare:5.1,
+    context:'K播主导行业（K播占57% GMV），笔记占比仅5.1%。发布和曝光双降，供给收缩型。篇均曝光=37次全行业倒数第一。CVR=2.26%偏弱，¥127高客单笔记场景即时购买决策极难。',
+    actions:['①笔记定位调整：¥127高客单CVR天然低，笔记作为种草起点引流至直播间','②篇均曝光=37次：排查内容质量分问题','③视频3D展示：家具需要空间感，360°展示建立信心']},
+  {name:'十五组（酒旅）',type:'店播主导',gmv:0.08,gmvT:-21.6,pub:3.9,pubT:-26.0,totalMer:122,expo:0.61,expoT:-44.5,pv:48,pvT:-68.5,ctr1:11.87,ctr2:14.01,cvr:1.609,aov:334.4,aovT:-11.8,gpm:89.4,b56:41,gmvShare:5.7,
+    context:'发布和曝光全面收缩（-26%/-44.5%），供给端主动萎缩。CVR=1.61%倒数第二——酒旅¥334高客单需要精确匹配日期/人数/地点，笔记无法提供，即时转化极难。',
+    actions:['①接受CVR天然低：笔记主打"收藏种草"，引流至直播间或私信成交','②供给萎缩是隐患：激励商家恢复内容产出','③客单跌-11.8%需关注：是否货盘向低端位移']},
+  {name:'十四组（二奢）',type:'店播主导',gmv:0.03,gmvT:-11.9,pub:2.5,pubT:15.7,totalMer:227,expo:0.23,expoT:-16.4,pv:15,pvT:-29.9,ctr1:12.42,ctr2:20.29,cvr:0.514,aov:472.0,aovT:-65.3,gpm:61.1,b56:39,gmvShare:2.5,
+    context:'篇均曝光=15次全行业最低（严重稀释）。CTR2=20.29%极高，但CVR=0.51%全行业最低——¥472奢侈品笔记场景几乎不成交。客单价环比-65.3%（货盘结构崩塌）。',
+    actions:['①客单价-65.3%最紧急：紧急介入货盘引导，回归高客单品','②篇均曝光=15次：大幅提升内容质量（鉴定故事/大牌平替）','③CVR=0.5%是品类天花板：笔记引流至店播建立信任后成交']},
+];
+
+// ══════════════ 店播数据 ══════════════
+const LIVE_BASE = { avgdur:2094, avgsess:17.4, hexp:9711, ctr:1.6, cvr:1.6, conv:3.6, aov:168.6 };
+
+const liveData = [
+  {name:'九组（家用）',type:'混合',gmv:5.12,gmvT:-1.3,exp:17.80,expT:-11.3,hexp:17127,hexpT:-15.3,avgdur:3465,avgdurT:4.7,avgsess:17.9,avgsessT:-2.0,ctr:1.638,cvr:2.409,conv:4.216,aov:139.0,aovT:8.2,gpm:73.8,huxi_ctr:1.085,huxi_cvr:4.046,zhibo_ctr:3.423,zhibo_cvr:1.914,fans:93.9,fansT:-40.6,b56:98,totalMer:534,gmvShare:68.7,
+    context:'单h曝光高于基准，供给稳健。CTR/CVR/商品转化均高于基准。主要短板是客单¥139低于基准¥168.6。涨粉跌-40.6%需关注。',
+    actions:['①货盘升级：引入高客单SKU提升客单价','②涨粉跌-40.6%：优化开场钩子和互动引导','③呼吸灯CTR=1.08%偏低：优化封面图/标题']},
+  {name:'二组（亲子生活）',type:'混合',gmv:3.06,gmvT:-9.5,exp:13.26,expT:-10.3,hexp:10185,hexpT:-28.5,avgdur:4340,avgdurT:25.4,avgsess:20.3,avgsessT:1.5,ctr:1.778,cvr:2.165,conv:3.188,aov:128.6,aovT:11.9,gpm:58.7,huxi_ctr:1.230,huxi_cvr:3.833,zhibo_ctr:2.790,zhibo_cvr:2.277,fans:57.9,fansT:-42.5,b56:97,totalMer:532,gmvShare:63.3,
+    context:'单h曝光接近基准但趋势跌-28.5%。开播时长+25.4%（供给在投入），但曝光跌、涨粉跌-42.5%，"投入增加但产出下降"信号。商品转化3.19%低于基准。',
+    actions:['①商品转化3.19%：优化选品和讲品节奏','②单h曝光趋势跌-28.5%：向上确认平台分发权重变化','③涨粉跌-42.5%：增加互动环节（亲子话题/宝宝互动）']},
+  {name:'十一组（潮玩）',type:'店播主导',gmv:2.73,gmvT:-7.5,exp:17.80,expT:11.2,hexp:4014,hexpT:-1.0,avgdur:14781,avgdurT:12.3,avgsess:13.5,avgsessT:4.6,ctr:3.244,cvr:4.207,conv:8.993,aov:215.0,aovT:11.8,gpm:29.0,huxi_ctr:1.532,huxi_cvr:3.180,zhibo_ctr:3.968,zhibo_cvr:2.200,fans:98.2,fansT:-34.2,b56:92,totalMer:886,gmvShare:54.4,
+    context:'CTR/CVR/转化全行业最高——漏斗效率极强。但单h曝光=4014次全行业最低（严重稀释），开播间数12.3间/商家过多。GMV跌完全是分发侧问题。',
+    actions:['①流量分发是唯一核心问题：漏斗效率全行业最强，需向上确认潮玩品类分发是否被压缩','②开播间数优化：12.3间/商家过多导致单间曝光稀释，集中做主播间','③品均爆灯次63次偏低：增加商品展示机会']},
+  {name:'五组（休食）',type:'混合',gmv:2.35,gmvT:-1.9,exp:13.09,expT:-9.5,hexp:12928,hexpT:-25.3,avgdur:3375,avgdurT:21.1,avgsess:18.4,avgsessT:0.9,ctr:1.176,cvr:3.025,conv:5.839,aov:111.9,aovT:0.0,gpm:51.2,huxi_ctr:0.644,huxi_cvr:6.573,zhibo_ctr:2.890,zhibo_cvr:2.004,fans:34.4,fansT:3.7,b56:101,totalMer:516,gmvShare:54.0,
+    context:'CVR/转化高于基准，CTR=1.18%是显著弱点。关键：呼吸灯CVR=6.57%全行业最高（进来就买），但呼吸灯CTR=0.64%极低——门槛高、进来就买的模式，优化重点在入口CTR。',
+    actions:['①CTR是核心断点：优化直播间封面（食品类突出视觉诱惑感）','②呼吸灯CTR=0.64%极低但CVR=6.57%极高：重点提升呼吸灯点击率','③直播卡CTR=2.89%尚可，继续维持']},
+  {name:'一组（文玩玉翠）',type:'店播主导',gmv:2.29,gmvT:7.9,exp:8.58,expT:1.9,hexp:4893,hexpT:-2.3,avgdur:5842,avgdurT:4.3,avgsess:17.7,avgsessT:-14.6,ctr:3.975,cvr:1.030,conv:1.921,aov:1717.4,aovT:-3.7,gpm:60.9,huxi_ctr:2.172,huxi_cvr:1.175,zhibo_ctr:5.300,zhibo_cvr:0.936,fans:53.9,fansT:-34.4,b56:395,totalMer:847,gmvShare:45.4,
+    context:'GMV+7.9%正增长。CTR=3.98%极高，但CVR/转化低——文玩¥1717高客单非标品，进播用户需长时间品鉴才下单，CVR天然低是品类特性。',
+    actions:['①单h曝光偏低：GMV+7.9%但曝光仅+1.9%，争取更多分发资源','②接受CVR低：优化直播间成交节奏（鉴定环节/历史成交展示）','③场次跌-14.6%：保持高质量主播开播频率']},
+  {name:'六组（生鲜）',type:'混合',gmv:2.18,gmvT:-4.2,exp:9.70,expT:-3.7,hexp:14048,hexpT:-40.0,avgdur:2303,avgdurT:60.5,avgsess:14.6,avgsessT:-13.3,ctr:1.523,cvr:1.870,conv:4.784,aov:52.9,aovT:7.3,gpm:28.6,huxi_ctr:0.844,huxi_cvr:3.629,zhibo_ctr:3.641,zhibo_cvr:0.779,fans:95.8,fansT:85.9,b56:62,totalMer:284,gmvShare:48.3,
+    context:'涨粉+85.9%全行业第一，开播时长+60.5%（供给大增）。但单h曝光跌-40%——供给增加但分发没有跟上，算法稀释。',
+    actions:['①单h曝光跌-40%是根本问题：优化直播间质量分而非单纯增加时长','②直播卡CVR=0.79%极低：检查直播卡素材是否与直播间内容匹配','③涨粉+85.9%是优势：加强私域运营转化新粉']},
+  {name:'十二组（手工）',type:'店播主导',gmv:2.01,gmvT:-6.5,exp:8.35,expT:8.2,hexp:7641,hexpT:-1.1,avgdur:3644,avgdurT:9.4,avgsess:17.2,avgsessT:-5.0,ctr:3.641,cvr:2.221,conv:4.246,aov:236.5,aovT:1.0,gpm:44.1,huxi_ctr:1.814,huxi_cvr:2.989,zhibo_ctr:5.200,zhibo_cvr:2.125,fans:47.8,fansT:-13.9,b56:70,totalMer:562,gmvShare:68.0,
+    context:'CTR=3.64%极高，商品转化4.25%高于基准。单h曝光=7641次低于基准，是主要制约。直播卡CTR=5.2%极高，是优势入口。',
+    actions:['①单h曝光7641次：优质开播素材提升质量分','②CVR=2.22%：优化进播后商品讲解（制作过程+材质说明）','③直播卡CTR=5.2%极高：充分利用直播卡入口扩大触达']},
+  {name:'十组（家饰）',type:'店播主导',gmv:1.73,gmvT:-1.9,exp:8.50,expT:-25.4,hexp:11290,hexpT:-34.3,avgdur:2508,avgdurT:13.5,avgsess:17.4,avgsessT:-11.6,ctr:2.490,cvr:1.662,conv:3.455,aov:107.2,aovT:28.3,gpm:39.5,huxi_ctr:1.552,huxi_cvr:3.616,zhibo_ctr:4.250,zhibo_cvr:1.680,fans:49.0,fansT:-43.0,b56:30,totalMer:231,gmvShare:67.4,
+    context:'客单+28.3%是本期最大亮点，GMV-1.9%仅轻微下滑。CTR=2.49%高于基准，但单h曝光跌-34.3%，涨粉跌-43%。',
+    actions:['①单h曝光跌-34.3%：排查直播间分类/标签问题','②涨粉跌-43%：加大直播卡投入（zhibo_ctr=4.25%已高，可以放量）','③品均爆灯+29.9%是正向信号：继续维持']},
+  {name:'四组（大健康）',type:'混合',gmv:1.47,gmvT:-12.8,exp:5.33,expT:-32.5,hexp:9711,hexpT:-19.4,avgdur:1830,avgdurT:-16.2,avgsess:21.0,avgsessT:2.8,ctr:1.735,cvr:0.940,conv:2.734,aov:238.4,aovT:-10.2,gpm:62.0,huxi_ctr:0.382,huxi_cvr:3.961,zhibo_ctr:4.203,zhibo_cvr:0.237,fans:13.3,fansT:-36.8,b56:78,totalMer:288,gmvShare:54.6,
+    context:'CVR=0.94%明显低于基准，商品转化2.73%低于基准。呼吸灯CTR=0.38%全行业最低，直播卡CVR=0.24%也极低。双入口均弱，全链路承压。开播时长跌-16.2%（供给在收缩）。',
+    actions:['①CVR=0.94%最核心断点：更强信任建立（KOL背书/使用前后对比/成分讲解）','②呼吸灯CTR=0.38%全行业最低：重新设计封面（突出"功效结果"）','③开播时长跌-16.2%：激励商家恢复开播时长']},
+  {name:'十组（家纺）',type:'混合',gmv:1.38,gmvT:3.2,exp:6.76,expT:10.1,hexp:8802,hexpT:-18.3,avgdur:2562,avgdurT:34.8,avgsess:18.8,avgsessT:-4.0,ctr:2.063,cvr:2.201,conv:4.077,aov:168.6,aovT:-4.9,gpm:47.4,huxi_ctr:1.113,huxi_cvr:2.999,zhibo_ctr:3.465,zhibo_cvr:2.071,fans:35.4,fansT:-27.3,b56:63,totalMer:295,gmvShare:74.5,
+    context:'GMV+3.2%正增长，漏斗整体健康。CTR/CVR/转化均高于基准。开播时长+34.8%。单h曝光8802次略低于基准是唯一轻微短板。',
+    actions:['①关注单h曝光趋势（若继续下滑会影响GMV）','②涨粉跌-27.3%：加大直播卡触达（直播卡CTR/CVR均不错）','③维持高时长开播策略，争取算法权重']},
+  {name:'八组（消费电子）',type:'商卡主导',gmv:1.36,gmvT:-5.4,exp:11.21,expT:-13.9,hexp:17844,hexpT:-18.5,avgdur:2094,avgdurT:5.5,avgsess:19.2,avgsessT:6.4,ctr:1.293,cvr:1.255,conv:1.663,aov:112.5,aovT:8.9,gpm:23.1,huxi_ctr:0.850,huxi_cvr:2.587,zhibo_ctr:2.906,zhibo_cvr:0.529,fans:44.7,fansT:-29.7,b56:40,totalMer:268,gmvShare:33.0,
+    context:'商品转化=1.66%远低于3.6%基准——全行业漏斗中最明显的转化断点之一。CVR=1.26%也低于基准。直播卡CVR=0.53%极低，呼吸灯CVR=2.59%相对好。',
+    actions:['①商品转化1.66%核心战役：直播需要"实测+对比+参数讲解"，至少1-2分钟/件','②CVR=1.26%：增强进播后留存（提问互动/实时演示）','③直播卡CVR=0.53%极低：检查直播卡定向精准度']},
+  {name:'十三组（教育）',type:'混合',gmv:1.19,gmvT:45.1,exp:5.05,expT:-12.2,hexp:14789,hexpT:-6.6,avgdur:1138,avgdurT:-6.0,avgsess:12.3,avgsessT:-12.7,ctr:1.518,cvr:0.388,conv:5.378,aov:391.1,aovT:-53.0,gpm:55.4,huxi_ctr:0.445,huxi_cvr:1.997,zhibo_ctr:3.971,zhibo_cvr:0.227,fans:17.3,fansT:-16.1,b56:35,totalMer:187,gmvShare:62.1,
+    context:'GMV+45.1%全行业最高增长，但几乎全靠K播。店播CVR=0.39%全行业最低，直播卡CVR=0.23%也全行业最低。最大灾难：客单价跌-53%（¥391）。',
+    actions:['①客单价跌-53%最紧急：引入高客单课程/系列课调整价格结构','②CVR=0.39%极低：内容驱动成交（试听/学员展示/效果对比）','③品均爆灯-44.2%：优化直播节奏，更多样化的选品展示']},
+  {name:'三组（宠物）',type:'混合',gmv:0.96,gmvT:-1.6,exp:2.23,expT:35.8,hexp:5734,hexpT:-10.9,avgdur:1298,avgdurT:52.5,avgsess:15.3,avgsessT:0.0,ctr:2.022,cvr:1.130,conv:4.492,aov:109.5,aovT:2.2,gpm:55.8,huxi_ctr:0.796,huxi_cvr:3.747,zhibo_ctr:4.286,zhibo_cvr:0.739,fans:7.0,fansT:-18.1,b56:8,totalMer:120,gmvShare:82.1,
+    context:'店播是宠物行业绝对主导（占GMV 82.1%）。CTR=2.02%健康，商品转化4.49%高于基准，但CVR=1.13%低于基准。开播时长+52.5%但曝光没同步增加（算法稀释）。',
+    actions:['①CVR=1.13%：优化直播间开场（萌宠出镜/互动/即时福利）增强首几秒留存','②单h曝光偏低+开播时长+52%：优化互动指标（评论/点赞率）争取算法权重','③直播卡CVR=0.74%：定向更精准（有宠物用户画像）']},
+  {name:'十四组（二奢）',type:'店播主导',gmv:0.87,gmvT:-9.3,exp:2.66,expT:-14.5,hexp:4317,hexpT:-19.5,avgdur:2055,avgdurT:6.2,avgsess:18.4,avgsessT:4.4,ctr:2.847,cvr:0.136,conv:0.158,aov:4891.0,aovT:-11.8,gpm:10.4,huxi_ctr:2.202,huxi_cvr:0.171,zhibo_ctr:3.953,zhibo_cvr:0.084,fans:9.4,fansT:-39.1,b56:39,totalMer:227,gmvShare:72.3,
+    context:'CTR=2.85%高于基准，但CVR=0.14%全行业最低，商品转化0.16%几乎为零——¥4891超高客单二奢在直播间无法即时成交。单h曝光=4317次偏低，涨粉跌-39.1%。',
+    actions:['①接受CVR/转化极低是品类特性：直播间作为"品鉴展示"，引导至1对1私域成交','②单h曝光=4317次：差异化内容（鉴定现场/海外溯源/真假对比）获取算法分发','③GPM=10.4极低：重新评估直播间资源投入ROI']},
+  {name:'七组（家具）',type:'K播主导',gmv:0.83,gmvT:-9.3,exp:4.02,expT:-20.0,hexp:9027,hexpT:-15.0,avgdur:1483,avgdurT:-5.9,avgsess:17.7,avgsessT:-5.1,ctr:1.526,cvr:0.811,conv:1.520,aov:479.1,aovT:-16.5,gpm:38.4,huxi_ctr:0.918,huxi_cvr:2.282,zhibo_ctr:3.248,zhibo_cvr:0.370,fans:19.6,fansT:-37.0,b56:60,totalMer:192,gmvShare:49.9,
+    context:'CVR=0.81%低于基准，商品转化1.52%低于基准。家具¥479高客单直播间转化天然困难。开播时长和场次均在下滑（商家在退出），客单跌-16.5%。',
+    actions:['①家具店播定位：高客单难靠店播直接成交，直播间应以设计方案展示为内容，引导预约到店','②客单跌-16.5%：引导商家在直播间展示高客单主力品','③开播供给在萎缩：评估是否需要激励政策']},
+  {name:'十三组（图书）',type:'笔记主导',gmv:0.21,gmvT:-0.6,exp:1.54,expT:-12.9,hexp:5504,hexpT:-26.4,avgdur:932,avgdurT:18.3,avgsess:14.8,avgsessT:11.3,ctr:1.047,cvr:1.445,conv:3.166,aov:145.2,aovT:-8.3,gpm:36.2,huxi_ctr:0.537,huxi_cvr:3.755,zhibo_ctr:2.526,zhibo_cvr:1.123,fans:2.9,fansT:-38.0,b56:18,totalMer:117,gmvShare:11.2,
+    context:'图书是笔记主导行业，店播占GMV仅11.2%。CTR=1.05%低于基准，开播时长仅932s（不到16分钟，供给极不充分）。',
+    actions:['①图书店播定位：笔记的辅助补充，聚焦书单推荐/作者直播等高价值内容形式','②CTR=1.05%：封面突出"书单主题/知识点"而非书籍封面图','③重心放在笔记端（图书笔记占GMV 52.5%）']},
+  {name:'十五组（酒旅）',type:'店播主导',gmv:0.21,gmvT:17.8,exp:9.73,expT:157.9,hexp:17837,hexpT:-19.2,avgdur:1818,avgdurT:219.0,avgsess:15.0,avgsessT:-2.2,ctr:0.973,cvr:1.616,conv:3.558,aov:680.2,aovT:-67.5,gpm:28.0,huxi_ctr:0.311,huxi_cvr:4.326,zhibo_ctr:1.575,zhibo_cvr:1.101,fans:17.1,fansT:42.4,b56:41,totalMer:122,gmvShare:14.7,
+    context:'GMV+17.8%正增长，靠开播时长+219%驱动曝光爆增+157.9%。但CTR=0.97%全行业最低，大量曝光没有转化为点击。最大灾难：客单价跌-67.5%（¥680），货盘向低价位移。',
+    actions:['①CTR=0.97%全行业最低：重新设计封面（突出"限时特价/目的地/出行场景"）','②客单价跌-67.5%最紧急：货盘干预，引导商家回归高客单套餐','③呼吸灯CTR=0.31%全行业最低：把资源集中到直播卡（CVR=1.1%相对更好）']},
+  {name:'八组（家电）',type:'混合',gmv:0.19,gmvT:25.7,exp:1.43,expT:15.3,hexp:5009,hexpT:-15.6,avgdur:949,avgdurT:36.7,avgsess:17.2,avgsessT:0.0,ctr:1.128,cvr:0.938,conv:2.485,aov:1137.1,aovT:24.7,gpm:177.3,huxi_ctr:0.535,huxi_cvr:1.619,zhibo_ctr:2.638,zhibo_cvr:0.595,fans:3.9,fansT:-18.3,b56:37,totalMer:112,gmvShare:19.8,
+    context:'GMV+25.7%高增长，GPM=177.3全行业最高（客单¥1137.1且+24.7%）。CVR=0.94%和转化=2.49%均低于基准——家电¥1137超高客单直播间决策困难，是品类特性。整体体量小（112家商家）。',
+    actions:['①GPM=177.3是宝贵资产：优先做大开播商家基数（当前仅112家）','②CVR偏低是品类特性：需要实测+拆箱+对比演示，至少5-8分钟讲品','③直播卡CTR=2.64%：继续用直播卡引入精准家电买家']},
+  {name:'十一组（虚拟）',type:'笔记主导',gmv:0.11,gmvT:-4.5,exp:3.85,expT:40.5,hexp:16050,hexpT:-68.4,avgdur:800,avgdurT:344.1,avgsess:7.5,avgsessT:54.3,ctr:1.513,cvr:1.663,conv:6.594,aov:67.1,aovT:-36.9,gpm:9.8,huxi_ctr:0.491,huxi_cvr:4.276,zhibo_ctr:2.580,zhibo_cvr:1.208,fans:23.0,fansT:68.8,b56:19,totalMer:89,gmvShare:10.4,
+    context:'开播时长+344%但单h曝光跌-68.4%——供给激增+算法严重稀释。商品转化6.59%全行业第二高，但客单¥67.1跌-36.9%，GPM=9.8全行业最低。',
+    actions:['①单h曝光跌-68.4%：虚拟直播供给严重过剩，收缩低质直播间','②客单价跌-36.9%：引导主推高价值产品（年卡/高级会员/课程包）','③评估店播ROI：资源应向笔记端倾斜']},
+];
+
+// ══════════════ 工具函数 ══════════════
+function getBarCls(v,b){if(!b)return'ok';return v>=b?'ok':v>=b*.7?'warn':'bad'}
+function getW(v,b,cap){const x=cap?Math.min(v,cap):v;return Math.min(95,Math.max(4,(b?x/b:0.5)*60))+'%'}
+
+function fRow(name,val,base,display,baseDsp,diff,diffDsp,cls,w,supply){
+  return `<div class="funnel-row">
+    <div class="funnel-left"><div class="funnel-name-label">${name}</div></div>
+    <div class="funnel-center"><div class="funnel-bar-bg">
+      <div class="funnel-fill ${supply?'supply':cls}" style="width:${w}"></div>
+      <div class="funnel-base-line" style="left:60%"></div>
+      <span class="funnel-val-overlay">${display}</span>
+    </div></div>
+    <div class="funnel-right">
+      <div class="funnel-compare">基准 ${baseDsp}</div>
+      <div class="funnel-yoy ${diff>=0?'up':'down'}">${diff>=0?'+':''}${diffDsp}</div>
+    </div></div>`;
+}
+function conn(label){return `<div class="funnel-connector"><div class="fcl"></div><div class="fcn">→ ${label}</div><div class="fcl"></div></div>`}
+
+// ══════════════ 笔记卡片 ══════════════
+function noteGetSev(d){
+  let n=0;
+  const npm=d.totalMer>0?Math.round(d.pub*10000/d.totalMer):0;
+  if(npm>NOTE_BASE.notePerMer*3)n++;
+  if(d.pv<NOTE_BASE.pv*.8)n++;
+  if(d.ctr1<NOTE_BASE.ctr1*.9)n++;
+  if(d.ctr2<NOTE_BASE.ctr2*.85)n++;
+  if(d.cvr<NOTE_BASE.cvr*.7)n++;
+  if(d.aov<NOTE_BASE.aov*.7)n++;
+  return Math.min(3,n);
+}
+function noteTags(d){
+  const t=[];
+  const npm=d.totalMer>0?Math.round(d.pub*10000/d.totalMer):0;
+  if(npm>NOTE_BASE.notePerMer*4)t.push('<span class="tag tag-orange">⚡ 供给严重内卷</span>');
+  else if(npm>NOTE_BASE.notePerMer*1.8)t.push('<span class="tag tag-yellow">⚡ 供给内卷</span>');
+  if(d.pv<40)t.push('<span class="tag tag-blue">🔵 流量严重稀释</span>');
+  else if(d.pv<NOTE_BASE.pv*.8)t.push('<span class="tag tag-blue">🔵 流量稀释</span>');
+  if(d.ctr1<12)t.push('<span class="tag tag-yellow">🟡 CTR1内容吸引力弱</span>');
+  else if(d.ctr1<NOTE_BASE.ctr1*.9)t.push('<span class="tag tag-yellow">🟡 CTR1略弱</span>');
+  if(d.ctr2<7)t.push('<span class="tag tag-orange">🟠 CTR2商卡引导严重弱</span>');
+  else if(d.ctr2<NOTE_BASE.ctr2*.85)t.push('<span class="tag tag-orange">🟠 CTR2商卡引导弱</span>');
+  if(d.cvr<2)t.push('<span class="tag tag-red">🔴 CVR极低（品类特性）</span>');
+  else if(d.cvr<NOTE_BASE.cvr*.7)t.push('<span class="tag tag-red">🔴 CVR转化弱</span>');
+  if(d.aov<NOTE_BASE.aov*.7)t.push('<span class="tag tag-purple">💜 客单价偏低</span>');
+  if(d.aovT<-20)t.push('<span class="tag tag-purple">💜 客单价暴跌</span>');
+  if(d.aovT>20)t.push('<span class="tag tag-green">💚 客单价大幅提升</span>');
+  if(!t.length)t.push('<span class="tag tag-green">✅ 漏斗整体健康</span>');
+  return t.join('');
+}
+const CBCLS={店播主导:'cb-blue',K播主导:'cb-purple',商卡主导:'cb-green',笔记主导:'cb-orange',混合:'cb-gray'};
+
+function buildNoteCard(d,rank){
+  const sev=noteGetSev(d);
+  const npm=d.totalMer>0?Math.round(d.pub*10000/d.totalMer):0;
+  const sevTxt=['✅ 全链路健康','🟡 轻微问题','🟠 中等问题','🔴 严重断点'][sev];
+  const sevCls=['sev-label-0','sev-label-1','sev-label-2','sev-label-3'][sev];
+  return `<div class="diag-card sev-${sev}" data-gmv="${d.gmv}" data-sev="${sev}" data-pv="${d.pv}">
+  <div class="card-header">
+    <div class="card-rank">#${rank}</div>
+    <div class="card-name-block">
+      <div class="card-name">${d.name}</div>
+      <div class="card-meta">
+        <span><span class="carrier-badge ${CBCLS[d.type]||'cb-gray'}">${d.type}</span></span>
+        <span>笔记GMV <b>${d.gmv}亿</b> <span class="${d.gmvT>=0?'up':'down'}">${d.gmvT>=0?'+':''}${d.gmvT}%</span></span>
+        <span>占行业 <b>${d.gmvShare}%</b></span>
+        <span>发布 <b>${d.pub}万条</b> <span class="${d.pubT>=0?'up':'down'}">${d.pubT>=0?'+':''}${d.pubT}%</span></span>
+        <span>总曝光 <b>${d.expo}亿</b></span>
+        <span>商家 <b>${d.totalMer}</b>家</span>
+        <span>B5/6 <b>${d.b56}</b>家</span>
+      </div>
+    </div>
+    <div class="card-severity"><span class="severity-label ${sevCls}">${sevTxt}</span></div>
+  </div>
+  <div class="card-body">
+    <div class="funnel-visual">
+      <div style="font-size:10px;color:#94a3b8;margin-bottom:2px;padding-left:113px">← 不足 ｜ <span style="color:#6b7280">▏基准线</span> ｜ 达标 →</div>
+      ${fRow('笔记/商家',npm,NOTE_BASE.notePerMer,npm.toLocaleString()+'条',NOTE_BASE.notePerMer+'条',npm-NOTE_BASE.notePerMer,(npm-NOTE_BASE.notePerMer>0?'+':'')+Math.round(npm-NOTE_BASE.notePerMer)+'条',getBarCls(npm,NOTE_BASE.notePerMer*3<npm?npm:NOTE_BASE.notePerMer),getW(Math.min(npm,NOTE_BASE.notePerMer*2),NOTE_BASE.notePerMer,NOTE_BASE.notePerMer*2),'indigo',true)}
+      ${conn('篇均曝光（分发效率）')}
+      ${fRow('篇均曝光',d.pv,NOTE_BASE.pv,d.pv+'次',NOTE_BASE.pv+'次',d.pvT,d.pvT+'%',getBarCls(d.pv,NOTE_BASE.pv),getW(d.pv,NOTE_BASE.pv),false)}
+      ${conn('CTR1 阅读率')}
+      ${fRow('CTR1 阅读率',d.ctr1,NOTE_BASE.ctr1,d.ctr1.toFixed(2)+'%',NOTE_BASE.ctr1+'%',d.ctr1-NOTE_BASE.ctr1,(d.ctr1-NOTE_BASE.ctr1>=0?'+':'')+((d.ctr1-NOTE_BASE.ctr1).toFixed(2))+'%',getBarCls(d.ctr1,NOTE_BASE.ctr1),getW(d.ctr1,NOTE_BASE.ctr1),false)}
+      ${conn('CTR2 商卡点击')}
+      ${fRow('CTR2 商卡点击',d.ctr2,NOTE_BASE.ctr2,d.ctr2.toFixed(2)+'%',NOTE_BASE.ctr2+'%',d.ctr2-NOTE_BASE.ctr2,(d.ctr2-NOTE_BASE.ctr2>=0?'+':'')+((d.ctr2-NOTE_BASE.ctr2).toFixed(2))+'%',getBarCls(d.ctr2,NOTE_BASE.ctr2),getW(d.ctr2,NOTE_BASE.ctr2),false)}
+      ${conn('CVR 转化率')}
+      ${fRow('CVR 转化率',d.cvr,NOTE_BASE.cvr,d.cvr.toFixed(3)+'%',NOTE_BASE.cvr+'%',d.cvr-NOTE_BASE.cvr,(d.cvr-NOTE_BASE.cvr>=0?'+':'')+((d.cvr-NOTE_BASE.cvr).toFixed(3))+'%',getBarCls(d.cvr,NOTE_BASE.cvr),getW(d.cvr,NOTE_BASE.cvr),false)}
+      ${conn('客单价（vs中位数¥50.9）')}
+      ${fRow('客单价',d.aov,NOTE_BASE.aov,'¥'+d.aov,'¥'+NOTE_BASE.aov,d.aov-NOTE_BASE.aov,(d.aov-NOTE_BASE.aov>=0?'+¥':'-¥')+Math.abs(Math.round(d.aov-NOTE_BASE.aov)),getBarCls(d.aov,NOTE_BASE.aov),getW(d.aov,NOTE_BASE.aov,500),false)}
+      <div class="gpm-bar">
+        <span style="font-size:11px;color:#6b7280">GPM：</span>
+        <span style="font-size:15px;font-weight:700;color:${d.gpm>=NOTE_BASE.gpm?'#16a34a':'#e8372c'}">${d.gpm}</span>
+        <span style="font-size:10px;color:#6b7280">/ 基准${NOTE_BASE.gpm}</span>
+        <div style="flex:1;height:7px;background:#f1f5f9;border-radius:3px;overflow:hidden;margin-left:6px">
+          <div style="width:${Math.min(100,d.gpm/NOTE_BASE.gpm*60+5)}%;height:100%;background:${d.gpm>=NOTE_BASE.gpm?'#16a34a':'#f97316'};border-radius:3px"></div>
+        </div>
+      </div>
+    </div>
+    <div class="right-panel">
+      <div class="tags-row">${noteTags(d)}</div>
+      <div class="conclusion-box"><div class="conclusion-title">🔍 问题诊断</div><div class="conclusion-text">${d.context}</div></div>
+      <div class="conclusion-box" style="border-left-color:#16a34a"><div class="conclusion-title" style="color:#16a34a">▶ 行动建议</div><div class="conclusion-text">${d.actions.map(a=>'<div style="margin-bottom:3px">'+a+'</div>').join('')}</div></div>
+    </div>
+  </div></div>`;
+}
+
+// ══════════════ 店播卡片 ══════════════
+function liveGetSev(d){
+  let n=0;
+  if(d.hexp<LIVE_BASE.hexp*.8)n++;
+  if(d.ctr<LIVE_BASE.ctr*.85)n++;
+  if(d.cvr<LIVE_BASE.cvr*.7)n++;
+  if(d.conv<LIVE_BASE.conv*.7)n++;
+  if(d.aov<LIVE_BASE.aov*.7)n++;
+  return Math.min(3,n);
+}
+function liveTags(d){
+  const t=[];
+  if(d.hexp<5000)t.push('<span class="tag tag-blue">🔵 流量严重稀释</span>');
+  else if(d.hexp<LIVE_BASE.hexp*.8)t.push('<span class="tag tag-blue">🔵 流量稀释</span>');
+  if(d.ctr<1.2)t.push('<span class="tag tag-yellow">🟡 CTR封面点击弱</span>');
+  else if(d.ctr<LIVE_BASE.ctr*.85)t.push('<span class="tag tag-yellow">🟡 CTR略弱</span>');
+  if(d.cvr<0.5)t.push('<span class="tag tag-orange">🟠 CVR进播率极低（品类特性）</span>');
+  else if(d.cvr<LIVE_BASE.cvr*.7)t.push('<span class="tag tag-orange">🟠 CVR进播率弱</span>');
+  if(d.conv<1.0)t.push('<span class="tag tag-red">🔴 商品转化极低</span>');
+  else if(d.conv<LIVE_BASE.conv*.7)t.push('<span class="tag tag-red">🔴 商品转化弱</span>');
+  if(d.aov<LIVE_BASE.aov*.5)t.push('<span class="tag tag-purple">💜 客单价偏低</span>');
+  if(d.aovT<-30)t.push('<span class="tag tag-purple">💜 客单价暴跌</span>');
+  else if(d.aovT<-10)t.push('<span class="tag tag-purple">💜 客单价下滑</span>');
+  if(d.avgdurT<-10)t.push('<span class="tag tag-yellow">⚠️ 开播时长萎缩</span>');
+  if(d.aovT>20)t.push('<span class="tag tag-green">💚 客单价大幅提升</span>');
+  if(!t.length)t.push('<span class="tag tag-green">✅ 漏斗整体健康</span>');
+  return t.join('');
+}
+function buildLiveCard(d,rank){
+  const sev=liveGetSev(d);
+  const sevTxt=['✅ 全链路健康','🟡 轻微问题','🟠 中等问题','🔴 严重断点'][sev];
+  const sevCls=['sev-label-0','sev-label-1','sev-label-2','sev-label-3'][sev];
+  const hcls=(v,lo,hi)=>v>=hi?'#16a34a':v>=lo?'#eab308':'#e8372c';
+  return `<div class="diag-card sev-${sev}" data-gmv="${d.gmv}" data-sev="${sev}" data-hexp="${d.hexp}">
+  <div class="card-header">
+    <div class="card-rank">#${rank}</div>
+    <div class="card-name-block">
+      <div class="card-name">${d.name}</div>
+      <div class="card-meta">
+        <span><span class="carrier-badge ${CBCLS[d.type]||'cb-gray'}">${d.type}</span></span>
+        <span>店播GMV <b>${d.gmv}亿</b> <span class="${d.gmvT>=0?'up':'down'}">${d.gmvT>=0?'+':''}${d.gmvT}%</span></span>
+        <span>占行业 <b>${d.gmvShare}%</b></span>
+        <span>总曝光 <b>${d.exp}亿</b> <span class="${d.expT>=0?'up':'down'}">${d.expT>=0?'+':''}${d.expT}%</span></span>
+        <span>涨粉 <b>${d.fans}万</b> <span class="${d.fansT>=0?'up':'down'}">${d.fansT>=0?'+':''}${d.fansT}%</span></span>
+        <span>商家 <b>${d.totalMer}</b>家</span>
+      </div>
+    </div>
+    <div class="card-severity"><span class="severity-label ${sevCls}">${sevTxt}</span></div>
+  </div>
+  <div class="card-body">
+    <div class="funnel-visual">
+      <div style="font-size:10px;color:#94a3b8;margin-bottom:2px;padding-left:113px">← 不足 ｜ <span style="color:#6b7280">▏基准线</span> ｜ 达标 →</div>
+      <div class="section-label">📦 供给层</div>
+      ${fRow('店均时长',d.avgdur,LIVE_BASE.avgdur,Math.round(d.avgdur/60)+'min',Math.round(LIVE_BASE.avgdur/60)+'min',d.avgdurT,d.avgdurT.toFixed(1)+'%','supply',getW(Math.min(d.avgdur,LIVE_BASE.avgdur*3),LIVE_BASE.avgdur,LIVE_BASE.avgdur*3),true)}
+      ${fRow('开播场次',d.avgsess,LIVE_BASE.avgsess,d.avgsess.toFixed(1)+'场',LIVE_BASE.avgsess+'场',d.avgsess-LIVE_BASE.avgsess,(d.avgsess-LIVE_BASE.avgsess>=0?'+':'')+((d.avgsess-LIVE_BASE.avgsess).toFixed(1))+'场','supply',getW(d.avgsess,LIVE_BASE.avgsess),true)}
+      ${conn('单h曝光（流量效率）')}
+      ${fRow('单h曝光',d.hexp,LIVE_BASE.hexp,Math.round(d.hexp).toLocaleString()+'次',Math.round(LIVE_BASE.hexp).toLocaleString()+'次',d.hexpT,d.hexpT.toFixed(1)+'%',getBarCls(d.hexp,LIVE_BASE.hexp),getW(d.hexp,LIVE_BASE.hexp,30000),false)}
+      ${conn('CTR 封面点击率')}
+      ${fRow('CTR 封面点击',d.ctr,LIVE_BASE.ctr,d.ctr.toFixed(3)+'%',LIVE_BASE.ctr+'%',d.ctr-LIVE_BASE.ctr,(d.ctr-LIVE_BASE.ctr>=0?'+':'')+((d.ctr-LIVE_BASE.ctr).toFixed(3))+'%',getBarCls(d.ctr,LIVE_BASE.ctr),getW(d.ctr,LIVE_BASE.ctr),false)}
+      <div class="dual-entry">
+        <div class="entry-box huxi"><div class="entry-title">🫧 呼吸灯入口</div>
+          <div class="entry-row"><span>CTR</span><span class="entry-val" style="color:${hcls(d.huxi_ctr,0.7,1.0)}">${d.huxi_ctr.toFixed(3)}%</span></div>
+          <div class="entry-row"><span>CVR</span><span class="entry-val" style="color:${hcls(d.huxi_cvr,2.0,3.0)}">${d.huxi_cvr.toFixed(3)}%</span></div>
+        </div>
+        <div class="entry-box zhibo"><div class="entry-title">📺 直播卡入口</div>
+          <div class="entry-row"><span>CTR</span><span class="entry-val" style="color:${hcls(d.zhibo_ctr,1.8,2.5)}">${d.zhibo_ctr.toFixed(3)}%</span></div>
+          <div class="entry-row"><span>CVR</span><span class="entry-val" style="color:${hcls(d.zhibo_cvr,1.0,1.5)}">${d.zhibo_cvr.toFixed(3)}%</span></div>
+        </div>
+      </div>
+      ${conn('CVR 进播率')}
+      ${fRow('CVR 进播率',d.cvr,LIVE_BASE.cvr,d.cvr.toFixed(3)+'%',LIVE_BASE.cvr+'%',d.cvr-LIVE_BASE.cvr,(d.cvr-LIVE_BASE.cvr>=0?'+':'')+((d.cvr-LIVE_BASE.cvr).toFixed(3))+'%',getBarCls(d.cvr,LIVE_BASE.cvr),getW(d.cvr,LIVE_BASE.cvr),false)}
+      ${conn('商品转化率')}
+      ${fRow('商品转化率',d.conv,LIVE_BASE.conv,d.conv.toFixed(3)+'%',LIVE_BASE.conv+'%',d.conv-LIVE_BASE.conv,(d.conv-LIVE_BASE.conv>=0?'+':'')+((d.conv-LIVE_BASE.conv).toFixed(3))+'%',getBarCls(d.conv,LIVE_BASE.conv),getW(d.conv,LIVE_BASE.conv),false)}
+      ${conn('客单价（vs中位数¥168.6）')}
+      ${fRow('客单价',d.aov,LIVE_BASE.aov,'¥'+d.aov.toLocaleString(),'¥'+LIVE_BASE.aov,d.aov-LIVE_BASE.aov,(d.aov-LIVE_BASE.aov>=0?'+¥':'-¥')+Math.abs(Math.round(d.aov-LIVE_BASE.aov)),getBarCls(d.aov,LIVE_BASE.aov),getW(d.aov,LIVE_BASE.aov,2000),false)}
+      <div class="gpm-bar">
+        <span style="font-size:11px;color:#6b7280">GPM：</span>
+        <span style="font-size:15px;font-weight:700;color:${d.gpm>=38?'#16a34a':'#e8372c'}">${d.gpm}</span>
+        <span style="font-size:10px;color:#6b7280">/ 基准~44元</span>
+        <div style="flex:1;height:7px;background:#f1f5f9;border-radius:3px;overflow:hidden;margin-left:6px">
+          <div style="width:${Math.min(100,d.gpm/44*60+5)}%;height:100%;background:${d.gpm>=44?'#16a34a':'#f97316'};border-radius:3px"></div>
+        </div>
+      </div>
+    </div>
+    <div class="right-panel">
+      <div class="tags-row">${liveTags(d)}</div>
+      <div class="conclusion-box"><div class="conclusion-title">🔍 问题诊断</div><div class="conclusion-text">${d.context}</div></div>
+      <div class="conclusion-box" style="border-left-color:#16a34a"><div class="conclusion-title" style="color:#16a34a">▶ 行动建议</div><div class="conclusion-text">${d.actions.map(a=>'<div style="margin-bottom:3px">'+a+'</div>').join('')}</div></div>
+    </div>
+  </div></div>`;
+}
+
+// ══════════════ 渲染卡片 ══════════════
+function renderNoteCards(key){
+  const s=[...noteData];
+  if(key==='gmv')s.sort((a,b)=>b.gmv-a.gmv);
+  else if(key==='sev')s.sort((a,b)=>noteGetSev(b)-noteGetSev(a)||b.gmv-a.gmv);
+  else if(key==='pv')s.sort((a,b)=>a.pv-b.pv);
+  document.getElementById('note-cards').innerHTML=s.map((d,i)=>buildNoteCard(d,i+1)).join('');
+}
+function renderLiveCards(key){
+  const s=[...liveData];
+  if(key==='gmv')s.sort((a,b)=>b.gmv-a.gmv);
+  else if(key==='sev')s.sort((a,b)=>liveGetSev(b)-liveGetSev(a)||b.gmv-a.gmv);
+  else if(key==='hexp')s.sort((a,b)=>a.hexp-b.hexp);
+  document.getElementById('live-cards').innerHTML=s.map((d,i)=>buildLiveCard(d,i+1)).join('');
+}
+function sortNote(key,btn){
+  document.querySelectorAll('#sort-note .sort-btn').forEach(b=>b.classList.remove('active-note'));
+  btn.classList.add('active-note');
+  renderNoteCards(key);
+}
+function sortLive(key,btn){
+  document.querySelectorAll('#sort-live .sort-btn').forEach(b=>b.classList.remove('active-live'));
+  btn.classList.add('active-live');
+  renderLiveCards(key);
+}
+
+// ══════════════ Tab 切换 ══════════════
+function switchTab(tab){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('sort-note').style.display='none';
+  document.getElementById('sort-live').style.display='none';
+  document.getElementById('panel-'+tab).classList.add('active');
+  document.getElementById('tab-'+tab).classList.add('active');
+  document.getElementById('sort-'+tab).style.display='flex';
+  if(tab==='note')initNoteCharts();
+  else initLiveCharts();
+}
+
+// ══════════════ ECharts ══════════════
+let noteChartsInited=false, liveChartsInited=false;
+
+function barChart(domId, data, baseVal, color, unit){
+  const sorted=[...data].sort((a,b)=>a.val-b.val);
+  const ch=echarts.init(document.getElementById(domId));
+  ch.setOption({
+    grid:{left:'2%',right:'12%',top:'2%',bottom:'2%',containLabel:true},
+    tooltip:{trigger:'axis',formatter:p=>`${p[0].name}<br/><b>${p[0].value}${unit}</b>`},
+    xAxis:{type:'value',splitLine:{lineStyle:{type:'dashed'}},axisLabel:{formatter:v=>v+unit}},
+    yAxis:{type:'category',data:sorted.map(d=>d.name),axisLabel:{fontSize:10,width:100,overflow:'break'}},
+    series:[{
+      type:'bar',barMaxWidth:16,
+      data:sorted.map(d=>({value:d.val,itemStyle:{color:d.val>=baseVal?'#16a34a':d.val>=baseVal*.7?'#eab308':'#e8372c'}})),
+      markLine:{silent:true,data:[{xAxis:baseVal}],lineStyle:{color:'#6366f1',type:'dashed',width:2},label:{formatter:'基准 '+baseVal+unit,color:'#6366f1'}}
+    }]
+  });
+}
+
+function bubbleChart(domId, items, expBase, gpmBase, expUnit, gpmUnit){
+  const ch=echarts.init(document.getElementById(domId));
+  const q=[{n:'🟢 明星（高曝光+高GPM）',c:'#16a34a'},{n:'🟣 高效精品（低曝光+高GPM）',c:'#7c3aed'},
+           {n:'🟠 流量洼地（高曝光+低GPM）',c:'#f97316'},{n:'🔴 双弱待援（低曝光+低GPM）',c:'#e8372c'}];
+  const series=items.map(d=>{
+    const hi_exp=d.exp>=expBase, hi_gpm=d.gpm>=gpmBase;
+    const qi=hi_exp&&hi_gpm?0:!hi_exp&&hi_gpm?1:hi_exp&&!hi_gpm?2:3;
+    return {name:q[qi].n,type:'scatter',
+      symbolSize: v=>Math.max(14,Math.sqrt(v[2])*38),
+      data:[[d.exp,d.gpm,d.gmv,d.name]],
+      itemStyle:{color:q[qi].c,opacity:.8},
+      label:{show:true,position:'top',formatter:p=>p.data[3].replace(/\d+组（/,'').replace('）',''),fontSize:10,color:'#1a1a2e'},
+      tooltip:{formatter:p=>`${p.data[3]}<br/>曝光: ${p.data[0]}${expUnit}<br/>GPM: ${p.data[1]}${gpmUnit}<br/>GMV: ${p.data[2]}亿`}
+    };
+  });
+  ch.setOption({
+    legend:{data:q.map(x=>x.n),bottom:0,textStyle:{fontSize:10}},
+    grid:{left:'8%',right:'5%',top:'5%',bottom:'60px',containLabel:true},
+    tooltip:{trigger:'item'},
+    xAxis:{name:'总曝光('+expUnit+')',nameLocation:'end',splitLine:{lineStyle:{type:'dashed'}},
+      axisLabel:{formatter:v=>v+expUnit}},
+    yAxis:{name:'GPM',nameLocation:'end',splitLine:{lineStyle:{type:'dashed'}}},
+    series:[
+      ...series,
+      {type:'line',markLine:{silent:true,data:[{xAxis:expBase},{yAxis:gpmBase}],lineStyle:{color:'#94a3b8',type:'dashed',width:1.5},label:{color:'#6b7280',fontSize:9}}}
+    ]
+  });
+}
+
+function initNoteCharts(){
+  if(noteChartsInited)return;
+  noteChartsInited=true;
+  const expData=noteData.map(d=>({name:d.name.replace(/\d+组（/,'').replace('）',''),val:d.expo}));
+  const gpmData=noteData.map(d=>({name:d.name.replace(/\d+组（/,'').replace('）',''),val:d.gpm}));
+  const gmvData=noteData.map(d=>({name:d.name.replace(/\d+组（/,'').replace('）',''),val:d.gmv}));
+  barChart('note-bar-exp',expData,6.31,'#3b82f6','亿');
+  barChart('note-bar-gpm',gpmData,38.2,'#16a34a','元');
+  barChart('note-bar-gmv',gmvData,0.27,'#6366f1','亿');
+  const bubItems=noteData.map(d=>({name:d.name,exp:d.expo,gpm:d.gpm,gmv:d.gmv}));
+  bubbleChart('note-bubble',bubItems,6.31,38.2,'亿','元');
+}
+
+function initLiveCharts(){
+  if(liveChartsInited)return;
+  liveChartsInited=true;
+  const expData=liveData.map(d=>({name:d.name.replace(/\d+组（/,'').replace('）',''),val:d.exp}));
+  const gpmData=liveData.map(d=>({name:d.name.replace(/\d+组（/,'').replace('）',''),val:d.gpm}));
+  const gmvData=liveData.map(d=>({name:d.name.replace(/\d+组（/,'').replace('）',''),val:d.gmv}));
+  barChart('live-bar-exp',expData,8.35,'#3b82f6','亿');
+  barChart('live-bar-gpm',gpmData,44.1,'#16a34a','元');
+  barChart('live-bar-gmv',gmvData,1.19,'#6366f1','亿');
+  const bubItems=liveData.map(d=>({name:d.name,exp:d.exp,gpm:d.gpm,gmv:d.gmv}));
+  bubbleChart('live-bubble',bubItems,8.35,44.1,'亿','元');
+}
+
+// 初始化
+renderNoteCards('gmv');
+renderLiveCards('gmv');
+initNoteCharts();
+</script>
 </body>
 </html>
