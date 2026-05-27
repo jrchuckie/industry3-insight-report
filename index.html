@@ -4,7 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>行业三部 · 商笔 & 店播漏斗诊断 2026-05-26</title>
-<script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js">
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+<script>
 // ─── diag层切换逻辑 ───
 function switchDiag(layerId, btn) {
   // 隐藏笔记/店播panel，显示diag panel
@@ -31,7 +32,7 @@ switchTab = function(which) {
   });
   _origSwitchTab(which);
 };
-
+</script>
 <script>
 // ===== UTILITIES =====
 function showLayer(id,btn){
@@ -49,133 +50,6 @@ function colorClass(s){return s.startsWith('+')||s.startsWith('+')?'up':s.starts
 const industries=[
   'one','eleven_play','nine','five','twelve','two','ten_f','four','eight_ce','fifteen','seven','six','thirteen_e','eleven_v','fourteen','ten_d','eight_he','three','thirteen_b'
 ];
-
-// Layer 1 data (sorted by GMV desc)
-const l1Data=[
-  {n:'一组（文玩玉翠）',gmv:100299,gt:-3.68,dian:71,k:18,shang:9,bi:2,type:'店播主导'},
-  {n:'十一组（潮玩）',gmv:46226,gt:-5.38,dian:61,k:5,shang:20,bi:14,type:'店播主导'},
-  {n:'九组（家用）',gmv:25633,gt:2.80,dian:34,k:22,shang:17,bi:27,type:'混合'},
-  {n:'五组（休食）',gmv:23595,gt:-3.25,dian:26,k:15,shang:27,bi:32,type:'混合'},
-  {n:'十二组（手工）',gmv:22473,gt:-5.31,dian:65,k:5,shang:18,bi:12,type:'店播主导'},
-  {n:'二组（亲子生活）',gmv:22190,gt:-15.74,dian:38,k:21,shang:21,bi:21,type:'混合'},
-  {n:'十组（家纺）',gmv:17524,gt:11.16,dian:31,k:20,shang:22,bi:27,type:'混合'},
-  {n:'四组（大健康）',gmv:16372,gt:0,dian:20,k:31,shang:27,bi:23,type:'混合'},
-  {n:'八组（消费电子）',gmv:16192,gt:10.73,dian:19,k:8,shang:51,bi:22,type:'商卡主导'},
-  {n:'十五组（酒旅）',gmv:14658,gt:-15.73,dian:61,k:7,shang:26,bi:6,type:'店播主导'},
-  {n:'七组（家具）',gmv:13585,gt:27.00,dian:23,k:57,shang:15,bi:5,type:'K播主导'},
-  {n:'六组（生鲜）',gmv:13208,gt:-3.53,dian:28,k:14,shang:27,bi:30,type:'混合'},
-  {n:'十三组（教育）',gmv:12729,gt:45.10,dian:14,k:38,shang:23,bi:24,type:'混合'},
-  {n:'十一组（虚拟）',gmv:10672,gt:4.55,dian:9,k:9,shang:28,bi:54,type:'笔记主导'},
-  {n:'十四组（二奢）',gmv:10332,gt:-9.46,dian:76,k:1,shang:20,bi:3,type:'店播主导'},
-  {n:'十组（家饰）',gmv:9182,gt:-1.79,dian:57,k:10,shang:16,bi:16,type:'店播主导'},
-  {n:'八组（家电）',gmv:8726,gt:24.33,dian:23,k:34,shang:25,bi:17,type:'混合'},
-  {n:'三组（宠物）',gmv:5129,gt:-0.58,dian:17,k:6,shang:36,bi:41,type:'混合'},
-  {n:'十三组（图书）',gmv:4613,gt:-18.91,dian:13,k:19,shang:16,bi:52,type:'笔记主导'},
-];
-const typeClass={
-  '店播主导':'badge-blue','K播主导':'badge-purple','商卡主导':'badge-green','笔记主导':'badge-orange','混合':'badge-gray'
-};
-const tbody1=document.getElementById('l1-tbody');
-l1Data.forEach((d,i)=>{
-  const gtc=d.gt>0?'up':d.gt<0?'down':'flat';
-  tbody1.innerHTML+=`<tr>
-    <td>${i+1}</td><td><b>${d.n}</b></td>
-    <td>${d.gmv.toLocaleString()}</td>
-    <td class="${gtc}">${d.gt>0?'+':''}${d.gt.toFixed(2)}%</td>
-    <td>
-      <div class="carrier-mini">
-        <div class="carrier-mini-seg" style="width:${d.dian}%;background:#2563eb"></div>
-        <div class="carrier-mini-seg" style="width:${d.k}%;background:#7c3aed"></div>
-        <div class="carrier-mini-seg" style="width:${d.shang}%;background:#16a34a"></div>
-        <div class="carrier-mini-seg" style="width:${d.bi}%;background:#f97316"></div>
-      </div>
-    </td>
-    <td><span class="badge ${typeClass[d.type]}">${d.type}</span></td>
-    <td>${d.dian}%</td><td>${d.k}%</td><td>${d.shang}%</td><td>${d.bi}%</td>
-  </tr>`;
-});
-
-// Layer 2 data
-const l2Data=[
-  {n:'八组（家电）',b56:37,avgT:19.02,deg:9.68,leap:19.64,diag:'头部稳定 腰部激活',sig:'green'},
-  {n:'四组（大健康）',b56:78,avgT:1.31,deg:18.42,leap:12.15,diag:'头部稳定 腰部偏弱',sig:'green'},
-  {n:'一组（文玩玉翠）',b56:395,avgT:-2.66,deg:19.90,leap:15.58,diag:'头部稳定',sig:'green'},
-  {n:'七组（家具）',b56:60,avgT:12.14,deg:15.91,leap:21.88,diag:'腰部激活强 头部稳',sig:'green'},
-  {n:'五组（休食）',b56:101,avgT:8.84,deg:26.61,leap:10.08,diag:'头部有压 腰部弱',sig:'yellow'},
-  {n:'九组（家用）',b56:98,avgT:5.75,deg:27.66,leap:19.10,diag:'头部小幅流失',sig:'yellow'},
-  {n:'十二组（手工）',b56:70,avgT:-0.96,deg:27.78,leap:17.62,diag:'头部承压',sig:'yellow'},
-  {n:'十五组（酒旅）',b56:41,avgT:-23.14,deg:24.32,leap:13.11,diag:'头部GMV暴跌',sig:'yellow'},
-  {n:'十四组（二奢）',b56:39,avgT:-11.84,deg:33.33,leap:17.18,diag:'头部松动 逼近红线',sig:'yellow'},
-  {n:'八组（消费电子）',b56:40,avgT:34.34,deg:32.50,leap:11.19,diag:'头部分化 强者跑出',sig:'yellow'},
-  {n:'十一组（虚拟）',b56:19,avgT:11.28,deg:22.22,leap:34.83,diag:'腰部激活强劲',sig:'yellow'},
-  {n:'十一组（潮玩）',b56:92,avgT:-9.56,deg:46.67,leap:32.05,diag:'⚠️头部严重出血',sig:'red'},
-  {n:'十三组（教育）',b56:35,avgT:109.38,deg:44.12,leap:29.41,diag:'头部剧烈分化 强者涌现',sig:'red'},
-  {n:'二组（亲子生活）',b56:97,avgT:-11.15,deg:40.16,leap:12.41,diag:'⚠️头部萎缩 腰部乏力',sig:'red'},
-  {n:'十组（家纺）',b56:63,avgT:32.02,deg:40.00,leap:19.66,diag:'降级高但均值升 两极分化',sig:'red'},
-  {n:'六组（生鲜）',b56:62,avgT:5.69,deg:38.36,leap:21.13,diag:'头部流失严重',sig:'red'},
-  {n:'十组（家饰）',b56:30,avgT:0.94,deg:37.50,leap:20.78,diag:'头部大幅降级',sig:'red'},
-  {n:'三组（宠物）',b56:8,avgT:10.70,deg:42.86,leap:15.83,diag:'头部极少且出血',sig:'red'},
-  {n:'十三组（图书）',b56:18,avgT:-22.76,deg:40.91,leap:19.66,diag:'⚠️头部出血+GMV双跌',sig:'red'},
-];
-const tbody2=document.getElementById('l2-tbody');
-l2Data.forEach(d=>{
-  const tc=d.avgT>0?'up':d.avgT<0?'down':'flat';
-  const dc=d.deg<20?'#16a34a':d.deg<35?'#eab308':'#e8372c';
-  const degPct=Math.min(100,d.deg);
-  const diagClass=d.sig==='red'?'badge-red':d.sig==='yellow'?'badge badge-gray':'badge-green';
-  tbody2.innerHTML+=`<tr>
-    <td><span class="signal signal-${d.sig}"></span></td>
-    <td><b>${d.n}</b></td>
-    <td>${d.b56}</td>
-    <td class="${tc}">${d.avgT>0?'+':''}${d.avgT.toFixed(2)}%</td>
-    <td style="color:${dc};font-weight:700">${d.deg.toFixed(1)}%</td>
-    <td>
-      <div style="display:flex;align-items:center;gap:6px">
-        <div style="flex:1;height:12px;background:#f1f5f9;border-radius:3px;overflow:hidden">
-          <div style="width:${degPct}%;height:100%;background:${dc};border-radius:3px"></div>
-        </div>
-        <span style="font-size:10px;color:${dc}">${d.deg.toFixed(1)}%</span>
-      </div>
-    </td>
-    <td class="${d.leap>18.93?'up':'flat'}">${d.leap.toFixed(1)}%</td>
-    <td><span class="badge ${diagClass}">${d.diag}</span></td>
-  </tr>`;
-});
-
-// Layer 3 carrier data
-const l3Data=l1Data.map(d=>({...d,
-  dianT: d.gt<0?`${d.gt.toFixed(1)}%`:`+${d.gt.toFixed(1)}%`,
-  kT:'-',shT:'-',biT:'-'
-}));
-const overrideT={
-  '七组（家具）':{kT:'+27.0%'},
-  '十三组（教育）':{kT:'+45.1%',biT:'+42.9%'},
-  '八组（家电）':{kT:'+24.3%'},
-  '八组（消费电子）':{shT:'+10.7%'},
-};
-const tbody3=document.getElementById('l3-tbody');
-l1Data.forEach(d=>{
-  const ov=overrideT[d.n]||{};
-  const dT=d.gt>=0?`+${d.gt.toFixed(1)}%`:`${d.gt.toFixed(1)}%`;
-  const kT=ov.kT||'-';const shT=ov.shT||'-';const biT=ov.biT||'-';
-  tbody3.innerHTML+=`<tr>
-    <td><b>${d.n}</b></td>
-    <td>
-      <div class="carrier-row" style="width:200px">
-        <div class="carrier-seg" style="width:${d.dian}%;background:#2563eb">${d.dian>10?d.dian+'%':''}</div>
-        <div class="carrier-seg" style="width:${d.k}%;background:#7c3aed">${d.k>10?d.k+'%':''}</div>
-        <div class="carrier-seg" style="width:${d.shang}%;background:#16a34a">${d.shang>10?d.shang+'%':''}</div>
-        <div class="carrier-seg" style="width:${d.bi}%;background:#f97316">${d.bi>10?d.bi+'%':''}</div>
-      </div>
-    </td>
-    <td><span class="badge ${typeClass[d.type]}">${d.type}</span></td>
-    <td class="${colorClass(dT)}">${dT}</td>
-    <td class="${colorClass(kT)}">${kT}</td>
-    <td class="${colorClass(shT)}">${shT}</td>
-    <td class="${colorClass(biT)}">${biT}</td>
-  </tr>`;
-});
-
 
 </script>
 <style>
@@ -328,6 +202,142 @@ tr:hover td{background:#f8fafc}
 </style>
 </head>
 <body>
+<script>
+
+// ─── 表格填充（DOM就绪后）───
+document.addEventListener('DOMContentLoaded', function() {
+// Layer 1 data (sorted by GMV desc)
+const l1Data=[
+  {n:'一组（文玩玉翠）',gmv:100299,gt:-3.68,dian:71,k:18,shang:9,bi:2,type:'店播主导'},
+  {n:'十一组（潮玩）',gmv:46226,gt:-5.38,dian:61,k:5,shang:20,bi:14,type:'店播主导'},
+  {n:'九组（家用）',gmv:25633,gt:2.80,dian:34,k:22,shang:17,bi:27,type:'混合'},
+  {n:'五组（休食）',gmv:23595,gt:-3.25,dian:26,k:15,shang:27,bi:32,type:'混合'},
+  {n:'十二组（手工）',gmv:22473,gt:-5.31,dian:65,k:5,shang:18,bi:12,type:'店播主导'},
+  {n:'二组（亲子生活）',gmv:22190,gt:-15.74,dian:38,k:21,shang:21,bi:21,type:'混合'},
+  {n:'十组（家纺）',gmv:17524,gt:11.16,dian:31,k:20,shang:22,bi:27,type:'混合'},
+  {n:'四组（大健康）',gmv:16372,gt:0,dian:20,k:31,shang:27,bi:23,type:'混合'},
+  {n:'八组（消费电子）',gmv:16192,gt:10.73,dian:19,k:8,shang:51,bi:22,type:'商卡主导'},
+  {n:'十五组（酒旅）',gmv:14658,gt:-15.73,dian:61,k:7,shang:26,bi:6,type:'店播主导'},
+  {n:'七组（家具）',gmv:13585,gt:27.00,dian:23,k:57,shang:15,bi:5,type:'K播主导'},
+  {n:'六组（生鲜）',gmv:13208,gt:-3.53,dian:28,k:14,shang:27,bi:30,type:'混合'},
+  {n:'十三组（教育）',gmv:12729,gt:45.10,dian:14,k:38,shang:23,bi:24,type:'混合'},
+  {n:'十一组（虚拟）',gmv:10672,gt:4.55,dian:9,k:9,shang:28,bi:54,type:'笔记主导'},
+  {n:'十四组（二奢）',gmv:10332,gt:-9.46,dian:76,k:1,shang:20,bi:3,type:'店播主导'},
+  {n:'十组（家饰）',gmv:9182,gt:-1.79,dian:57,k:10,shang:16,bi:16,type:'店播主导'},
+  {n:'八组（家电）',gmv:8726,gt:24.33,dian:23,k:34,shang:25,bi:17,type:'混合'},
+  {n:'三组（宠物）',gmv:5129,gt:-0.58,dian:17,k:6,shang:36,bi:41,type:'混合'},
+  {n:'十三组（图书）',gmv:4613,gt:-18.91,dian:13,k:19,shang:16,bi:52,type:'笔记主导'},
+];
+const typeClass={
+  '店播主导':'badge-blue','K播主导':'badge-purple','商卡主导':'badge-green','笔记主导':'badge-orange','混合':'badge-gray'
+};
+const tbody1=document.getElementById('l1-tbody');
+l1Data.forEach((d,i)=>{
+  const gtc=d.gt>0?'up':d.gt<0?'down':'flat';
+  tbody1.innerHTML+=`<tr>
+    <td>${i+1}</td><td><b>${d.n}</b></td>
+    <td>${d.gmv.toLocaleString()}</td>
+    <td class="${gtc}">${d.gt>0?'+':''}${d.gt.toFixed(2)}%</td>
+    <td>
+      <div class="carrier-mini">
+        <div class="carrier-mini-seg" style="width:${d.dian}%;background:#2563eb"></div>
+        <div class="carrier-mini-seg" style="width:${d.k}%;background:#7c3aed"></div>
+        <div class="carrier-mini-seg" style="width:${d.shang}%;background:#16a34a"></div>
+        <div class="carrier-mini-seg" style="width:${d.bi}%;background:#f97316"></div>
+      </div>
+    </td>
+    <td><span class="badge ${typeClass[d.type]}">${d.type}</span></td>
+    <td>${d.dian}%</td><td>${d.k}%</td><td>${d.shang}%</td><td>${d.bi}%</td>
+  </tr>`;
+});
+
+// Layer 2 data
+const l2Data=[
+  {n:'八组（家电）',b56:37,avgT:19.02,deg:9.68,leap:19.64,diag:'头部稳定 腰部激活',sig:'green'},
+  {n:'四组（大健康）',b56:78,avgT:1.31,deg:18.42,leap:12.15,diag:'头部稳定 腰部偏弱',sig:'green'},
+  {n:'一组（文玩玉翠）',b56:395,avgT:-2.66,deg:19.90,leap:15.58,diag:'头部稳定',sig:'green'},
+  {n:'七组（家具）',b56:60,avgT:12.14,deg:15.91,leap:21.88,diag:'腰部激活强 头部稳',sig:'green'},
+  {n:'五组（休食）',b56:101,avgT:8.84,deg:26.61,leap:10.08,diag:'头部有压 腰部弱',sig:'yellow'},
+  {n:'九组（家用）',b56:98,avgT:5.75,deg:27.66,leap:19.10,diag:'头部小幅流失',sig:'yellow'},
+  {n:'十二组（手工）',b56:70,avgT:-0.96,deg:27.78,leap:17.62,diag:'头部承压',sig:'yellow'},
+  {n:'十五组（酒旅）',b56:41,avgT:-23.14,deg:24.32,leap:13.11,diag:'头部GMV暴跌',sig:'yellow'},
+  {n:'十四组（二奢）',b56:39,avgT:-11.84,deg:33.33,leap:17.18,diag:'头部松动 逼近红线',sig:'yellow'},
+  {n:'八组（消费电子）',b56:40,avgT:34.34,deg:32.50,leap:11.19,diag:'头部分化 强者跑出',sig:'yellow'},
+  {n:'十一组（虚拟）',b56:19,avgT:11.28,deg:22.22,leap:34.83,diag:'腰部激活强劲',sig:'yellow'},
+  {n:'十一组（潮玩）',b56:92,avgT:-9.56,deg:46.67,leap:32.05,diag:'⚠️头部严重出血',sig:'red'},
+  {n:'十三组（教育）',b56:35,avgT:109.38,deg:44.12,leap:29.41,diag:'头部剧烈分化 强者涌现',sig:'red'},
+  {n:'二组（亲子生活）',b56:97,avgT:-11.15,deg:40.16,leap:12.41,diag:'⚠️头部萎缩 腰部乏力',sig:'red'},
+  {n:'十组（家纺）',b56:63,avgT:32.02,deg:40.00,leap:19.66,diag:'降级高但均值升 两极分化',sig:'red'},
+  {n:'六组（生鲜）',b56:62,avgT:5.69,deg:38.36,leap:21.13,diag:'头部流失严重',sig:'red'},
+  {n:'十组（家饰）',b56:30,avgT:0.94,deg:37.50,leap:20.78,diag:'头部大幅降级',sig:'red'},
+  {n:'三组（宠物）',b56:8,avgT:10.70,deg:42.86,leap:15.83,diag:'头部极少且出血',sig:'red'},
+  {n:'十三组（图书）',b56:18,avgT:-22.76,deg:40.91,leap:19.66,diag:'⚠️头部出血+GMV双跌',sig:'red'},
+];
+const tbody2=document.getElementById('l2-tbody');
+l2Data.forEach(d=>{
+  const tc=d.avgT>0?'up':d.avgT<0?'down':'flat';
+  const dc=d.deg<20?'#16a34a':d.deg<35?'#eab308':'#e8372c';
+  const degPct=Math.min(100,d.deg);
+  const diagClass=d.sig==='red'?'badge-red':d.sig==='yellow'?'badge badge-gray':'badge-green';
+  tbody2.innerHTML+=`<tr>
+    <td><span class="signal signal-${d.sig}"></span></td>
+    <td><b>${d.n}</b></td>
+    <td>${d.b56}</td>
+    <td class="${tc}">${d.avgT>0?'+':''}${d.avgT.toFixed(2)}%</td>
+    <td style="color:${dc};font-weight:700">${d.deg.toFixed(1)}%</td>
+    <td>
+      <div style="display:flex;align-items:center;gap:6px">
+        <div style="flex:1;height:12px;background:#f1f5f9;border-radius:3px;overflow:hidden">
+          <div style="width:${degPct}%;height:100%;background:${dc};border-radius:3px"></div>
+        </div>
+        <span style="font-size:10px;color:${dc}">${d.deg.toFixed(1)}%</span>
+      </div>
+    </td>
+    <td class="${d.leap>18.93?'up':'flat'}">${d.leap.toFixed(1)}%</td>
+    <td><span class="badge ${diagClass}">${d.diag}</span></td>
+  </tr>`;
+});
+
+// Layer 3 carrier data
+const l3Data=l1Data.map(d=>({...d,
+  dianT: d.gt<0?`${d.gt.toFixed(1)}%`:`+${d.gt.toFixed(1)}%`,
+  kT:'-',shT:'-',biT:'-'
+}));
+const overrideT={
+  '七组（家具）':{kT:'+27.0%'},
+  '十三组（教育）':{kT:'+45.1%',biT:'+42.9%'},
+  '八组（家电）':{kT:'+24.3%'},
+  '八组（消费电子）':{shT:'+10.7%'},
+};
+const tbody3=document.getElementById('l3-tbody');
+l1Data.forEach(d=>{
+  const ov=overrideT[d.n]||{};
+  const dT=d.gt>=0?`+${d.gt.toFixed(1)}%`:`${d.gt.toFixed(1)}%`;
+  const kT=ov.kT||'-';const shT=ov.shT||'-';const biT=ov.biT||'-';
+  tbody3.innerHTML+=`<tr>
+    <td><b>${d.n}</b></td>
+    <td>
+      <div class="carrier-row" style="width:200px">
+        <div class="carrier-seg" style="width:${d.dian}%;background:#2563eb">${d.dian>10?d.dian+'%':''}</div>
+        <div class="carrier-seg" style="width:${d.k}%;background:#7c3aed">${d.k>10?d.k+'%':''}</div>
+        <div class="carrier-seg" style="width:${d.shang}%;background:#16a34a">${d.shang>10?d.shang+'%':''}</div>
+        <div class="carrier-seg" style="width:${d.bi}%;background:#f97316">${d.bi>10?d.bi+'%':''}</div>
+      </div>
+    </td>
+    <td><span class="badge ${typeClass[d.type]}">${d.type}</span></td>
+    <td class="${colorClass(dT)}">${dT}</td>
+    <td class="${colorClass(kT)}">${kT}</td>
+    <td class="${colorClass(shT)}">${shT}</td>
+    <td class="${colorClass(biT)}">${biT}</td>
+  </tr>`;
+});
+
+
+
+});
+
+</script>
+
 <nav class="nav">
   <div class="nav-title">行业三部 · 商笔 & 店播漏斗诊断</div>
   <div class="nav-sub">2026-04-27~05-26 · GMV YoY 为年同比，漏斗指标为环比上期</div>
