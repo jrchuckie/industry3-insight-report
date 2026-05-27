@@ -151,7 +151,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei
       <div class="summary-kpi"><div class="summary-kpi-val">15.06%</div><div class="summary-kpi-label">CTR1基准</div></div>
       <div class="summary-kpi"><div class="summary-kpi-val">9.13%</div><div class="summary-kpi-label">CTR2商卡基准</div></div>
       <div class="summary-kpi"><div class="summary-kpi-val">6.53%</div><div class="summary-kpi-label">CVR转化基准</div></div>
-      <div class="summary-kpi"><div class="summary-kpi-val">¥35.8</div><div class="summary-kpi-label">客单价基准</div></div>
+      <div class="summary-kpi"><div class="summary-kpi-val" style="color:#94a3b8">客单价</div><div class="summary-kpi-label">各行业差异大，只看自身环比</div></div>
     </div>
   </div>
 
@@ -481,7 +481,7 @@ function getSeverity(d) {
   if (d.ctr1 < BASE.ctr1 * 0.9) issues++;
   if (d.ctr2 < BASE.ctr2 * 0.85) issues++;
   if (d.cvr < BASE.cvr * 0.7) issues++;
-  if (d.aovT < -15) issues++;
+  if (d.aovT < -15) issues++;  // 客单价只看自身环比跌幅
   return Math.min(3, issues);
 }
 
@@ -495,8 +495,10 @@ function buildTags(d) {
   else if (d.ctr2 < BASE.ctr2 * 0.85) tags.push('<span class="tag tag-orange">🟠 CTR2商卡引导弱</span>');
   if (d.cvr < 2) tags.push('<span class="tag tag-red">🔴 CVR转化极低(品类特性)</span>');
   else if (d.cvr < BASE.cvr * 0.7) tags.push('<span class="tag tag-red">🔴 CVR转化弱</span>');
-  if (d.aovT < -20) tags.push('<span class="tag tag-purple">💜 客单价暴跌</span>');
-  else if (d.aovT < -10) tags.push('<span class="tag tag-purple">💜 客单价下滑</span>');
+  // 客单价只看环比，不跨行业比较
+  if (d.aovT < -20) tags.push('<span class="tag tag-purple">💜 客单价暴跌 ' + d.aovT + '%</span>');
+  else if (d.aovT < -10) tags.push('<span class="tag tag-purple">💜 客单价下滑 ' + d.aovT + '%</span>');
+  else if (d.aovT > 15) tags.push('<span class="tag tag-green">📈 客单价提升 +' + d.aovT + '%</span>');
   if (!tags.length) tags.push('<span class="tag tag-green">✅ 漏斗整体健康</span>');
   return tags.join('');
 }
@@ -569,26 +571,26 @@ function buildCard(d, rank) {
         ${funnelRow('CTR2 商卡点击', d.ctr2, BASE.ctr2, '%', 2, '9.13%')}
         <div class="funnel-connector"><div class="funnel-connector-line"></div><div class="funnel-connector-label">CVR转化</div><div class="funnel-connector-line"></div></div>
         ${funnelRow('CVR 转化率', d.cvr, BASE.cvr, '%', 3, '6.53%')}
-        <div class="funnel-connector"><div class="funnel-connector-line"></div><div class="funnel-connector-label">客单价</div><div class="funnel-connector-line"></div></div>
+        <div class="funnel-connector"><div class="funnel-connector-line"></div><div class="funnel-connector-label">客单价（看环比涨跌）</div><div class="funnel-connector-line"></div></div>
         <div class="funnel-row">
           <div class="funnel-left"><div class="funnel-name-label">客单价</div></div>
           <div class="funnel-center">
-            <div class="funnel-bar-bg">
-              <div class="funnel-fill ${d.aovT >= 0 ? 'ok' : d.aovT > -15 ? 'warn' : 'bad'}" style="width:${Math.min(95, Math.max(5, (d.aov / BASE.aov) * 60))}%"></div>
-              <div class="funnel-base-line" style="left:60%"></div>
-              <span class="funnel-val-overlay">¥${d.aov}</span>
+            <div class="funnel-bar-bg" style="background:#e5e7eb">
+              <div style="position:absolute;left:0;top:0;width:50%;height:100%;background:#f1f5f9;border-right:2px solid #94a3b8"></div>
+              <div class="funnel-fill ${d.aovT >= 0 ? 'ok' : d.aovT > -10 ? 'warn' : 'bad'}" style="position:absolute;left:50%;top:0;height:100%;width:${Math.min(48, Math.abs(d.aovT) * 0.8)}%;${d.aovT < 0 ? 'left:' + (50 - Math.min(48, Math.abs(d.aovT)*0.8)) + '%;' : ''};border-radius:0 4px 4px 0"></div>
+              <span class="funnel-val-overlay">¥${d.aov} &nbsp;<span style='font-size:11px;font-weight:600;color:${d.aovT>=0?'#16a34a':'#e8372c'}'>${d.aovT>=0?'▲':'▼'}${Math.abs(d.aovT)}%</span></span>
             </div>
           </div>
           <div class="funnel-right">
-            <div class="funnel-compare">基准 ¥${BASE.aov}</div>
-            <div class="funnel-yoy ${d.aovT >= 0 ? 'up' : 'down'}">${d.aovT >= 0 ? '+' : ''}${d.aovT}%</div>
+            <div class="funnel-compare">本行业自身环比</div>
+            <div class="funnel-yoy ${d.aovT >= 0 ? 'up' : 'down'}">${d.aovT >= 0 ? '涨价 +' : '降价 '}${d.aovT}%</div>
           </div>
         </div>
         <!-- GPM结果 -->
         <div style="margin-top:8px;display:flex;align-items:center;gap:10px;padding:8px 0 0 110px;border-top:1px dashed #e5e7eb">
           <span style="font-size:11px;color:#6b7280">GPM结果：</span>
           <span style="font-size:16px;font-weight:700;color:${d.gpm >= BASE.gpm ? '#16a34a' : '#e8372c'}">${d.gpm}</span>
-          <span style="font-size:10px;color:#6b7280">/ 基准${BASE.gpm}</span>
+          <span style="font-size:10px;color:#6b7280">/ 行业均值${BASE.gpm}</span>
           <div style="flex:1;height:8px;background:#f1f5f9;border-radius:4px;overflow:hidden">
             <div style="width:${Math.min(100, d.gpm/BASE.gpm*60+20)}%;height:100%;background:${d.gpm>=BASE.gpm?'#16a34a':'#f97316'};border-radius:4px"></div>
           </div>
