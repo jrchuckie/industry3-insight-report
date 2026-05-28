@@ -205,10 +205,7 @@ tr:hover td{background:#f8fafc}
 </head>
 <body>
 <script>
-
-// ─── 表格填充（DOM就绪后）───
-document.addEventListener('DOMContentLoaded', function() {
-// Layer 1 data (sorted by GMV desc)
+// ─── 全局数据（GMV大盘/商家分层/载体Tab）───
 const l1Data=[
   {n:'十一组（虚拟）',gmv:1.07,gmv_y:155.3,note:0.58,note_y:141,kol:0.10,kol_y:2676,shop:0.17,shop_y:129,live:0.05,live_y:106,type:'笔记主导'},
   {n:'十三组（教育）',gmv:1.28,gmv_y:37.4,note:0.31,note_y:112,kol:0.49,kol_y:48,shop:0.28,shop_y:56,live:0.19,live_y:-31,type:'混合'},
@@ -230,114 +227,94 @@ const l1Data=[
   {n:'八组（家电）',gmv:0.96,gmv_y:-2.1,note:0.15,note_y:-10,kol:0.17,kol_y:26,shop:0.22,shop_y:18,live:0.42,live_y:-8,type:'混合'},
   {n:'四组（大健康）',gmv:1.66,gmv_y:-34.0,note:0.37,note_y:-30,kol:0.55,kol_y:-47,shop:0.46,shop_y:-15,live:0.27,live_y:-34,type:'混合'},
 ];
-const typeClass={
-  '店播主导':'badge-blue','K播主导':'badge-purple','商卡主导':'badge-green','笔记主导':'badge-orange','混合':'badge-gray'
-};
-const tbody1=document.getElementById('l1-tbody');
-l1Data.forEach((d,i)=>{
-  const gtc=d.gt>0?'up':d.gt<0?'down':'flat';
-  tbody1.innerHTML+=`<tr>
-    <td>${i+1}</td><td><b>${d.n}</b></td>
-    <td>${d.gmv.toLocaleString()}</td>
-    <td class="${gtc}">${d.gt>0?'+':''}${d.gt.toFixed(2)}%</td>
-    <td>
-      <div class="carrier-mini">
-        <div class="carrier-mini-seg" style="width:${d.dian}%;background:#2563eb"></div>
-        <div class="carrier-mini-seg" style="width:${d.k}%;background:#7c3aed"></div>
-        <div class="carrier-mini-seg" style="width:${d.shang}%;background:#16a34a"></div>
-        <div class="carrier-mini-seg" style="width:${d.bi}%;background:#f97316"></div>
-      </div>
-    </td>
-    <td><span class="badge ${typeClass[d.type]}">${d.type}</span></td>
-    <td>${d.dian}%</td><td>${d.k}%</td><td>${d.shang}%</td><td>${d.bi}%</td>
-  </tr>`;
+
+const typeClass={'店播主导':'badge-blue','K播主导':'badge-purple','商卡主导':'badge-green','笔记主导':'badge-orange','混合':'badge-gray'};
+
+function colorClass(v){
+  if(v===null||v===undefined||v==='—') return '';
+  const n=parseFloat(v);
+  if(isNaN(n)) return '';
+  if(n<=-30) return 'cell-red';
+  if(n<=-10) return 'cell-orange';
+  if(n<=10) return 'cell-gray';
+  if(n<=30) return 'cell-green-light';
+  return 'cell-green';
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  // 填充GMV大盘表格（l1-tbody）
+  const tbody1 = document.getElementById('l1-tbody');
+  if(tbody1) {
+    l1Data.forEach((d,i) => {
+      const yc = colorClass(d.gmv_y);
+      const nc = colorClass(d.note_y);
+      const kc = colorClass(d.kol_y);
+      const sc = colorClass(d.shop_y);
+      const lc = colorClass(d.live_y);
+      const gmvY = d.gmv_y !== null ? (d.gmv_y > 0 ? '+' : '') + d.gmv_y.toFixed(1) + '%' : '—';
+      const noteY = d.note_y !== null ? (d.note_y > 0 ? '+' : '') + d.note_y + '%' : '—';
+      const kolY = d.kol_y !== null ? (d.kol_y > 0 ? '+' : '') + d.kol_y + '%' : '—';
+      const shopY = d.shop_y !== null ? (d.shop_y > 0 ? '+' : '') + d.shop_y + '%' : '—';
+      const liveY = d.live_y !== null ? (d.live_y > 0 ? '+' : '') + d.live_y + '%' : '—';
+      tbody1.innerHTML += `<tr>
+        <td>${i+1}</td>
+        <td>${d.n}</td>
+        <td><span class="badge ${typeClass[d.type]}">${d.type}</span></td>
+        <td>${d.gmv !== null ? '¥'+d.gmv+'亿' : '—'}</td>
+        <td class="${yc}">${gmvY}</td>
+        <td class="${lc}">${liveY}</td>
+        <td class="${kc}">${kolY}</td>
+        <td class="${sc}">${shopY}</td>
+        <td class="${nc}">${noteY}</td>
+      </tr>`;
+    });
+  }
+
+  // 填充商家分层表格（l2-tbody）- 保持原有数据
+  const tbody2 = document.getElementById('l2-tbody');
+  if(tbody2 && typeof l2Data !== 'undefined') {
+    l2Data.forEach(d => {
+      const dT = d.demotion !== null ? (d.demotion > 0 ? '+' : '') + d.demotion.toFixed(1) + '%' : '—';
+      const kT = d.keep !== null ? (d.keep > 0 ? '+' : '') + d.keep.toFixed(1) + '%' : '—';
+      const shT = d.shopGmv !== null ? (d.shopGmv > 0 ? '+' : '') + d.shopGmv.toFixed(1) + '%' : '—';
+      const biT = d.biGmv !== null ? (d.biGmv > 0 ? '+' : '') + d.biGmv.toFixed(1) + '%' : '—';
+      tbody2.innerHTML += `<tr>
+        <td>${d.n}</td>
+        <td><span class="badge ${typeClass[d.type]||'badge-gray'}">${d.type||'—'}</span></td>
+        <td>${d.b56 !== null ? d.b56 : '—'}</td>
+        <td>${d.gmvRatio !== null ? d.gmvRatio.toFixed(1)+'%' : '—'}</td>
+        <td class="${colorClass(d.demotion)}">${dT}</td>
+        <td>${d.b4 !== null ? d.b4 : '—'}</td>
+        <td class="${colorClass(d.keep)}">${kT}</td>
+        <td>${d.status||'—'}</td>
+      </tr>`;
+    });
+  }
+
+  // 填充载体结构表格（l3-tbody）- 保持原有数据
+  const tbody3 = document.getElementById('l3-tbody');
+  if(tbody3 && typeof l3Data !== 'undefined') {
+    l3Data.forEach(d => {
+      const dT = d.dian !== null ? d.dian.toFixed(0)+'%' : '—';
+      const kT = d.k !== null ? d.k.toFixed(0)+'%' : '—';
+      const sT = d.shang !== null ? d.shang.toFixed(0)+'%' : '—';
+      const bT = d.bi !== null ? d.bi.toFixed(0)+'%' : '—';
+      tbody3.innerHTML += `<tr>
+        <td>${d.n}</td>
+        <td>${d.gmv !== null ? '¥'+d.gmv.toFixed(2)+'亿' : '—'}</td>
+        <td>
+          <div style="display:flex;align-items:center;gap:4px;width:200px">
+            <div style="width:${dT};background:#3b82f6;height:12px;border-radius:2px" title="店播${dT}"></div>
+            <div style="width:${kT};background:#8b5cf6;height:12px;border-radius:2px" title="K播${kT}"></div>
+            <div style="width:${sT};background:#10b981;height:12px;border-radius:2px" title="商卡${sT}"></div>
+            <div style="width:${bT};background:#f59e0b;height:12px;border-radius:2px" title="笔记${bT}"></div>
+          </div>
+        </td>
+        <td>${dT}</td><td>${kT}</td><td>${sT}</td><td>${bT}</td>
+      </tr>`;
+    });
+  }
 });
-
-// Layer 2 data
-const l2Data=[
-  {n:'八组（家电）',b56:37,avgT:19.02,deg:9.68,leap:19.64,diag:'头部稳定 腰部激活',sig:'green'},
-  {n:'四组（大健康）',b56:78,avgT:1.31,deg:18.42,leap:12.15,diag:'头部稳定 腰部偏弱',sig:'green'},
-  {n:'一组（文玩玉翠）',b56:395,avgT:-2.66,deg:19.90,leap:15.58,diag:'头部稳定',sig:'green'},
-  {n:'七组（家具）',b56:60,avgT:12.14,deg:15.91,leap:21.88,diag:'腰部激活强 头部稳',sig:'green'},
-  {n:'五组（休食）',b56:101,avgT:8.84,deg:26.61,leap:10.08,diag:'头部有压 腰部弱',sig:'yellow'},
-  {n:'九组（家用）',b56:98,avgT:5.75,deg:27.66,leap:19.10,diag:'头部小幅流失',sig:'yellow'},
-  {n:'十二组（手工）',b56:70,avgT:-0.96,deg:27.78,leap:17.62,diag:'头部承压',sig:'yellow'},
-  {n:'十五组（酒旅）',b56:41,avgT:-23.14,deg:24.32,leap:13.11,diag:'头部GMV暴跌',sig:'yellow'},
-  {n:'十四组（二奢）',b56:39,avgT:-11.84,deg:33.33,leap:17.18,diag:'头部松动 逼近红线',sig:'yellow'},
-  {n:'八组（消费电子）',b56:40,avgT:34.34,deg:32.50,leap:11.19,diag:'头部分化 强者跑出',sig:'yellow'},
-  {n:'十一组（虚拟）',b56:19,avgT:11.28,deg:22.22,leap:34.83,diag:'腰部激活强劲',sig:'yellow'},
-  {n:'十一组（潮玩）',b56:92,avgT:-9.56,deg:46.67,leap:32.05,diag:'⚠️头部严重出血',sig:'red'},
-  {n:'十三组（教育）',b56:35,avgT:109.38,deg:44.12,leap:29.41,diag:'头部剧烈分化 强者涌现',sig:'red'},
-  {n:'二组（亲子生活）',b56:97,avgT:-11.15,deg:40.16,leap:12.41,diag:'⚠️头部萎缩 腰部乏力',sig:'red'},
-  {n:'十组（家纺）',b56:63,avgT:32.02,deg:40.00,leap:19.66,diag:'降级高但均值升 两极分化',sig:'red'},
-  {n:'六组（生鲜）',b56:62,avgT:5.69,deg:38.36,leap:21.13,diag:'头部流失严重',sig:'red'},
-  {n:'十组（家饰）',b56:30,avgT:0.94,deg:37.50,leap:20.78,diag:'头部大幅降级',sig:'red'},
-  {n:'三组（宠物）',b56:8,avgT:10.70,deg:42.86,leap:15.83,diag:'头部极少且出血',sig:'red'},
-  {n:'十三组（图书）',b56:18,avgT:-22.76,deg:40.91,leap:19.66,diag:'⚠️头部出血+GMV双跌',sig:'red'},
-];
-const tbody2=document.getElementById('l2-tbody');
-l2Data.forEach(d=>{
-  const tc=d.avgT>0?'up':d.avgT<0?'down':'flat';
-  const dc=d.deg<20?'#16a34a':d.deg<35?'#eab308':'#e8372c';
-  const degPct=Math.min(100,d.deg);
-  const diagClass=d.sig==='red'?'badge-red':d.sig==='yellow'?'badge badge-gray':'badge-green';
-  tbody2.innerHTML+=`<tr>
-    <td><span class="signal signal-${d.sig}"></span></td>
-    <td><b>${d.n}</b></td>
-    <td>${d.b56}</td>
-    <td class="${tc}">${d.avgT>0?'+':''}${d.avgT.toFixed(2)}%</td>
-    <td style="color:${dc};font-weight:700">${d.deg.toFixed(1)}%</td>
-    <td>
-      <div style="display:flex;align-items:center;gap:6px">
-        <div style="flex:1;height:12px;background:#f1f5f9;border-radius:3px;overflow:hidden">
-          <div style="width:${degPct}%;height:100%;background:${dc};border-radius:3px"></div>
-        </div>
-        <span style="font-size:10px;color:${dc}">${d.deg.toFixed(1)}%</span>
-      </div>
-    </td>
-    <td class="${d.leap>18.93?'up':'flat'}">${d.leap.toFixed(1)}%</td>
-    <td><span class="badge ${diagClass}">${d.diag}</span></td>
-  </tr>`;
-});
-
-// Layer 3 carrier data
-const l3Data=l1Data.map(d=>({...d,
-  dianT: d.gt<0?`${d.gt.toFixed(1)}%`:`+${d.gt.toFixed(1)}%`,
-  kT:'-',shT:'-',biT:'-'
-}));
-const overrideT={
-  '七组（家具）':{kT:'+27.0%'},
-  '十三组（教育）':{kT:'+45.1%',biT:'+42.9%'},
-  '八组（家电）':{kT:'+24.3%'},
-  '八组（消费电子）':{shT:'+10.7%'},
-};
-const tbody3=document.getElementById('l3-tbody');
-l1Data.forEach(d=>{
-  const ov=overrideT[d.n]||{};
-  const dT=d.gt>=0?`+${d.gt.toFixed(1)}%`:`${d.gt.toFixed(1)}%`;
-  const kT=ov.kT||'-';const shT=ov.shT||'-';const biT=ov.biT||'-';
-  tbody3.innerHTML+=`<tr>
-    <td><b>${d.n}</b></td>
-    <td>
-      <div class="carrier-row" style="width:200px">
-        <div class="carrier-seg" style="width:${d.dian}%;background:#2563eb">${d.dian>10?d.dian+'%':''}</div>
-        <div class="carrier-seg" style="width:${d.k}%;background:#7c3aed">${d.k>10?d.k+'%':''}</div>
-        <div class="carrier-seg" style="width:${d.shang}%;background:#16a34a">${d.shang>10?d.shang+'%':''}</div>
-        <div class="carrier-seg" style="width:${d.bi}%;background:#f97316">${d.bi>10?d.bi+'%':''}</div>
-      </div>
-    </td>
-    <td><span class="badge ${typeClass[d.type]}">${d.type}</span></td>
-    <td class="${colorClass(dT)}">${dT}</td>
-    <td class="${colorClass(kT)}">${kT}</td>
-    <td class="${colorClass(shT)}">${shT}</td>
-    <td class="${colorClass(biT)}">${biT}</td>
-  </tr>`;
-});
-
-
-
-});
-
 </script>
 
 <nav class="nav">
