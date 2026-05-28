@@ -541,6 +541,31 @@ l1Data.forEach(d=>{
     </div>
   </div>
 
+
+  <div class="charts-top" style="margin-bottom:14px">
+    <div class="bubble-wrap">
+      <div class="chart-title">K播战略矩阵：场均DGMV × 场次规模（气泡大小 = K播DGMV · 颜色=YoY涨跌）</div>
+      <div class="chart-sub">右上=高效放量 · 左上=高效精品 · 右下=低效大盘 · 左下=双弱待援</div>
+      <div id="kol-bubble" style="height:320px"></div>
+    </div>
+    <div class="bars-row">
+      <div class="bar-card">
+        <div class="chart-title">合作场次对比</div>
+        <div class="chart-sub">基准线 = 8,000场（中位数）</div>
+        <div id="kol-bar-sess" style="height:480px"></div>
+      </div>
+      <div class="bar-card">
+        <div class="chart-title">场均DGMV对比（元）</div>
+        <div class="chart-sub">基准线 = 1,400元（全行业均值）</div>
+        <div id="kol-bar-avgd" style="height:480px"></div>
+      </div>
+      <div class="bar-card">
+        <div class="chart-title">K播DGMV对比（亿元）· YoY标注</div>
+        <div class="chart-sub">基准线 = 0.21亿（中位数）</div>
+        <div id="kol-bar-gmv" style="height:480px"></div>
+      </div>
+    </div>
+  </div>
   <!-- 各行业排序卡片 -->
   <div class="cards-container" id="kol-cards"></div>
 </div>
@@ -878,9 +903,15 @@ function switchTab(tab){
   document.getElementById('s-note').style.display=tab==='note'?'flex':'none';
   document.getElementById('s-live').style.display=tab==='live'?'flex':'none';
   document.getElementById('s-kol').style.display=tab==='kol'?'flex':'none';
-  if(tab==='note'&&!nInited){requestAnimationFrame(()=>{initNoteCharts();nInited=true;});}
-  if(tab==='live'&&!lInited){requestAnimationFrame(()=>{initLiveCharts();lInited=true;setTimeout(()=>{['l-bubble','l-bar-exp','l-bar-gpm','l-bar-gmv'].forEach(id=>{const c=echarts.getInstanceByDom(document.getElementById(id));if(c)c.resize();});},300);});}
-  if(tab==='kol'&&!kInited){requestAnimationFrame(()=>{initKolCharts();kInited=true;});}
+  // ResizeObserver自动处理首次init；切换后强制resize
+  setTimeout(()=>{
+    ['n-bubble','n-bar-exp','n-bar-gpm','n-bar-gmv',
+     'l-bubble','l-bar-exp','l-bar-gpm','l-bar-gmv',
+     'kol-bar-sess','kol-bar-avgd','kol-bar-gmv'].forEach(id=>{
+      const c=echarts.getInstanceByDom(document.getElementById(id));
+      if(c) c.resize();
+    });
+  },100);
 }
 
 function initNoteCharts(){
@@ -901,14 +932,27 @@ renderNote('gmv');
 renderLive('gmv');
 // 延迟初始化：等DOM渲染完成后再init图表（避免容器宽高为0）
 window.addEventListener('DOMContentLoaded', function(){
-  requestAnimationFrame(function(){
-    requestAnimationFrame(function(){
-      initNoteCharts();
-      nInited=true;
-      renderNote();
-      renderLive();
-      renderKol('gmv');
+  renderNote();
+  renderLive();
+  renderKol('gmv');
+  // 用ResizeObserver监听笔记bubble容器首次可见后init
+  function tryInitOnVisible(containerId, initFn, flag){
+    const el = document.getElementById(containerId);
+    if(!el) return;
+    const obs = new ResizeObserver(entries=>{
+      for(const e of entries){
+        if(e.contentRect.width > 0){
+          obs.disconnect();
+          requestAnimationFrame(()=>{ initFn(); });
+        }
+      }
     });
+    obs.observe(el);
+  }
+  tryInitOnVisible('n-bubble', ()=>{if(!nInited){initNoteCharts();nInited=true;}}, 'note');
+  tryInitOnVisible('l-bubble', ()=>{if(!lInited){initLiveCharts();lInited=true;}}, 'live');
+  tryInitOnVisible('kol-bar-gmv', ()=>{if(!kInited){initKolCharts();kInited=true;}}, 'kol');
+});
   });
 });
 
@@ -1094,6 +1138,63 @@ function sortKol(mode,btn){
 
 function initKolCharts(){
   renderKol('gmv');
+  const bubEl=document.getElementById('kol-bubble');
+  if(!bubEl) return;
+  const bub=echarts.init(bubEl);
+  const bubData=kolData.map(d=>[d.sess_cur, d.avgd_cur*10000, d.gmv_cur, d.n, d.gmv_y]);
+  bub.setOption({
+    tooltip:{formatter:p=>{const [s,a,g,n,yoy]=p.value;return `${n}<br>场次 ${s.toLocaleString()}场<br>场均 ¥${a.toFixed(0)}元<br>K播DGMV ¥${g}亿<br>YoY ${yoy>=0?'+':''}${yoy.toFixed(1)}%`;}},
+    xAxis:{name:'场次规模（场）',nameLocation:'middle',nameGap:25,splitLine:{show:false}},
+    yAxis:{name:'场均DGMV（元）',nameLocation:'middle',nameGap:50,splitLine:{show:false}},
+    series:[{type:'scatter',
+      symbolSize:v=>Math.max(10,Math.sqrt(v[2])*28),
+      itemStyle:{color:p=>p.value[4]>=0?'rgba(22,163,74,0.75)':'rgba(232,55,44,0.75)',borderColor:'#fff',borderWidth:1},
+      label:{show:true,position:'right',formatter:p=>p.value[3].replace(/.*?（/,'').replace('）',''),fontSize:9,color:'#374151'},
+      data:bubData}],
+    graphic:[
+      {type:'line',shape:{x1:'60%',y1:'5%',x2:'60%',y2:'90%'},style:{stroke:'rgba(0,0,0,.15)',lineDash:[4,4]}},
+      {type:'line',shape:{x1:'5%',y1:'40%',x2:'95%',y2:'40%'},style:{stroke:'rgba(0,0,0,.15)',lineDash:[4,4]}},
+      {type:'text',style:{text:'高效放量',x:'70%',y:'10%',fill:'rgba(22,163,74,.5)',fontSize:11,fontWeight:'bold'}},
+      {type:'text',style:{text:'高效精品',x:'15%',y:'10%',fill:'rgba(99,102,241,.5)',fontSize:11,fontWeight:'bold'}},
+      {type:'text',style:{text:'低效大盘',x:'70%',y:'60%',fill:'rgba(249,115,22,.5)',fontSize:11,fontWeight:'bold'}},
+      {type:'text',style:{text:'双弱待援',x:'15%',y:'60%',fill:'rgba(232,55,44,.5)',fontSize:11,fontWeight:'bold'}},
+    ]
+  });
+
+  function kolBar(elId, arr, base, fmtVal, fmtLabel, colorFn){
+    const el=document.getElementById(elId);
+    if(!el) return;
+    const ch=echarts.init(el);
+    const sorted=[...arr].sort((a,b)=>fmtVal(a)-fmtVal(b));
+    ch.setOption({
+      grid:{left:90,right:120,top:10,bottom:20},
+      xAxis:{type:'value',splitLine:{lineStyle:{color:'#f3f4f6'}}},
+      yAxis:{type:'category',data:sorted.map(d=>d.n.replace(/.*?（/,'').replace('）','')),axisLabel:{fontSize:10}},
+      series:[
+        {type:'bar',barMaxWidth:16,
+          data:sorted.map(d=>({value:fmtVal(d),itemStyle:{color:colorFn(d)}})),
+          label:{show:true,position:'right',formatter:p=>fmtLabel(sorted[p.dataIndex]),fontSize:9,color:'#374151'}},
+        {type:'line',markLine:{silent:true,symbol:'none',lineStyle:{color:'#6366f1',type:'dashed',width:2},
+          data:[{xAxis:base}]}}
+      ]
+    });
+  }
+
+  kolBar('kol-bar-sess', kolData, 8000,
+    d=>d.sess_cur,
+    d=>`${(d.sess_cur/1000).toFixed(1)}k (${d.sess_y>=0?'+':''}${d.sess_y.toFixed(0)}%YoY)`,
+    d=>d.sess_cur>=8000?'#16a34a':d.sess_cur>=5600?'#eab308':'#e8372c'
+  );
+  kolBar('kol-bar-avgd', kolData, 1400,
+    d=>d.avgd_cur*10000,
+    d=>`¥${(d.avgd_cur*10000).toFixed(0)} (${d.avgd_y>=0?'+':''}${d.avgd_y.toFixed(0)}%YoY)`,
+    d=>d.avgd_cur*10000>=1400?'#16a34a':d.avgd_cur*10000>=980?'#eab308':'#e8372c'
+  );
+  kolBar('kol-bar-gmv', kolData, 0.21,
+    d=>d.gmv_cur,
+    d=>`¥${d.gmv_cur}亿 (${d.gmv_y>=0?'+':''}${d.gmv_y.toFixed(0)}%YoY)`,
+    d=>d.gmv_y>=0?'#16a34a':'#e8372c'
+  );
 }
 
 </script>
