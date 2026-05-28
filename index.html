@@ -869,7 +869,7 @@ function sortLive(k,btn){
   btn.classList.add('al');renderLive(k);
 }
 
-let chartsInited={note:false,live:false};
+let nInited=false,lInited=false,kInited=false;
 function switchTab(tab){
   document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(b=>b.className='tab-btn');
@@ -878,14 +878,9 @@ function switchTab(tab){
   document.getElementById('s-note').style.display=tab==='note'?'flex':'none';
   document.getElementById('s-live').style.display=tab==='live'?'flex':'none';
   document.getElementById('s-kol').style.display=tab==='kol'?'flex':'none';
-  if(tab==='note'&&!chartsInited){initNoteCharts();chartsInited=true;}
-  if(tab==='live'&&!liveChartsInited){
-    requestAnimationFrame(()=>{initLiveCharts();liveChartsInited=true;
-    setTimeout(()=>{['l-bubble','l-bar-exp','l-bar-gpm','l-bar-gmv'].forEach(id=>{const c=echarts.getInstanceByDom(document.getElementById(id));if(c)c.resize();});},200);});
-  }
-  if(tab==='kol'&&!kolChartsInited){
-    requestAnimationFrame(()=>{initKolCharts();kolChartsInited=true;});
-  }
+  if(tab==='note'&&!nInited){requestAnimationFrame(()=>{initNoteCharts();nInited=true;});}
+  if(tab==='live'&&!lInited){requestAnimationFrame(()=>{initLiveCharts();lInited=true;setTimeout(()=>{['l-bubble','l-bar-exp','l-bar-gpm','l-bar-gmv'].forEach(id=>{const c=echarts.getInstanceByDom(document.getElementById(id));if(c)c.resize();});},300);});}
+  if(tab==='kol'&&!kInited){requestAnimationFrame(()=>{initKolCharts();kInited=true;});}
 }
 
 function initNoteCharts(){
@@ -909,7 +904,10 @@ window.addEventListener('DOMContentLoaded', function(){
   requestAnimationFrame(function(){
     requestAnimationFrame(function(){
       initNoteCharts();
-      chartsInited.note=true;
+      nInited=true;
+      renderNote();
+      renderLive();
+      renderKol('gmv');
     });
   });
 });
@@ -942,24 +940,53 @@ function buildKolCard(d,rank){
   const scls=['sl0','sl1','sl2','sl3'][sev];
   const stxt=['✅ 健康','🟡 轻微','🟠 中等','🔴 严重'][sev];
   const gmvColor=d.gmv_y>=0?'#16a34a':'#e8372c';
-  
-  const headSection=d.head_gmv_y!==null&&d.head_gmv_y!==undefined?`
-    <tr style="border-top:1px solid #e5e7eb;background:#fef9f0">
-      <td style="padding:6px 10px;color:#374151;font-size:11px">👑 头K场均DGMV</td>
-      <td style="text-align:right;padding:6px 10px">${kolYoy(d.head_avgd_y)}</td>
-    </tr>
-    <tr style="border-top:1px solid #e5e7eb;background:#fef9f0">
-      <td style="padding:6px 10px;color:#374151;font-size:11px">👑 头K DGMV</td>
-      <td style="text-align:right;padding:6px 10px">${kolYoy(d.head_gmv_y)}</td>
-    </tr>
-    <tr style="border-top:1px solid #e5e7eb;background:#f5f3ff">
-      <td style="padding:6px 10px;color:#374151;font-size:11px">🔸 腰尾K DGMV</td>
-      <td style="text-align:right;padding:6px 10px">${kolYoy(d.tail_gmv_y)}</td>
-    </tr>
-    <tr style="border-top:1px solid #e5e7eb;background:#f5f3ff">
-      <td style="padding:6px 10px;color:#374151;font-size:11px">🔸 腰尾K场次</td>
-      <td style="text-align:right;padding:6px 10px">${kolYoy(d.tail_sess_y)}</td>
-    </tr>`:'<tr><td colspan="2" style="padding:6px 10px;color:#9ca3af;font-size:11px">头/腰尾拆分数据待补充</td></tr>';
+  const gmvStr=d.gmv_y>=0?'+'+d.gmv_y.toFixed(1)+'%':d.gmv_y.toFixed(1)+'%';
+
+  // 进度条：宽度 = (当期/基准)*60%，超基准绿/接近黄/严重不足红
+  // 基准：场均0.14万，坑产0.04万，场次中位数8000场
+  function kbar(val,base,max,unit,yoy){
+    const w=Math.min(95,Math.max(4,(val/base)*60))+'%';
+    const cls=val>=base?'ok':val>=base*0.7?'warn':'bad';
+    const diff=val-base;
+    const diffStr=(diff>=0?'+':'')+diff.toFixed(2)+unit;
+    const yoyHtml=yoy!=null?`<div class="fr-val ${yoy>=0?'up':'dn'}">${yoy>=0?'+':''}${yoy.toFixed(1)}% YoY</div>`:'<div class="fr-val" style="color:#9ca3af">— YoY</div>';
+    return `<div class="funnel-row"><div class="fl">${val.toFixed(2)}${unit}</div><div class="fc"><div class="fb"><div class="ff ${cls}" style="width:${w}"></div><div class="fbl" style="left:60%"></div><span class="fvo">${val.toFixed(2)}${unit}</span></div></div><div class="fr"><div class="fr-base">基准 ${base}${unit}</div><div class="fr-val ${diff>=0?'up':'dn'}">${diffStr}</div>${yoyHtml}</div></div>`;
+  }
+
+  function kyoyRow(label,yoy,highlight){
+    if(yoy===null||yoy===undefined) return '';
+    const c=yoy>=0?'#16a34a':'#e8372c';
+    const s=yoy>=0?'+':'';
+    const bg=highlight?(yoy<0?'#fef2f2':'#f0fdf4'):'#f8fafc';
+    return `<div style="display:flex;justify-content:space-between;align-items:center;padding:5px 10px;background:${bg};border-radius:5px;margin-bottom:3px;font-size:11px">
+      <span style="color:#374151">${label}</span>
+      <span style="font-weight:700;color:${c}">${s}${yoy.toFixed(1)}%</span>
+    </div>`;
+  }
+
+  // 低绝对值警告（场均<基准70%，坑产<基准70%）
+  const lowItems=[];
+  if(d.avgd_cur<0.098) lowItems.push(`场均¥${(d.avgd_cur*10000).toFixed(0)}元`);
+  if(d.pit_cur<0.028) lowItems.push(`坑产¥${(d.pit_cur*10000).toFixed(0)}元`);
+  if(d.sess_cur<5600) lowItems.push(`场次${d.sess_cur.toLocaleString()}场`);
+
+  // YoY严重跌（<-20%）
+  const yoyBad=[];
+  if(d.gmv_y<-10) yoyBad.push(`K播DGMV ${d.gmv_y.toFixed(1)}%`);
+  if(d.avgd_y<-20) yoyBad.push(`场均DGMV ${d.avgd_y.toFixed(1)}%`);
+  if(d.pit_y<-20) yoyBad.push(`坑产 ${d.pit_y.toFixed(1)}%`);
+  if(d.head_gmv_y!=null&&d.head_gmv_y<-20) yoyBad.push(`头K DGMV ${d.head_gmv_y.toFixed(1)}%`);
+  if(d.head_avgd_y!=null&&d.head_avgd_y<-20) yoyBad.push(`头K场均 ${d.head_avgd_y.toFixed(1)}%`);
+
+  const lowHtml=lowItems.length?`<div class="diag-row low-row"><div class="diag-row-label">📊 绝对值偏低</div><div class="diag-pills">${lowItems.map(x=>`<span class="diag-pill low">${x}</span>`).join('')}</div></div>`:'';
+  const yoyHtml=yoyBad.length?`<div class="diag-row yoy-row"><div class="diag-row-label">📉 YoY跌幅严重</div><div class="diag-pills">${yoyBad.map(x=>`<span class="diag-pill yoy">${x}</span>`).join('')}</div></div>`:'';
+
+  const headRows=(d.head_gmv_y!=null)?`
+    ${kyoyRow('👑 头K场均DGMV YoY',d.head_avgd_y,true)}
+    ${kyoyRow('👑 头K DGMV YoY',d.head_gmv_y,true)}
+    ${kyoyRow('🔸 腰尾K DGMV YoY',d.tail_gmv_y,true)}
+    ${kyoyRow('🔸 腰尾K场次 YoY',d.tail_sess_y,false)}`
+  :'<div style="color:#9ca3af;font-size:11px;padding:4px 10px">头/腰尾拆分数据待补充</div>';
 
   return `<div class="diag-card sev-${sev}">
     <div class="card-header">
@@ -968,45 +995,78 @@ function buildKolCard(d,rank){
         <div class="card-name">${d.n}</div>
         <div class="card-meta">
           <span>K播DGMV <b style="color:${gmvColor}">¥${d.gmv_cur}亿</b></span>
-          <span>YoY <b style="color:${gmvColor}">${d.gmv_y>=0?'+':''}${d.gmv_y.toFixed(1)}%</b></span>
-          <span>场均 ¥${(d.avgd_cur*10000).toFixed(0)}元</span>
+          <span>YoY <b style="color:${gmvColor}">${gmvStr}</b></span>
+          <span>场均 ¥${(d.avgd_cur*10000).toFixed(0)}元/场</span>
+          <span>坑产 ¥${(d.pit_cur*10000).toFixed(0)}元/品</span>
         </div>
       </div>
       <div class="card-severity"><span class="severity-label ${scls}">${stxt}</span></div>
     </div>
-    <div style="padding:12px 16px;display:grid;grid-template-columns:1fr 1fr;gap:14px">
-      <!-- 漏斗表 -->
-      <div>
-        <div style="font-size:11px;font-weight:700;color:#6b7280;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px">漏斗 YoY</div>
-        <table style="width:100%;border-collapse:collapse;font-size:12px">
-          <tr style="background:#f8fafc">
-            <td style="padding:6px 10px;color:#374151">🎬 合作场次</td>
-            <td style="text-align:right;padding:6px 10px">${kolYoy(d.sess_y)}</td>
-          </tr>
-          <tr style="border-top:1px solid #e5e7eb">
-            <td style="padding:6px 10px;color:#374151">📦 带货商品次</td>
-            <td style="text-align:right;padding:6px 10px">${kolYoy(d.prod_y)}</td>
-          </tr>
-          <tr style="border-top:1px solid #e5e7eb;background:#f0fdf4">
-            <td style="padding:6px 10px;color:#374151;font-weight:600">💰 K播DGMV</td>
-            <td style="text-align:right;padding:6px 10px">${kolYoy(d.gmv_y)}</td>
-          </tr>
-          <tr style="border-top:1px solid #e5e7eb">
-            <td style="padding:6px 10px;color:#374151">⚡ 场均DGMV</td>
-            <td style="text-align:right;padding:6px 10px">${kolYoy(d.avgd_y)}</td>
-          </tr>
-          <tr style="border-top:1px solid #e5e7eb">
-            <td style="padding:6px 10px;color:#374151">🎯 坑产</td>
-            <td style="text-align:right;padding:6px 10px">${kolYoy(d.pit_y)}</td>
-          </tr>
-          ${headSection}
-        </table>
+    <div class="card-body">
+      <div class="funnel-visual">
+        <div class="sec-lbl">漏斗层 YoY（进度条=vs基准，右侧=YoY）</div>
+        <!-- 场次 -->
+        <div class="funnel-row">
+          <div class="fl">场次规模</div>
+          <div class="fc"><div class="fb">
+            <div class="ff ${d.sess_y>=0?'ok':'bad'}" style="width:${Math.min(95,50+(d.sess_y||0)/2)}%"></div>
+            <span class="fvo">${d.sess_cur.toLocaleString()}场</span>
+          </div></div>
+          <div class="fr"><div class="fr-base">去年 ${d.sess_ly.toLocaleString()}场</div>
+            <div class="fr-val ${d.sess_y>=0?'up':'dn'}">${d.sess_y>=0?'+':''}${d.sess_y.toFixed(1)}% YoY</div></div>
+        </div>
+        <!-- 商品次 -->
+        <div class="funnel-row">
+          <div class="fl">带货商品次</div>
+          <div class="fc"><div class="fb">
+            <div class="ff ${d.prod_y>=0?'ok':'bad'}" style="width:${Math.min(95,50+(d.prod_y||0)/2)}%"></div>
+            <span class="fvo">${(d.prod_cur/10000).toFixed(1)}万次</span>
+          </div></div>
+          <div class="fr"><div class="fr-base">去年 ${(d.prod_ly/10000).toFixed(1)}万次</div>
+            <div class="fr-val ${d.prod_y>=0?'up':'dn'}">${d.prod_y>=0?'+':''}${d.prod_y.toFixed(1)}% YoY</div></div>
+        </div>
+        <!-- K播DGMV -->
+        <div class="funnel-row">
+          <div class="fl" style="font-weight:700">K播DGMV</div>
+          <div class="fc"><div class="fb">
+            <div class="ff ${d.gmv_y>=0?'ok':'bad'}" style="width:${Math.min(95,50+(d.gmv_y||0)/3)}%"></div>
+            <span class="fvo" style="font-weight:700">¥${d.gmv_cur}亿</span>
+          </div></div>
+          <div class="fr"><div class="fr-base">去年 ¥${d.gmv_ly}亿</div>
+            <div class="fr-val ${d.gmv_y>=0?'up':'dn'}">${d.gmv_y>=0?'+':''}${d.gmv_y.toFixed(1)}% YoY</div></div>
+        </div>
+        <!-- 场均DGMV -->
+        <div class="funnel-row">
+          <div class="fl">场均DGMV</div>
+          <div class="fc"><div class="fb">
+            <div class="ff ${d.avgd_y>=0?'ok':d.avgd_y>=-20?'warn':'bad'}" style="width:${Math.min(95,Math.max(4,50+(d.avgd_y||0)/2))}%"></div>
+            <span class="fvo">¥${(d.avgd_cur*10000).toFixed(0)}元</span>
+          </div></div>
+          <div class="fr"><div class="fr-base">基准 ¥1,400元</div>
+            <div class="fr-val ${d.avgd_y>=0?'up':'dn'}">${d.avgd_y>=0?'+':''}${d.avgd_y.toFixed(1)}% YoY</div></div>
+        </div>
+        <!-- 坑产 -->
+        <div class="funnel-row">
+          <div class="fl">坑产</div>
+          <div class="fc"><div class="fb">
+            <div class="ff ${d.pit_y>=0?'ok':d.pit_y>=-20?'warn':'bad'}" style="width:${Math.min(95,Math.max(4,50+(d.pit_y||0)/2))}%"></div>
+            <span class="fvo">¥${(d.pit_cur*10000).toFixed(0)}元</span>
+          </div></div>
+          <div class="fr"><div class="fr-base">基准 ¥400元</div>
+            <div class="fr-val ${d.pit_y>=0?'up':'dn'}">${d.pit_y>=0?'+':''}${d.pit_y.toFixed(1)}% YoY</div></div>
+        </div>
+        <!-- 头/腰尾拆分 -->
+        <div class="sec-lbl" style="margin-top:6px">头K / 腰尾K 拆分 YoY</div>
+        ${headRows}
       </div>
-      <!-- 诊断结论 -->
-      <div style="display:flex;flex-direction:column;gap:8px">
+      <div class="right-panel">
         <div class="diag-box">
           <div class="diag-title">核心诊断</div>
           <div class="diag-issue">${d.diag}</div>
+          <div class="diag-rows" style="margin-top:8px">
+            ${lowHtml}
+            ${yoyHtml}
+          </div>
         </div>
         <div class="action-box">
           <div class="action-title">行动建议</div>
