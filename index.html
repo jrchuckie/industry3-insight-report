@@ -303,13 +303,13 @@ document.addEventListener('DOMContentLoaded', function() {
       tbody1.innerHTML += `<tr>
         <td>${i+1}</td>
         <td>${d.n}</td>
-        <td><span class="badge ${typeClass[d.type]}">${d.type}</span></td>
-        <td>${d.gmv !== null ? '¥'+d.gmv+'亿' : '—'}</td>
-        <td class="${yc}">${gmvY}</td>
-        <td class="${lc}">${liveY}</td>
-        <td class="${kc}">${kolY}</td>
-        <td class="${sc}">${shopY}</td>
-        <td class="${nc}">${noteY}</td>
+        <td><span class="badge ${typeClass[d.type]||'badge-gray'}">${d.type||'混合'}</span></td>
+        <td>${d.gmv!=null?'¥'+d.gmv+'亿':'—'}</td>
+        <td class="${colorClass(d.gmv_y)}">${d.gmv_y!=null?(d.gmv_y>0?'+':'')+d.gmv_y.toFixed(1)+'%':'—'}</td>
+        <td class="${colorClass(d.live_y)}">${d.live_y!=null?(d.live_y>0?'+':'')+d.live_y+'%':'—'}</td>
+        <td class="${colorClass(d.kol_y)}">${d.kol_y!=null?(d.kol_y>0?'+':'')+d.kol_y+'%':'—'}</td>
+        <td class="${colorClass(d.shop_y)}">${d.shop_y!=null?(d.shop_y>0?'+':'')+d.shop_y+'%':'—'}</td>
+        <td class="${colorClass(d.note_y)}">${d.note_y!=null?(d.note_y>0?'+':'')+d.note_y+'%':'—'}</td>
       </tr>`;
     });
   }
@@ -322,13 +322,13 @@ document.addEventListener('DOMContentLoaded', function() {
       const kT = (d.keep!=null) ? (d.keep>0?'+':'')+d.keep.toFixed(1)+'%' : '—';
       const sevCls = d.demotion>=30?'cell-red':d.demotion>=15?'cell-orange':'';
       tbody2.innerHTML += `<tr>
+        <td style="font-size:18px">${d.health||'🟡'}</td>
         <td>${d.n}</td>
-        <td><span class="badge ${typeClass[d.type]||'badge-gray'}">${d.type||'—'}</span></td>
+        <td><span class="badge ${typeClass[d.type]||'badge-gray'}">${d.type||'混合'}</span></td>
         <td>${d.b56!=null?d.b56:'—'}</td>
         <td>${d.gmvRatio!=null?d.gmvRatio.toFixed(1)+'%':'—'}</td>
-        <td class="${sevCls}">${dT}</td>
-        <td>${d.b4!=null?d.b4:'—'}</td>
-        <td>${kT}</td>
+        <td class="${colorClass(d.demotion!=null?-d.demotion:null)}">${d.demotion!=null?d.demotion.toFixed(1)+'%':'—'}</td>
+        <td class="${colorClass(d.keep)}">${d.keep!=null?(d.keep>0?'+':'')+d.keep.toFixed(1)+'%':'—'}</td>
         <td>${d.status||'—'}</td>
       </tr>`;
     });
@@ -344,16 +344,19 @@ document.addEventListener('DOMContentLoaded', function() {
       const bT = d.bi !== null ? d.bi.toFixed(0)+'%' : '—';
       tbody3.innerHTML += `<tr>
         <td>${d.n}</td>
-        <td>${d.gmv !== null ? '¥'+d.gmv.toFixed(2)+'亿' : '—'}</td>
+        <td>${d.gmv!=null?'¥'+d.gmv.toFixed(2)+'亿':'—'}</td>
         <td>
-          <div style="display:flex;align-items:center;gap:4px;width:200px">
-            <div style="width:${dT};background:#3b82f6;height:12px;border-radius:2px" title="店播${dT}"></div>
-            <div style="width:${kT};background:#8b5cf6;height:12px;border-radius:2px" title="K播${kT}"></div>
-            <div style="width:${sT};background:#10b981;height:12px;border-radius:2px" title="商卡${sT}"></div>
-            <div style="width:${bT};background:#f59e0b;height:12px;border-radius:2px" title="笔记${bT}"></div>
+          <div style="display:flex;align-items:center;gap:2px;min-width:160px">
+            ${d.dian!=null?`<div style="width:${Math.round(d.dian)}px;background:#3b82f6;height:14px;border-radius:2px;min-width:2px" title="店播${d.dian}%"></div>`:''}
+            ${d.k!=null?`<div style="width:${Math.round(d.k*0.6)}px;background:#8b5cf6;height:14px;border-radius:2px;min-width:2px" title="K播${d.k}%"></div>`:''}
+            ${d.shang!=null?`<div style="width:${Math.round(d.shang*0.6)}px;background:#10b981;height:14px;border-radius:2px;min-width:2px" title="商卡${d.shang}%"></div>`:''}
+            ${d.bi!=null?`<div style="width:${Math.round(d.bi*0.6)}px;background:#f59e0b;height:14px;border-radius:2px;min-width:2px" title="笔记${d.bi}%"></div>`:''}
           </div>
         </td>
-        <td>${dT}</td><td>${kT}</td><td>${sT}</td><td>${bT}</td>
+        <td>${d.dian!=null?d.dian+'%':'—'}</td>
+        <td>${d.k!=null?d.k+'%':'—'}</td>
+        <td>${d.shang!=null?d.shang+'%':'—'}</td>
+        <td>${d.bi!=null?d.bi+'%':'—'}</td>
       </tr>`;
     });
   }
@@ -402,7 +405,19 @@ document.addEventListener('DOMContentLoaded', function() {
     <div class="kpi"><div class="kpi-label">笔记 GMV</div><div class="kpi-value">¥6.42亿</div><div class="kpi-sub down">-3.5%</div></div>
   </div>
   <div class="tbl-wrap"><table>
-    <thead><tr><th>#</th><th>行业组</th><th>总GMV(万)</th><th>环比</th><th>载体分布</th><th>主导</th><th>店播占比</th><th>K播占比</th><th>商卡占比</th><th>笔记占比</th></tr></thead>
+    <thead>
+  <tr>
+    <th style="width:30px">#</th>
+    <th>行业组</th>
+    <th>行业类型</th>
+    <th>DGMV(亿)</th>
+    <th>GMV YoY</th>
+    <th>店播 YoY</th>
+    <th>K播 YoY</th>
+    <th>商卡 YoY</th>
+    <th>笔记 YoY</th>
+  </tr>
+</thead>
     <tbody id="l1-tbody"></tbody>
   </table></div>
   <div style="background:#fff;border-radius:10px;padding:14px;box-shadow:0 1px 4px rgba(0,0,0,.08);font-size:12px;line-height:1.8">
@@ -422,7 +437,18 @@ document.addEventListener('DOMContentLoaded', function() {
     <div class="kpi"><div class="kpi-label">🟡 黄线</div><div class="kpi-value" style="color:#eab308">20-35%</div><div class="kpi-sub flat">7个行业在此</div></div>
   </div>
   <div class="tbl-wrap"><table>
-    <thead><tr><th>健康度</th><th>行业组</th><th>B5/6数</th><th>店均GMV环比</th><th>降级率</th><th>降级率可视化</th><th>跃迁率</th><th>诊断</th></tr></thead>
+    <thead>
+  <tr>
+    <th>健康度</th>
+    <th>行业组</th>
+    <th>行业类型</th>
+    <th>B5/6数</th>
+    <th>近期GMV占比</th>
+    <th>降级率</th>
+    <th>跃迁率</th>
+    <th>诊断</th>
+  </tr>
+</thead>
     <tbody id="l2-tbody"></tbody>
   </table></div>
 </div>
@@ -437,7 +463,17 @@ document.addEventListener('DOMContentLoaded', function() {
     <div style="display:flex;align-items:center;gap:5px;font-size:11px"><div style="width:12px;height:12px;border-radius:2px;background:#f97316"></div>笔记</div>
   </div>
   <div class="tbl-wrap"><table>
-    <thead><tr><th>行业组</th><th>载体占比分布</th><th>主导</th><th>店播趋势</th><th>K播趋势</th><th>商卡趋势</th><th>笔记趋势</th></tr></thead>
+    <thead>
+  <tr>
+    <th>行业组</th>
+    <th>DGMV(亿)</th>
+    <th style="min-width:180px">载体占比分布</th>
+    <th>店播%</th>
+    <th>K播%</th>
+    <th>商卡%</th>
+    <th>笔记%</th>
+  </tr>
+</thead>
     <tbody id="l3-tbody"></tbody>
   </table></div>
   <div style="background:#fff;border-radius:10px;padding:14px;box-shadow:0 1px 4px rgba(0,0,0,.08);font-size:12px;line-height:1.8">
