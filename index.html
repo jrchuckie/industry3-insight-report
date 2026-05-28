@@ -318,18 +318,17 @@ document.addEventListener('DOMContentLoaded', function() {
   const tbody2 = document.getElementById('l2-tbody');
   if(tbody2 && typeof l2Data !== 'undefined') {
     l2Data.forEach(d => {
-      const dT = d.demotion !== null ? (d.demotion > 0 ? '+' : '') + d.demotion.toFixed(1) + '%' : '—';
-      const kT = d.keep !== null ? (d.keep > 0 ? '+' : '') + d.keep.toFixed(1) + '%' : '—';
-      const shT = d.shopGmv !== null ? (d.shopGmv > 0 ? '+' : '') + d.shopGmv.toFixed(1) + '%' : '—';
-      const biT = d.biGmv !== null ? (d.biGmv > 0 ? '+' : '') + d.biGmv.toFixed(1) + '%' : '—';
+      const dT = (d.demotion!=null) ? (d.demotion>0?'+':'')+d.demotion.toFixed(1)+'%' : '—';
+      const kT = (d.keep!=null) ? (d.keep>0?'+':'')+d.keep.toFixed(1)+'%' : '—';
+      const sevCls = d.demotion>=30?'cell-red':d.demotion>=15?'cell-orange':'';
       tbody2.innerHTML += `<tr>
         <td>${d.n}</td>
         <td><span class="badge ${typeClass[d.type]||'badge-gray'}">${d.type||'—'}</span></td>
-        <td>${d.b56 !== null ? d.b56 : '—'}</td>
-        <td>${d.gmvRatio !== null ? d.gmvRatio.toFixed(1)+'%' : '—'}</td>
-        <td class="${colorClass(d.demotion)}">${dT}</td>
-        <td>${d.b4 !== null ? d.b4 : '—'}</td>
-        <td class="${colorClass(d.keep)}">${kT}</td>
+        <td>${d.b56!=null?d.b56:'—'}</td>
+        <td>${d.gmvRatio!=null?d.gmvRatio.toFixed(1)+'%':'—'}</td>
+        <td class="${sevCls}">${dT}</td>
+        <td>${d.b4!=null?d.b4:'—'}</td>
+        <td>${kT}</td>
         <td>${d.status||'—'}</td>
       </tr>`;
     });
