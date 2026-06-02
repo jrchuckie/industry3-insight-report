@@ -12,7 +12,7 @@ function switchDiag(layerId, btn) {
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
   document.getElementById('p-gmv').classList.add('active');
   // 切换layer
-  if(layerId==='l2'){setTimeout(()=>{initMerchantCharts();initWaterfallCharts();['b56-bar-arpu','b56-bar-demote','b4-bar-promo','b4-bar-arpu','new-bar-cnt','new-bar-arpu'].forEach(id=>{const c=echarts.getInstanceByDom(document.getElementById(id));if(c)c.resize();});},100);}
+  if(layerId==='l2'){setTimeout(()=>{initMerchantCharts();initWaterfallCharts();['b56-bar-arpu','b56-bar-demote','b4-bar-promo','b4-bar-arpu','new-bar-cnt','new-bar-arpu'].forEach(id=>{const c=echarts.getInstanceByDom(document.getElementById(id));if(c)c.resize();});},400);}
   document.querySelectorAll('.layer').forEach(l => l.classList.remove('active'));
   document.getElementById(layerId).classList.add('active');
   // tab按钮高亮
@@ -1239,9 +1239,9 @@ function switchTab(tab){
   document.getElementById('s-kol').style.display=tab==='kol'?'flex':'none';
   // 按需初始化 + resize
   setTimeout(()=>{
-    if(tab==='note' && !nInited){ initNoteCharts(); nInited=true; }
-    if(tab==='live' && !lInited){ initLiveCharts(); lInited=true; }
-    if(tab==='kol'  && !kInited){ initKolCharts();  kInited=true; }
+    if(tab==='note' && !window._nInited){ window._nInited=true; initNoteCharts(); }
+    if(tab==='live' && !window._lInited){ window._lInited=true; initLiveCharts(); }
+    if(tab==='kol'  && !window._kInited){ window._kInited=true; initKolCharts(); }
     ['n-bubble','n-bar-exp','n-bar-gpm','n-bar-gmv',
      'l-bubble','l-bar-exp','l-bar-gpm','l-bar-gmv',
      'kol-bar-sess','kol-bar-avgd','kol-bar-gmv'].forEach(id=>{
@@ -1260,6 +1260,7 @@ function initNoteCharts(){
   // ── 气泡图 ──
   (function(){
     const el=document.getElementById('n-bubble'); if(!el) return;
+    if(!el.offsetWidth){ setTimeout(()=>{ window._nInited=false; initNoteCharts(); },200); return; }
     const ch=echarts.init(el);
     const gmvMax=Math.max(...noteData.map(d=>d.gmv));
     const logSz=d=>Math.max(10, Math.log(d.gmv+0.1)/Math.log(gmvMax+0.1)*34+10);
@@ -1322,6 +1323,7 @@ function initNoteCharts(){
   // ── 通用 Bar chart 构建 ──
   function makeBar(elId, sortKey, labelFn, yoyKey, baseVal, baseLabel, barColor){
     const el=document.getElementById(elId); if(!el) return;
+    if(!el.offsetWidth){ setTimeout(()=>makeBar(elId,sortKey,labelFn,yoyKey,baseVal,baseLabel,barColor),200); return; }
     const ch=echarts.init(el);
     const sorted=[...noteData].sort((a,b)=>a[sortKey]-b[sortKey]);
     const names=sorted.map(d=>d.n.replace(/.*?（/,'').replace('）',''));
