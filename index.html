@@ -1323,7 +1323,7 @@ function makeBar(id, data, baseVal, baseLabel, unit, yoyField, valField){
   if(!el) return;
   try{ const inst=echarts.getInstanceByDom(el); if(inst) echarts.dispose(el); }catch(e){}
   const ch = echarts.init(el);
-  const sorted = [...data].sort((a,b)=>b[valField]-a[valField]);
+  const sorted = [...data].sort((a,b)=>a[valField]-b[valField]);
   ch.setOption({
     grid:{left:8,right:130,top:8,bottom:8,containLabel:true},
     xAxis:{type:'value',splitLine:{lineStyle:{color:'#f1f5f9'}},axisLabel:{show:false}},
