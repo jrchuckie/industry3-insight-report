@@ -12,7 +12,7 @@ function switchDiag(layerId, btn) {
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
   document.getElementById('p-gmv').classList.add('active');
   // 切换layer
-  if(layerId==='l2'){setTimeout(()=>{initMerchantCharts();['b56-bar-arpu','b56-bar-demote','b4-bar-promo','b4-bar-arpu','new-bar-cnt','new-bar-arpu'].forEach(id=>{const c=echarts.getInstanceByDom(document.getElementById(id));if(c)c.resize();});},100);}
+  if(layerId==='l2'){setTimeout(()=>{initMerchantCharts();initWaterfallCharts();['b56-bar-arpu','b56-bar-demote','b4-bar-promo','b4-bar-arpu','new-bar-cnt','new-bar-arpu'].forEach(id=>{const c=echarts.getInstanceByDom(document.getElementById(id));if(c)c.resize();});},100);}
   document.querySelectorAll('.layer').forEach(l => l.classList.remove('active'));
   document.getElementById(layerId).classList.add('active');
   // tab按钮高亮
@@ -657,6 +657,46 @@ document.addEventListener('DOMContentLoaded', function() {
     </div>
   </div>
 </div>
+
+  <!-- 板块4：B4+ 流动瀑布图 -->
+  <div style="background:#fff;border-radius:10px;padding:16px;margin-top:16px;border:1px solid #e2e8f0">
+    <div style="font-size:14px;font-weight:700;color:#1e293b;margin-bottom:12px;display:flex;align-items:center;gap:8px">
+      <span style="background:#4D7EFF;color:#fff;padding:2px 10px;border-radius:12px;font-size:11px">B4+ 流动</span>
+      整体 &amp; 分行业 B4+ 跌落/留存/跃迁瀑布图
+      <span style="margin-left:auto;font-size:11px;color:#64748b;font-weight:400">
+        <span style="color:#4D7EFF">■</span> B4+存量
+        <span style="color:#e05c5c;margin-left:6px">■</span> 跌落流出
+        <span style="color:#9ca3af;margin-left:6px">■</span> 留存
+        <span style="color:#00c896;margin-left:6px">■</span> 跃迁流入
+      </span>
+    </div>
+    <!-- 整体大盘 -->
+    <div style="font-size:11px;color:#475569;margin-bottom:4px">行业三部整体：上月6,640 → 跌落1,444 → 留存5,196 → 跃迁+1,213 → 本月6,409（净-231）</div>
+    <div id="wf-overall" style="height:220px;margin-bottom:16px"></div>
+    <!-- 分行业（每行4个） -->
+    <div style="font-size:11px;color:#475569;margin-bottom:8px;font-weight:600">各行业组（19组）</div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+      <div style="border:1px solid #f1f5f9;border-radius:6px;padding:4px"><div id="wf-dept-0" style="height:160px"></div></div>
+      <div style="border:1px solid #f1f5f9;border-radius:6px;padding:4px"><div id="wf-dept-1" style="height:160px"></div></div>
+      <div style="border:1px solid #f1f5f9;border-radius:6px;padding:4px"><div id="wf-dept-2" style="height:160px"></div></div>
+      <div style="border:1px solid #f1f5f9;border-radius:6px;padding:4px"><div id="wf-dept-3" style="height:160px"></div></div>
+      <div style="border:1px solid #f1f5f9;border-radius:6px;padding:4px"><div id="wf-dept-4" style="height:160px"></div></div>
+      <div style="border:1px solid #f1f5f9;border-radius:6px;padding:4px"><div id="wf-dept-5" style="height:160px"></div></div>
+      <div style="border:1px solid #f1f5f9;border-radius:6px;padding:4px"><div id="wf-dept-6" style="height:160px"></div></div>
+      <div style="border:1px solid #f1f5f9;border-radius:6px;padding:4px"><div id="wf-dept-7" style="height:160px"></div></div>
+      <div style="border:1px solid #f1f5f9;border-radius:6px;padding:4px"><div id="wf-dept-8" style="height:160px"></div></div>
+      <div style="border:1px solid #f1f5f9;border-radius:6px;padding:4px"><div id="wf-dept-9" style="height:160px"></div></div>
+      <div style="border:1px solid #f1f5f9;border-radius:6px;padding:4px"><div id="wf-dept-10" style="height:160px"></div></div>
+      <div style="border:1px solid #f1f5f9;border-radius:6px;padding:4px"><div id="wf-dept-11" style="height:160px"></div></div>
+      <div style="border:1px solid #f1f5f9;border-radius:6px;padding:4px"><div id="wf-dept-12" style="height:160px"></div></div>
+      <div style="border:1px solid #f1f5f9;border-radius:6px;padding:4px"><div id="wf-dept-13" style="height:160px"></div></div>
+      <div style="border:1px solid #f1f5f9;border-radius:6px;padding:4px"><div id="wf-dept-14" style="height:160px"></div></div>
+      <div style="border:1px solid #f1f5f9;border-radius:6px;padding:4px"><div id="wf-dept-15" style="height:160px"></div></div>
+      <div style="border:1px solid #f1f5f9;border-radius:6px;padding:4px"><div id="wf-dept-16" style="height:160px"></div></div>
+      <div style="border:1px solid #f1f5f9;border-radius:6px;padding:4px"><div id="wf-dept-17" style="height:160px"></div></div>
+      <div style="border:1px solid #f1f5f9;border-radius:6px;padding:4px"><div id="wf-dept-18" style="height:160px"></div></div>
+    </div>
+  </div>
 
 
 <!-- L3 载体结构 -->
@@ -1533,6 +1573,92 @@ function initMerchantCharts(){
       ]
     });
   })();
+}
+
+
+// ─── B4+ 流动瀑布数据 ───
+const wfOverall = {prev:6640, fall:1444, stay:5196, rise:1213, cur:6409};
+
+const wfDepts = [
+  {n:'十一组（潮玩）',  prev:931, fall:329, stay:602, rise:284, cur:886},
+  {n:'一组（文玩玉翠）',prev:817, fall:102, stay:715, rise:132, cur:847},
+  {n:'十二组（手工）',  prev:595, fall:132, stay:463, rise:99,  cur:562},
+  {n:'九组（家用）',    prev:550, fall:118, stay:432, rise:102, cur:534},
+  {n:'二组（亲子生活）',prev:576, fall:110, stay:466, rise:66,  cur:532},
+  {n:'五组（休食）',    prev:542, fall:78,  stay:464, rise:52,  cur:516},
+  {n:'十组（家纺）',    prev:306, fall:69,  stay:237, rise:58,  cur:295},
+  {n:'四组（大健康）',  prev:295, fall:42,  stay:253, rise:35,  cur:288},
+  {n:'六组（生鲜）',    prev:288, fall:64,  stay:224, rise:60,  cur:284},
+  {n:'八组（消费电子）',prev:296, fall:58,  stay:238, rise:30,  cur:268},
+  {n:'十组（家饰）',    prev:235, fall:52,  stay:183, rise:48,  cur:231},
+  {n:'十四组（二奢）',  prev:238, fall:50,  stay:188, rise:39,  cur:227},
+  {n:'七组（家具）',    prev:196, fall:46,  stay:150, rise:42,  cur:192},
+  {n:'十三组（教育）',  prev:188, fall:56,  stay:132, rise:55,  cur:187},
+  {n:'十五组（酒旅）',  prev:158, fall:52,  stay:106, rise:16,  cur:122},
+  {n:'三组（宠物）',    prev:125, fall:24,  stay:101, rise:19,  cur:120},
+  {n:'十三组（图书）',  prev:123, fall:29,  stay:94,  rise:23,  cur:117},
+  {n:'八组（家电）',    prev:112, fall:22,  stay:90,  rise:22,  cur:112},
+  {n:'十一组（虚拟）',  prev:69,  fall:11,  stay:58,  rise:31,  cur:89},
+];
+
+function makeWfOption(d, compact){
+  const net = d.cur - d.prev;
+  const netStr = (net>=0?'+':'')+net;
+  const fallRate = (d.fall/d.prev*100).toFixed(1);
+  const riseRate = (d.rise/d.prev*100).toFixed(1);
+  return {
+    title: compact ? {text: d.n.replace(/.*?（/,'').replace('）',''), textStyle:{fontSize:11,color:'#1e293b',fontWeight:'bold'}, left:'center',top:2} : undefined,
+    tooltip:{trigger:'axis',formatter: params=>{
+      const vals = {};
+      params.forEach(p=>{vals[p.seriesName]=p.value;});
+      return `${d.n}<br>上月B4+: ${d.prev}<br>跌落: -${d.fall} (${fallRate}%)<br>跃迁: +${d.rise} (${riseRate}%)<br>本月B4+: ${d.cur} (净${netStr})`;
+    }},
+    grid:{left:compact?8:20,right:compact?8:20,top:compact?30:40,bottom:compact?24:30,containLabel:true},
+    xAxis:{type:'category',data:['上月B4+','跌落流出','留存','跃迁流入','本月B4+'],
+      axisLabel:{fontSize:compact?9:10,color:'#374151'},axisTick:{show:false},axisLine:{lineStyle:{color:'#e2e8f0'}}},
+    yAxis:{type:'value',splitLine:{lineStyle:{color:'#f1f5f9'}},axisLabel:{fontSize:9,color:'#94a3b8'},show:!compact},
+    series:[
+      {name:'占位',type:'bar',stack:'wf',silent:true,itemStyle:{color:'transparent',borderColor:'transparent'},
+        data:[0, d.stay, 0, d.stay, 0]},
+      {name:'数值',type:'bar',stack:'wf',barMaxWidth:36,
+        label:{show:true,position:'top',fontSize:compact?9:10,color:'#1e293b',
+          formatter: params=>{
+            const labels=['上月B4+','跌落流出','留存','跃迁流入','本月B4+'];
+            const idx=params.dataIndex;
+            if(idx===1) return '-'+params.value+'\n('+fallRate+'%)';
+            if(idx===3) return '+'+params.value+'\n('+riseRate+'%)';
+            return params.value;
+          }},
+        data:[
+          {value:d.prev, itemStyle:{color:'#4D7EFF'}},
+          {value:d.fall, itemStyle:{color:'#e05c5c'}},
+          {value:d.stay, itemStyle:{color:'#9ca3af'}},
+          {value:d.rise, itemStyle:{color:'#00c896'}},
+          {value:d.cur,  itemStyle:{color: net>=0?'#4D7EFF':'#f97316'}}
+        ]}
+    ]
+  };
+}
+
+function initWaterfallCharts(){
+  if(window._wfInited) return;
+  window._wfInited = true;
+
+  // 整体瀑布图
+  const elOverall = document.getElementById('wf-overall');
+  if(elOverall){
+    const ch = echarts.init(elOverall);
+    ch.setOption(makeWfOption(wfOverall, false));
+  }
+
+  // 各行业分组（每行4个）
+  wfDepts.forEach((d,i)=>{
+    const el = document.getElementById('wf-dept-'+i);
+    if(el){
+      const ch = echarts.init(el);
+      ch.setOption(makeWfOption(d, true));
+    }
+  });
 }
 
 function initKolCharts(){
