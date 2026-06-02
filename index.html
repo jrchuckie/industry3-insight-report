@@ -1458,7 +1458,7 @@ function switchTab(tab){
       if(bubbleEl) initNoteCharts();
     }
     if(tab==='live'){
-      initLiveCharts2();
+      setTimeout(function(){initLiveCharts2();}, 50);
     }
     if(tab==='kol'){
       initKolCharts();
