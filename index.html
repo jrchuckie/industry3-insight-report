@@ -1232,47 +1232,81 @@ function switchTab(tab){
 }
 
 function initNoteCharts(){
-  // ── 气泡图：总曝光×GPM，气泡大小=笔记GMV，统一蓝色，加分区线，去象限名 ──
+  // ── 气泡图：总曝光×GPM，气泡=log(GMV)，jitter分散，统一蓝色，加分区线 ──
   (function(){
     const el=document.getElementById('n-bubble'); if(!el) return;
     const ch=echarts.init(el);
     const expoMed=6.31, gpmMed=38.2;
+
+    // 对数缩放：min size=10, max size=44
+    const gmvMax=Math.max(...noteData.map(d=>d.gmv));
+    const logScale=d=>Math.max(10, Math.log(d.gmv+0.1)/Math.log(gmvMax+0.1)*34+10);
+
+    // jitter：对同一X区间密集的点做随机微小偏移（seed固定，可复现）
+    function jitter(val, idx, spread){
+      const offsets=[-1.1,-0.5,0.3,0.8,-0.9,0.2,-0.4,0.7,-0.2,0.9,
+                     -0.7,0.4,-0.6,0.1,-0.3,0.6,-0.8,0.5,-0.1,0.0];
+      return val + offsets[idx % offsets.length] * spread;
+    }
+
+    const fmt=(v,y)=>{
+      if(v==null) return '—';
+      const col=y>=0?'#16a34a':'#dc2626';
+      const sign=y>=0?'+':'';
+      return `${v} <span style="color:${col}">(YoY${sign}${y}%)</span>`;
+    };
+
+    const pts=noteData.map((d,i)=>{
+      // 左侧拥挤区（expo<10）做jitter，右侧大值不jitter
+      const jx=d.expo<10?jitter(d.expo,i,0.25):d.expo;
+      const jy=d.gpm<50?jitter(d.gpm,i,1.5):d.gpm;
+      return {
+        name:d.n,
+        value:[jx,jy,d.gmv,d.n,i],
+        symbolSize:logScale(d)
+      };
+    });
+
     ch.setOption({
       backgroundColor:'#fff',
       tooltip:{trigger:'item',formatter:p=>{
         const d=noteData.find(x=>x.n===p.data[3])||{};
-        const fmt=(v,y)=>v!=null?`${v} <span style="color:${y>=0?'#16a34a':'#dc2626'}">(YoY${y>=0?'+':''}${y}%)</span>`:'—';
+        const merStr=d.mer>9999?(d.mer/10000).toFixed(2)+'万':d.mer;
         return `<b>${d.n||''}</b><br>`+
-          `笔记发布数: ${fmt(d.pub+'万',d.pub_y)}<br>`+
-          `总曝光: ${fmt(d.expo+'亿',d.expo_y)}<br>`+
-          `动销商家数: ${fmt((d.mer>999?(d.mer/10000).toFixed(2)+'万':d.mer)+'家',d.mer_y)}<br>`+
-          `笔记GMV: ${fmt(d.gmv+'亿',d.gmv_y)}<br>`+
-          `GPM: ${fmt(d.gpm+'元',d.gpm_y)}<br>`+
-          `篇均曝光: ${fmt(d.pavg+'次',d.pavg_y)}`;
+          `笔记发布数: ${fmt(d.pub!=null?d.pub+'万':null,d.pub_y)}<br>`+
+          `总曝光: ${fmt(d.expo!=null?d.expo+'亿':null,d.expo_y)}<br>`+
+          `动销商家数: ${fmt(d.mer!=null?merStr+'家':null,d.mer_y)}<br>`+
+          `笔记GMV: ${fmt(d.gmv!=null?d.gmv+'亿':null,d.gmv_y)}<br>`+
+          `GPM: ${fmt(d.gpm!=null?d.gpm+'元':null,d.gpm_y)}<br>`+
+          `篇均曝光: ${fmt(d.pavg!=null?d.pavg+'次':null,d.pavg_y)}`;
       }},
       xAxis:{type:'value',name:'总曝光（亿次）',nameLocation:'middle',nameGap:28,
-        splitLine:{lineStyle:{color:'#f1f5f9'}},axisLabel:{color:'#1e293b',fontSize:10},
-        axisLine:{lineStyle:{color:'#e2e8f0'}}},
+        min:0,
+        splitLine:{lineStyle:{color:'#f1f5f9'}},
+        axisLabel:{color:'#1e293b',fontSize:10},
+        axisLine:{lineStyle:{color:'#cbd5e1'}}},
       yAxis:{type:'value',name:'GPM（元）',nameLocation:'middle',nameGap:40,
-        splitLine:{lineStyle:{color:'#f1f5f9'}},axisLabel:{color:'#1e293b',fontSize:10},
-        axisLine:{lineStyle:{color:'#e2e8f0'}}},
+        min:0,max:110,
+        splitLine:{lineStyle:{color:'#f1f5f9'}},
+        axisLabel:{color:'#1e293b',fontSize:10},
+        axisLine:{lineStyle:{color:'#cbd5e1'}}},
       series:[
         {type:'scatter',
-          symbolSize:d=>Math.max(12,Math.sqrt(d[2])*120),
-          itemStyle:{color:'rgba(59,130,246,0.65)',borderColor:'#2563eb',borderWidth:1},
-          label:{show:true,position:'right',formatter:p=>p.data[3].replace(/.*?（/,'').replace('）',''),
-            fontSize:9,color:'#374151'},
-          data:noteData.map(d=>[d.expo,d.gpm,d.gmv,d.n])
+          data:pts,
+          itemStyle:{color:'rgba(59,130,246,0.60)',borderColor:'#2563eb',borderWidth:1},
+          label:{show:true,position:'right',
+            formatter:p=>p.data[3].replace(/.*?（/,'').replace('）',''),
+            fontSize:9,color:'#374151'}
         },
         // X轴分区线（总曝光中位数）
         {type:'line',markLine:{silent:true,symbol:'none',
           lineStyle:{color:'#6366f1',type:'dashed',width:1.5},
-          label:{formatter:'中位数 '+expoMed+'亿',color:'#6366f1',fontSize:9},
+          label:{formatter:'中位数 '+expoMed+'亿',color:'#6366f1',fontSize:9,position:'insideEndTop'},
           data:[{xAxis:expoMed}]}},
         // Y轴分区线（GPM中位数）
         {type:'line',markLine:{silent:true,symbol:'none',
           lineStyle:{color:'#f59e0b',type:'dashed',width:1.5},
-          label:{formatter:'GPM中位数 '+gpmMed+'元',color:'#b45309',fontSize:9},
+          label:{formatter:'GPM中位数 '+gpmMed+'元',color:'#b45309',fontSize:9,position:'insideEndTop'},
           data:[{yAxis:gpmMed}]}}
       ]
     });
