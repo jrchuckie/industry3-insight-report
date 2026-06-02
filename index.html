@@ -752,9 +752,7 @@ document.addEventListener('DOMContentLoaded', function() {
         <div class="chart-sub">基准线 = 0.27亿（中位数）</div>
         <div id="n-bar-gmv" style="height:500px"></div>
       </div>
-      <div class="bar-card">
-        
-    </div>
+
   </div>
   <div class="funnel-ref">
     <b style="color:#6b7280;margin-right:4px">商笔漏斗：</b>
@@ -1241,12 +1239,16 @@ function switchTab(tab){
   document.getElementById('s-note').style.display=tab==='note'?'flex':'none';
   document.getElementById('s-live').style.display=tab==='live'?'flex':'none';
   document.getElementById('s-kol').style.display=tab==='kol'?'flex':'none';
-  // ResizeObserver自动处理首次init；切换后强制resize
+  // 按需初始化 + resize
   setTimeout(()=>{
+    if(tab==='note' && !nInited){ initNoteCharts(); nInited=true; }
+    if(tab==='live' && !lInited){ initLiveCharts(); lInited=true; }
+    if(tab==='kol'  && !kInited){ initKolCharts();  kInited=true; }
     ['n-bubble','n-bar-exp','n-bar-gpm','n-bar-gmv',
      'l-bubble','l-bar-exp','l-bar-gpm','l-bar-gmv',
      'kol-bar-sess','kol-bar-avgd','kol-bar-gmv'].forEach(id=>{
-      const c=echarts.getInstanceByDom(document.getElementById(id));
+      const el=document.getElementById(id);
+      const c=el&&echarts.getInstanceByDom(el);
       if(c) c.resize();
     });
   },100);
@@ -1351,7 +1353,8 @@ function initNoteCharts(){
               backgroundColor:'transparent'}}
           }
         },
-        {type:'bar',markLine:{silent:true,symbol:'none',
+        {type:'bar',data:vals.map(()=>0),barWidth:0,silent:true,
+          markLine:{silent:true,symbol:'none',
           lineStyle:{color:'#6366f1',type:'dashed',width:1},
           data:[{xAxis:baseVal}],
           label:{formatter:baseLabel,fontSize:9,color:'#6366f1',position:'insideEndTop'}}}
@@ -1494,9 +1497,8 @@ window.addEventListener('DOMContentLoaded', function(){
     });
     obs.observe(el);
   }
-  tryInitOnVisible('n-bubble', ()=>{if(!nInited){initNoteCharts();nInited=true;}}, 'note');
-  tryInitOnVisible('l-bubble', ()=>{if(!lInited){initLiveCharts();lInited=true;}}, 'live');
-  tryInitOnVisible('kol-bar-gmv', ()=>{if(!kInited){initKolCharts();kInited=true;}}, 'kol');
+  // 初始化由 switchTab 按需触发，不再依赖 ResizeObserver
+  // tryInitOnVisible 已停用
 });
 
 // ═══ K播数据 ═══
