@@ -1327,9 +1327,16 @@ function initNoteCharts(){
     const names=sorted.map(d=>d.n.replace(/.*?（/,'').replace('）',''));
     const vals=sorted.map(d=>d[sortKey]);
     const yoys=sorted.map(d=>d[yoyKey]);
+    // 用 rich text 分段：value 段 + yoy 段（每个 rich key 颜色静态但用3种key）
+    const richCfg={
+      vv:{color:'#1e293b',fontSize:9,padding:[0,4,0,0]},
+      yg:{color:'#16a34a',fontSize:9,padding:[1,4],backgroundColor:'#dcfce7',borderRadius:3},
+      yr:{color:'#dc2626',fontSize:9,padding:[1,4],backgroundColor:'#fee2e2',borderRadius:3},
+      yn:{color:'#64748b',fontSize:9,padding:[1,4]}
+    };
     ch.setOption({
       backgroundColor:'#fff',
-      grid:{left:72,right:120,top:10,bottom:20},
+      grid:{left:72,right:140,top:10,bottom:20},
       xAxis:{type:'value',splitLine:{lineStyle:{color:'#f1f5f9'}},axisLabel:{color:'#1e293b',fontSize:9}},
       yAxis:{type:'category',data:names,axisLabel:{color:'#1e293b',fontSize:9}},
       series:[
@@ -1339,17 +1346,15 @@ function initNoteCharts(){
             const col=y<=-20?'#ef4444': y>=20?'#22c55e': barColor;
             return {value:v, itemStyle:{color:col}};
           }),
-          label:{show:true,position:'right',fontSize:9,
+          label:{show:true,position:'right',fontSize:9,color:'#1e293b',
             formatter:(p)=>{
               const y=yoys[p.dataIndex];
               const txt=labelFn(p.value);
               const sign=y>=0?'+':'';
-              return txt+'   YoY'+sign+y+'%';
+              const key=y<=-20?'yr': y>=20?'yg':'yn';
+              return `{vv|${txt}}  {${key}|YoY${sign}${y}%}`;
             },
-            color:(p)=>{
-              const y=yoys[p.dataIndex];
-              return y<=-20?'#dc2626': y>=20?'#16a34a': '#64748b';
-            }
+            rich:richCfg
           }
         },
         {type:'bar',data:vals.map(()=>0),barWidth:0,silent:true,
