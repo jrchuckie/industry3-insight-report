@@ -1332,13 +1332,12 @@ function initNoteCharts(){
   // ── 通用 Bar chart 构建 ──
   function makeBar(elId, sortKey, labelFn, yoyKey, baseVal, baseLabel, barColor){
     const el=document.getElementById(elId); if(!el) return;
-
+    echarts.getInstanceByDom(el) && echarts.dispose(el);
     const ch=echarts.init(el);
     const sorted=[...noteData].sort((a,b)=>a[sortKey]-b[sortKey]);
     const names=sorted.map(d=>d.n.replace(/.*?（/,'').replace('）',''));
     const vals=sorted.map(d=>d[sortKey]);
     const yoys=sorted.map(d=>d[yoyKey]);
-    // 用 rich text 分段：value 段 + yoy 段（每个 rich key 颜色静态但用3种key）
     const richCfg={
       vv:{color:'#1e293b',fontSize:9,padding:[0,4,0,0]},
       yg:{color:'#16a34a',fontSize:9,padding:[1,4],backgroundColor:'#dcfce7',borderRadius:3},
@@ -1348,32 +1347,34 @@ function initNoteCharts(){
     ch.setOption({
       backgroundColor:'#fff',
       grid:{left:72,right:140,top:10,bottom:20},
-      xAxis:{type:'value',splitLine:{lineStyle:{color:'#f1f5f9'}},axisLabel:{color:'#1e293b',fontSize:9}},
+      xAxis:{type:'value',
+        splitLine:{lineStyle:{color:'#f1f5f9'}},
+        axisLabel:{color:'#1e293b',fontSize:9},
+        axisLine:{onZero:false}},
       yAxis:{type:'category',data:names,axisLabel:{color:'#1e293b',fontSize:9}},
-      series:[
-        {type:'bar',barMaxWidth:14,
-          data:vals.map((v,i)=>{
-            const y=yoys[i];
-            const col=y<=-20?'#ef4444': y>=20?'#22c55e': barColor;
-            return {value:v, itemStyle:{color:col}};
-          }),
-          label:{show:true,position:'right',fontSize:9,color:'#1e293b',
-            formatter:(p)=>{
-              const y=yoys[p.dataIndex];
-              const txt=labelFn(p.value);
-              const sign=y>=0?'+':'';
-              const key=y<=-20?'yr': y>=20?'yg':'yn';
-              return `{vv|${txt}}  {${key}|YoY${sign}${y}%}`;
-            },
-            rich:richCfg
-          }
+      series:[{
+        type:'bar',barMaxWidth:14,
+        data:vals.map((v,i)=>{
+          const y=yoys[i];
+          const col=y<=-20?'#ef4444': y>=20?'#22c55e': barColor;
+          return {value:v, itemStyle:{color:col}};
+        }),
+        label:{show:true,position:'right',fontSize:9,color:'#1e293b',
+          formatter:(p)=>{
+            const y=yoys[p.dataIndex];
+            const txt=labelFn(p.value);
+            const sign=y>=0?'+':'';
+            const key=y<=-20?'yr': y>=20?'yg':'yn';
+            return '{vv|'+txt+'}  {'+key+'|YoY'+sign+y+'%}';
+          },
+          rich:richCfg
         },
-        {type:'bar',data:vals.map(()=>0),barWidth:0,silent:true,
-          markLine:{silent:true,symbol:'none',
+        markLine:{silent:true,symbol:['none','none'],
           lineStyle:{color:'#6366f1',type:'dashed',width:1},
-          data:[{xAxis:baseVal}],
-          label:{formatter:baseLabel,fontSize:9,color:'#6366f1',position:'insideEndTop'}}}
-      ]
+          label:{position:'end',formatter:baseLabel,fontSize:9,color:'#6366f1'},
+          data:[{xAxis:baseVal}]
+        }
+      }]
     });
   }
 
