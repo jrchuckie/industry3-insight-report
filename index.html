@@ -911,13 +911,11 @@ document.addEventListener('DOMContentLoaded', function() {
     <span class="fdot" style="background:#16a34a"></span>GPM/DGMV
     <span style="margin-left:auto;font-size:10px;color:#6b7280">含呼吸灯+直播卡双入口 &amp; 广告投放</span>
   </div>
-  <div id="l-cards" style="display:flex;flex-wrap:wrap;padding:8px"></div>
+  <div id="l-cards" style="padding:8px 16px"></div>
 </div>
 </div>
 
 <!-- ── 店播 ── -->
-
-</div>
 
 <script>
 // ═══ 笔记数据 ═══
@@ -1098,45 +1096,80 @@ function buildNCard(d,rank){
 </div>`;}
 
 // ═══ 店播漏斗卡片 ═══
-const LB={hexp:9711,ctr:1.6,cvr:1.6,conv:3.6,aov:168.6,gpm:44.1,avgdur:2094,avgsess:17.4};
-function lSev(d){let n=0;if(d.hexp<LB.hexp*.8)n++;if(d.ctr<LB.ctr*.85)n++;if(d.cvr<LB.cvr*.7)n++;if(d.conv<LB.conv*.7)n++;if(d.aovT<-15)n++;return Math.min(3,n);}
-function lTags(d){const t=[];
-  if(d.hexp<5000)t.push('<span class="tag tr">🔵 流量严重稀释</span>');
-  else if(d.hexp<LB.hexp*.8)t.push('<span class="tag tb">🔵 流量稀释</span>');
-  if(d.ctr<1.2)t.push('<span class="tag ty">🟡 CTR封面点击弱</span>');
-  else if(d.ctr<LB.ctr*.85)t.push('<span class="tag ty">🟡 CTR略弱</span>');
-  if(d.cvr<0.5)t.push('<span class="tag to">🟠 CVR进播极低(品类特性)</span>');
-  else if(d.cvr<LB.cvr*.7)t.push('<span class="tag to">🟠 CVR进播弱</span>');
-  if(d.conv<1.0)t.push('<span class="tag tr">🔴 商品转化极低</span>');
-  else if(d.conv<LB.conv*.7)t.push('<span class="tag tr">🔴 商品转化弱</span>');
-  if(d.aovT<-30)t.push('<span class="tag tp">💜 客单暴跌</span>');
-  else if(d.aovT<-10)t.push('<span class="tag tp">💜 客单下滑</span>');
-  if(d.aov<LB.aov*.5)t.push('<span class="tag tp">💜 客单偏低</span>');
-  if(d.gmv_y>20)t.push('<span class="tag tg">🚀 GMV高增长</span>');
+const LB={exp_med:8.35,gpm_med:61.7,ctr_base:1.6,jinbo_base:2.5,cvr_base:2.0,conv_base:3.6,aov_base:168.6};
+function lSev(d){
+  let n=0;
+  if(d.exp<LB.exp_med*0.7)n++;
+  if(d.ctr<LB.ctr_base*0.85)n++;
+  if(d.jinbo<LB.jinbo_base*0.7)n++;
+  if(d.cvr<LB.cvr_base*0.7)n++;
+  if(d.gpm<LB.gpm_med*0.7)n++;
+  return Math.min(3,n);
+}
+function lTags(d){
+  const t=[];
+  if(d.exp<LB.exp_med*0.5)t.push('<span class="tag tr">🔵 流量严重稀释</span>');
+  else if(d.exp<LB.exp_med*0.8)t.push('<span class="tag tb">🔵 流量偏低</span>');
+  if(d.ctr<1.0)t.push('<span class="tag ty">🟡 CTR封面极弱</span>');
+  else if(d.ctr<LB.ctr_base*0.85)t.push('<span class="tag ty">🟡 CTR封面偏弱</span>');
+  if(d.jinbo<1.0)t.push('<span class="tag to">🟠 进播率极低</span>');
+  else if(d.jinbo<LB.jinbo_base*0.7)t.push('<span class="tag to">🟠 进播率偏低</span>');
+  if(d.gpm<20)t.push('<span class="tag tr">🔴 GPM极低</span>');
+  else if(d.gpm<LB.gpm_med*0.7)t.push('<span class="tag tr">🔴 GPM偏低</span>');
+  if(d.dgmv_y<=-30)t.push('<span class="tag tr">📉 DGMV暴跌</span>');
+  else if(d.dgmv_y<=-10)t.push('<span class="tag to">📉 DGMV下滑</span>');
+  if(d.dgmv_y>=20)t.push('<span class="tag tg">🚀 DGMV高增长</span>');
   if(!t.length)t.push('<span class="tag tg">✅ 漏斗健康</span>');
-  return t.join('');}
+  return t.join('');
+}
 
 function buildLCard(d,rank){
-  const sev=lSev(d);const scls=['sl0','sl1','sl2','sl3'][sev];const stxt=['✅ 健康','🟡 轻微','🟠 中等','🔴 严重'][sev];
-  const lowPills=(d.low||[]).map(x=>`<span class="diag-pill low">${x}</span>`).join('');
-  const yoyPills=(d.yoy_bad||[]).map(x=>`<span class="diag-pill yoy">${x}</span>`).join('');
-  const actionHtml=(d.actions||[]).map(a=>`<div style="margin-bottom:3px">${a}</div>`).join('');
-  const hasYoy=yoyPills.length>0;
-  const hxCls=c=>c>=(c>1?1:0.7)?'#16a34a':c>=0.4?'#eab308':'#e8372c';
-  const zbCls=c=>c>=2?'#16a34a':c>=1.2?'#eab308':'#e8372c';
+  const sev=lSev(d);
+  const scls=['sl0','sl1','sl2','sl3'][sev];
+  const stxt=['✅ 健康','🟡 轻微','🟠 中等','🔴 严重'][sev];
+  // 诊断pills
+  const lowList=[];const yoyList=[];
+  if(d.exp<LB.exp_med*0.7)lowList.push('总曝光');
+  if(d.ctr<LB.ctr_base*0.8)lowList.push('CTR封面');
+  if(d.jinbo<LB.jinbo_base*0.7)lowList.push('进播率');
+  if(d.cvr<LB.cvr_base*0.7)lowList.push('CVR转化');
+  if(d.gpm<LB.gpm_med*0.7)lowList.push('GPM');
+  if(d.aov<LB.aov_base*0.5)lowList.push('客单价');
+  if(d.exp_y<=-30)yoyList.push('总曝光'+d.exp_y+'%');
+  if(d.dgmv_y<=-20)yoyList.push('店播DGMV'+d.dgmv_y+'%');
+  if(d.gpm_y<=-25)yoyList.push('GPM'+d.gpm_y+'%');
+  if(d.aov_y<=-20)yoyList.push('客单价'+d.aov_y+'%');
+  const lowPills=lowList.map(x=>`<span class="diag-pill low">${x}</span>`).join('');
+  const yoyPills=yoyList.map(x=>`<span class="diag-pill yoy">${x}</span>`).join('');
+  const hasLow=lowPills.length>0;const hasYoy=yoyPills.length>0;
 
-  return `<div class="diag-card sev-${sev}" data-gmv="${d.gmv}" data-sev="${sev}" data-hexp="${d.hexp}">
+  // 广告投放区块（和笔记Tab格式完全一致）
+  const adMaxRef={sp:50000,gmv:2000,tr:70};
+  function adBar(label,val,max,unit,yoy,isPts){
+    const pct=Math.min(100,Math.round((val||0)/max*100));
+    const yc=(yoy||0)>=10?'#16a34a':(yoy||0)<=-10?'#dc2626':'#64748b';
+    const ystr=isPts?((yoy>=0?'+':'')+yoy.toFixed(1)+'pts'):((yoy>=0?'+':'')+yoy.toFixed(1)+'%');
+    const vDisp=(val||0)>=10000?((val/10000).toFixed(1)+'万'):(val||0).toFixed(0);
+    return `<div style="display:flex;align-items:center;gap:6px;font-size:10px">
+      <span style="width:72px;flex-shrink:0;color:#475569">${label}</span>
+      <div style="flex:1;background:#f1f5f9;border-radius:2px;height:10px;position:relative">
+        <div style="width:${pct}%;background:#818cf8;height:100%;border-radius:2px"></div>
+      </div>
+      <span style="width:60px;flex-shrink:0;font-weight:600">${vDisp}${unit}</span>
+      <span style="width:56px;flex-shrink:0;color:${yc}">${ystr}</span>
+    </div>`;
+  }
+
+  return `<div class="diag-card sev-${sev}" data-gmv="${d.dgmv}" data-sev="${sev}">
   <div class="card-header">
     <div class="card-rank">#${rank}</div>
     <div class="card-name-block">
       <div class="card-name">${d.n}</div>
       <div class="card-meta">
-        <span><span class="${CARRIER_CLS[d.type]||'cb-gr'}">${d.type}</span></span>
-        <span>店播GMV <b>${d.gmv}亿</b> <span class="${d.gmv_y>=0?'up':'dn'}">${d.gmv_y>=0?'+':''}${d.gmv_y}%</span></span>
-        <span>占行业GMV <b>${d.gmvShare}%</b></span>
-        <span>总曝光 <b>${d.exp}亿</b> <span class="${d.expT>=0?'up':'dn'}">${d.expT>=0?'+':''}${d.expT}%</span></span>
-        <span>商家 <b>${d.totalMer}</b>家</span>
-        <span>涨粉 <b>${d.fans}万</b> <span class="${d.fansT>=0?'up':'dn'}">${d.fansT>=0?'+':''}${d.fansT}%</span></span>
+        <span>店播DGMV <b>${d.dgmv}亿</b> <span class="${d.dgmv_y>=0?'up':'dn'}">YoY${d.dgmv_y>=0?'+':''}${d.dgmv_y}%</span></span>
+        <span>总GMV <b>${d.gmv}亿</b> <span class="${d.gmv_y>=0?'up':'dn'}">YoY${d.gmv_y>=0?'+':''}${d.gmv_y}%</span></span>
+        <span>总曝光 <b>${d.exp}亿</b> <span class="${d.exp_y>=0?'up':'dn'}">YoY${d.exp_y>=0?'+':''}${d.exp_y}%</span></span>
+        <span>开播间数 <b>${d.sess>=10000?(d.sess/10000).toFixed(1)+'万':d.sess}</b>场 <span class="${d.sess_y>=0?'up':'dn'}">YoY${d.sess_y>=0?'+':''}${d.sess_y}%</span></span>
       </div>
     </div>
     <div class="card-severity"><span class="severity-label ${scls}">${stxt}</span></div>
@@ -1144,29 +1177,32 @@ function buildLCard(d,rank){
   <div class="card-body">
     <div class="funnel-visual">
       <div style="font-size:10px;color:#94a3b8;margin-bottom:2px;padding-left:108px">← 不足 ｜ ▌基准60% ｜ 达标 →</div>
-      <div class="sec-lbl">📦 供给层</div>
-      ${frow('店均时长',d.avgdur,LB.avgdur,Math.round(d.avgdur/60)+'min',Math.round(LB.avgdur/60)+'min',(d.avgdurT>=0?'+':'')+d.avgdurT+'%','sup',bw(d.avgdur,LB.avgdur,20000),true,fmtYoy(d.dur_y))}
-      ${frow('开播场次',d.avgsess,LB.avgsess,d.avgsess.toFixed(1)+'场',LB.avgsess+'场',(d.avgsess-LB.avgsess>=0?'+':'')+((d.avgsess-LB.avgsess).toFixed(1))+'场','sup',bw(d.avgsess,LB.avgsess),true,null)}
-      <div class="conn"><div class="cl"></div><div class="cn">→ 单h曝光（流量效率）</div><div class="cl"></div></div>
-      ${frow('单h曝光',d.hexp,LB.hexp,Math.round(d.hexp).toLocaleString()+'次',Math.round(LB.hexp).toLocaleString()+'次',(d.hexpT>=0?'+':'')+d.hexpT+'%',bc(d.hexp,LB.hexp),bw(d.hexp,LB.hexp,25000),false,fmtYoy(d.hexp_y))}
-      <div class="conn"><div class="cl"></div><div class="cn">→ CTR 封面点击</div><div class="cl"></div></div>
-      ${frow('CTR 封面点击',d.ctr,LB.ctr,d.ctr.toFixed(3)+'%',LB.ctr+'%',(d.ctr-LB.ctr>=0?'+':'')+((d.ctr-LB.ctr).toFixed(3))+'%',bc(d.ctr,LB.ctr),bw(d.ctr,LB.ctr),false,fmtYoy(d.ctr_y))}
-      <div class="dual-e">
-        <div class="eb hx"><div class="eb-title">🫧 呼吸灯</div><div class="eb-row"><span>CTR</span><span class="eb-val" style="color:${hxCls(d.huxi_ctr)}">${d.huxi_ctr.toFixed(3)}%</span></div><div class="eb-row"><span>CVR</span><span class="eb-val" style="color:${hxCls(d.huxi_cvr)}">${d.huxi_cvr.toFixed(3)}%</span></div></div>
-        <div class="eb zb"><div class="eb-title">📺 直播卡</div><div class="eb-row"><span>CTR</span><span class="eb-val" style="color:${zbCls(d.zhibo_ctr)}">${d.zhibo_ctr.toFixed(3)}%</span></div><div class="eb-row"><span>CVR</span><span class="eb-val" style="color:${zbCls(d.zhibo_cvr)}">${d.zhibo_cvr.toFixed(3)}%</span></div></div>
+      ${frow('总曝光',d.exp,LB.exp_med,d.exp.toFixed(2)+'亿',LB.exp_med+'亿',(d.exp-LB.exp_med>=0?'+':'-')+Math.abs(d.exp-LB.exp_med).toFixed(2)+'亿',bc(d.exp,LB.exp_med),bw(d.exp,LB.exp_med,30),true,d.exp_y)}
+      <div class="conn"><div class="cl"></div><div class="cn">→ CTR 封面点击率</div><div class="cl"></div></div>
+      ${frow('CTR封面',d.ctr,LB.ctr_base,d.ctr.toFixed(2)+'%',LB.ctr_base+'%',parseFloat(d.ctr_pts||0)>=0?d.ctr_pts+' pts':d.ctr_pts+' pts',bc(d.ctr,LB.ctr_base),bw(d.ctr,LB.ctr_base,8),false,null)}
+      <div style="display:flex;gap:8px;margin:4px 0;padding-left:8px">
+        <div style="flex:1;background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:4px 8px;font-size:10px">
+          <div style="font-weight:600;color:#6b7280;margin-bottom:2px">🫧 呼吸灯 CTR</div>
+          <div style="color:${d.huxi_ctr>=1.2?'#16a34a':d.huxi_ctr>=0.6?'#eab308':'#e8372c'};font-weight:700">${d.huxi_ctr.toFixed(2)}%</div>
+        </div>
+        <div style="flex:1;background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:4px 8px;font-size:10px">
+          <div style="font-weight:600;color:#6b7280;margin-bottom:2px">📺 直播卡 CTR</div>
+          <div style="color:${d.zhibo_ctr>=3?'#16a34a':d.zhibo_ctr>=1.5?'#eab308':'#e8372c'};font-weight:700">${d.zhibo_ctr.toFixed(2)}%</div>
+        </div>
       </div>
       <div class="conn"><div class="cl"></div><div class="cn">→ CVR 进播率</div><div class="cl"></div></div>
-      ${frow('CVR 进播率',d.cvr,LB.cvr,d.cvr.toFixed(3)+'%',LB.cvr+'%',(d.cvr-LB.cvr>=0?'+':'')+((d.cvr-LB.cvr).toFixed(3))+'%',bc(d.cvr,LB.cvr),bw(d.cvr,LB.cvr),false,fmtYoy(d.cvr_y))}
-      <div class="conn"><div class="cl"></div><div class="cn">→ 商品转化率</div><div class="cl"></div></div>
-      ${frow('商品转化率',d.conv,LB.conv,d.conv.toFixed(3)+'%',LB.conv+'%',(d.conv-LB.conv>=0?'+':'')+((d.conv-LB.conv).toFixed(3))+'%',bc(d.conv,LB.conv),bw(d.conv,LB.conv),false,fmtYoy(d.conv_y))}
-      <div class="conn"><div class="cl"></div><div class="cn">→ 客单价（基准¥${LB.aov}中位数）</div><div class="cl"></div></div>
-      ${frow('客单价',d.aov,LB.aov,'¥'+d.aov,'¥'+LB.aov,(d.aov-LB.aov>=0?'▲':'-')+'¥'+Math.round(Math.abs(d.aov-LB.aov)),bc(d.aov,LB.aov),bw(d.aov,LB.aov,2000),false,fmtYoy(d.aov_y))}
+      ${frow('进播率',d.jinbo,LB.jinbo_base,d.jinbo.toFixed(2)+'%',LB.jinbo_base+'%',parseFloat(d.jinbo_pts||0)>=0?'+'+d.jinbo_pts+' pts':d.jinbo_pts+' pts',bc(d.jinbo,LB.jinbo_base),bw(d.jinbo,LB.jinbo_base,15),false,null)}
+      <div class="conn"><div class="cl"></div><div class="cn">→ CVR 商品转化率</div><div class="cl"></div></div>
+      ${frow('CVR商品转化',d.cvr,LB.cvr_base,d.cvr.toFixed(2)+'%',LB.cvr_base+'%',parseFloat(d.cvr_pts||0)>=0?'+'+d.cvr_pts+' pts':d.cvr_pts+' pts',bc(d.cvr,LB.cvr_base),bw(d.cvr,LB.cvr_base,10),false,d.cvr_pts)}
+      <div class="conn"><div class="cl"></div><div class="cn">→ 客单价</div><div class="cl"></div></div>
+      ${frow('客单价',d.aov,LB.aov_base,'¥'+d.aov.toFixed(0),'¥'+LB.aov_base,(d.aov-LB.aov_base>=0?'▲':'-')+'¥'+Math.round(Math.abs(d.aov-LB.aov_base)),bc(d.aov,LB.aov_base),bw(d.aov,LB.aov_base,2000),false,d.aov_y)}
       <div class="gbar">
         <span style="font-size:11px;color:#6b7280">GPM：</span>
-        <span style="font-size:15px;font-weight:700;color:${d.gpm>=LB.gpm?'#16a34a':'#e8372c'}">${d.gpm}</span>
-        <span style="font-size:10px;color:#6b7280">元 / 基准${LB.gpm}</span>
+        <span style="font-size:15px;font-weight:700;color:${d.gpm>=LB.gpm_med?'#16a34a':'#e8372c'}">${d.gpm.toFixed(1)}</span>
+        <span style="font-size:10px;color:${d.gpm_y>=0?'#16a34a':'#dc2626'}"> YoY ${d.gpm_y>=0?'+':''}${d.gpm_y}%</span>
+        <span style="font-size:10px;color:#6b7280"> 元 / 基准${LB.gpm_med}</span>
         <div style="flex:1;height:7px;background:#f1f5f9;border-radius:4px;overflow:hidden;margin-left:6px">
-          <div style="width:${Math.min(100,d.gpm/LB.gpm*60+10)}%;height:100%;background:${d.gpm>=LB.gpm?'#16a34a':'#f97316'};border-radius:4px"></div>
+          <div style="width:${Math.min(100,d.gpm/LB.gpm_med*60+10)}%;height:100%;background:${d.gpm>=LB.gpm_med?'#16a34a':'#f97316'};border-radius:4px"></div>
         </div>
       </div>
     </div>
@@ -1174,21 +1210,24 @@ function buildLCard(d,rank){
       <div class="tags-row">${lTags(d)}</div>
       <div class="diag-box">
         <div class="diag-title">📋 问题诊断</div>
-        <div class="diag-issue">${d.issue||''}</div>
-        <div class="diag-kpi">${d.kpi||''}</div>
         <div class="diag-rows">
-          ${lowPills?`<div class="diag-row low-row"><div class="diag-row-label">🟠 绝对值偏低</div><div class="diag-pills">${lowPills}</div></div>`:''}
-          ${hasYoy?`<div class="diag-row yoy-row"><div class="diag-row-label">📉 市占/趋势跌幅严重</div><div class="diag-pills">${yoyPills}</div></div>`:''}
-          ${(!lowPills&&!hasYoy)?'<div style="font-size:11px;color:#16a34a;padding:4px 0">✅ 无显著异常，重点是维持当前趋势</div>':''}
+          ${hasLow?`<div class="diag-row low-row"><div class="diag-row-label">🟠 绝对值偏低</div><div class="diag-pills">${lowPills}</div></div>`:''}
+          ${hasYoy?`<div class="diag-row yoy-row"><div class="diag-row-label">📉 YoY跌幅严重</div><div class="diag-pills">${yoyPills}</div></div>`:''}
+          ${(!hasLow&&!hasYoy)?'<div style="font-size:11px;color:#16a34a;padding:4px 0">✅ 无显著异常，重点维持当前趋势</div>':''}
         </div>
       </div>
-      <div class="action-box">
-        <div class="action-title">▶ 行动建议</div>
-        <div class="action-text">${actionHtml}</div>
+      <div style="margin-top:8px;border-top:1px solid #e2e8f0;padding-top:8px">
+        <div style="font-size:11px;font-weight:700;color:#6366f1;margin-bottom:6px">📢 广告投放</div>
+        <div style="display:flex;flex-direction:column;gap:4px">
+          ${adBar('广告消耗',d.ad_sp,adMaxRef.sp,'万',d.ad_sp_y||0,false)}
+          ${adBar('广告流量GMV',d.ad_gmv,adMaxRef.gmv,'万',d.ad_gmv_y||0,false)}
+          ${adBar('Takerate',d.tr,adMaxRef.tr,'%',d.tr_y||0,true)}
+        </div>
       </div>
     </div>
   </div>
-</div>`;}
+</div>`;
+}
 
 // ═══ ECharts 图表 ═══
 function mkBarChart(elId,data,base,unit,colorBase){
@@ -1279,89 +1318,33 @@ function renderLive2() {
   const arr = [...liveData2].sort((a,b) => a.dgmv_y - b.dgmv_y);
   const attnEl = document.getElementById('l-attn-bar');
   if(attnEl) {
-    const MLIST = [
-      {k:'exp',  lbl:'总曝光',   base:LIVE_BASE.exp_med,  unit:'亿', yk:'exp_y'},
-      {k:'gpm',  lbl:'GPM',      base:LIVE_BASE.gpm_med,  unit:'元', yk:'gpm_y'},
-      {k:'ctr',  lbl:'CTR封面',  base:LIVE_BASE.ctr_base, unit:'%',  yk:'gpm_y'},
-      {k:'cvr',  lbl:'CVR转化',  base:LIVE_BASE.cvr_base, unit:'%',  yk:'gpm_y'},
-      {k:'aov',  lbl:'客单价',   base:LIVE_BASE.aov_base, unit:'元', yk:'aov_y'},
-      {k:'dgmv', lbl:'店播DGMV', base:null,               unit:'亿', yk:'dgmv_y'},
+    const sn=n=>n.replace(/.*?（/,'').replace('）','');
+    const pill=(n,bg,tc)=>`<span style="background:${bg};color:${tc};padding:1px 6px;border-radius:8px;margin:1px;display:inline-block;font-size:10px">${n}</span>`;
+    const LMLIST=[
+      {label:'总曝光',base:LB.exp_med,unit:'亿',lowThr:LB.exp_med*0.7,yoyThr:-20,vFn:d=>d.exp,yFn:d=>d.exp_y},
+      {label:'GPM',  base:LB.gpm_med,unit:'元',lowThr:LB.gpm_med*0.7,yoyThr:-25,vFn:d=>d.gpm,yFn:d=>d.gpm_y},
+      {label:'CTR封面',base:LB.ctr_base,unit:'%',lowThr:LB.ctr_base*0.8,yoyThr:-15,vFn:d=>d.ctr,yFn:d=>parseFloat(d.ctr_pts||0)},
+      {label:'进播率',base:LB.jinbo_base,unit:'%',lowThr:LB.jinbo_base*0.7,yoyThr:-15,vFn:d=>d.jinbo,yFn:d=>parseFloat(d.jinbo_pts||0)},
+      {label:'CVR转化',base:LB.cvr_base,unit:'%',lowThr:LB.cvr_base*0.7,yoyThr:-15,vFn:d=>d.cvr,yFn:d=>parseFloat(d.cvr_pts||0)},
+      {label:'店播DGMV',base:null,unit:'亿',lowThr:null,yoyThr:-20,vFn:d=>d.dgmv,yFn:d=>d.dgmv_y},
     ];
-    const bLabels = [LIVE_BASE.exp_med+'亿', LIVE_BASE.gpm_med+'元', LIVE_BASE.ctr_base+'%', LIVE_BASE.cvr_base+'%', '¥'+LIVE_BASE.aov_base, '—'];
-    attnEl.innerHTML = MLIST.map((m,i) => {
-      const lowArr = arr.filter(d => m.base && d[m.k] < m.base).map(d=>d.n).slice(0,3);
-      const yoyArr = arr.filter(d => (d[m.yk]||0) <= -20).map(d=>d.n).slice(0,3);
-      return '<div class="attn-card">' +
-        '<div class="attn-title">'+m.lbl+'</div>' +
-        '<div class="attn-base">基准 '+bLabels[i]+'</div>' +
-        (lowArr.length?'<div class="attn-row"><span class="attn-tag low">🔶低于基准</span><span class="attn-list">'+lowArr.join('、')+'</span></div>':'') +
-        (yoyArr.length?'<div class="attn-row"><span class="attn-tag bad">📉YoY下滑</span><span class="attn-list">'+yoyArr.join('、')+'</span></div>':'') +
-        '</div>';
+    const cards=LMLIST.map(m=>{
+      const lowBad=liveData2.filter(d=>m.lowThr&&m.vFn(d)<m.lowThr).map(d=>sn(d.n));
+      const yoyBad=liveData2.filter(d=>m.yFn(d)<=m.yoyThr).map(d=>sn(d.n));
+      const hasAny=lowBad.length||yoyBad.length;
+      return `<div style="background:#fff;border:1px solid ${hasAny?'#fbbf24':'#e2e8f0'};border-radius:8px;padding:8px 10px;${hasAny?'border-left:3px solid #f59e0b':''}">
+        <div style="font-size:11px;font-weight:700;color:#1e293b;margin-bottom:2px">${m.label}<span style="font-weight:400;color:#64748b;font-size:9px;margin-left:4px">基准${m.base||'—'}${m.base?m.unit:''}</span></div>
+        ${lowBad.length?`<div style="display:flex;align-items:center;gap:4px;margin-bottom:3px"><span style="font-size:9px;color:#92400e;white-space:nowrap">🔶 绝对值偏低</span><span style="display:flex;flex-wrap:wrap;gap:2px">${lowBad.map(n=>pill(n,'#fde68a','#78350f')).join('')}</span></div>`:''}
+        ${yoyBad.length?`<div style="display:flex;align-items:center;gap:4px"><span style="font-size:9px;color:#991b1b;white-space:nowrap">📉 YoY下滑</span><span style="display:flex;flex-wrap:wrap;gap:2px">${yoyBad.map(n=>pill(n,'#fee2e2','#7f1d1d')).join('')}</span></div>`:''}
+        ${!hasAny?'<span style="font-size:9px;color:#16a34a">✓ 无异常</span>':''}
+      </div>`;
     }).join('');
+    attnEl.innerHTML=`<div style="background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:10px 14px;margin-bottom:12px"><div style="font-size:12px;font-weight:700;color:#92400e;margin-bottom:8px">📌 需关注行业（按指标）</div><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">${cards}</div></div>`;
   }
-  const cont = document.getElementById('l-cards');
+    const cont = document.getElementById('l-cards');
   if(!cont) return;
-  const adMaxSp  = Math.max.apply(null, liveData2.map(function(x){return x.ad_sp||0;}));
-  const adMaxGmv = Math.max.apply(null, liveData2.map(function(x){return x.ad_gmv||0;}));
-  const adMaxTr  = Math.max.apply(null, liveData2.map(function(x){return x.tr||0;}));
-  function yoySpan(v) {
-    if(v===null||v===undefined) return '<span style="color:#9ca3af">—</span>';
-    var c = v>=20?'color:#16a34a;font-weight:700':v<=-20?'color:#dc2626;font-weight:700':'color:#374151';
-    return '<span style="'+c+'">'+(v>0?'+':'')+v.toFixed(1)+'%</span>';
-  }
-  function ptsSpan(s) {
-    if(!s) return '<span style="color:#9ca3af">—</span>';
-    var n = parseFloat(s);
-    var c = n>0?'color:#16a34a':n<0?'color:#dc2626':'color:#374151';
-    return '<span style="'+c+'">'+s+' pts</span>';
-  }
-  function mrow(label, val, vsBase, yoyV, ispts) {
-    var bg = (vsBase!==null && parseFloat(val) < vsBase) ? 'background:#fef9c3' : '';
-    var vsCell = vsBase!==null ? ((parseFloat(val)>=vsBase?'<span style="color:#16a34a">↑</span>':'<span style="color:#dc2626">↓</span>')+vsBase) : '—';
-    var yoyCell = ispts ? ptsSpan(yoyV) : yoySpan(yoyV);
-    return '<tr style="'+bg+'"><td>'+label+'</td><td>'+val+'</td><td>'+vsCell+'</td><td>'+yoyCell+'</td></tr>';
-  }
-  function miniBar(v, max, yv, label) {
-    var pct = max>0 ? (v/max*100).toFixed(0) : 0;
-    var yc = yv>=10?'#16a34a':yv<=-10?'#dc2626':'#6b7280';
-    var disp = v>=10000 ? (v/10000).toFixed(1)+'万' : v.toFixed(1);
-    return '<div style="display:flex;align-items:center;gap:4px;margin:2px 0;font-size:10px">' +
-      '<span style="width:72px;color:#374151">'+label+'</span>' +
-      '<div style="flex:1;background:#f1f5f9;border-radius:2px;height:5px"><div style="width:'+pct+'%;background:#3b82f6;height:5px;border-radius:2px"></div></div>' +
-      '<span style="width:48px;text-align:right;color:#374151">'+disp+'</span>' +
-      '<span style="width:42px;text-align:right;color:'+yc+';font-weight:700">'+(yv>=0?'+':'')+yv.toFixed(1)+'%</span>' +
-      '</div>';
-  }
-  cont.innerHTML = arr.map(function(d) {
-    var hdr_bg = d.dgmv_y<=-30?'background:#fee2e2':d.dgmv_y<=-10?'background:#fef3c7':d.dgmv_y>=20?'background:#dcfce7':'background:#fff';
-    var badge_bg = d.dgmv_y<=-30?'#dc2626':d.dgmv_y<=-10?'#f59e0b':d.dgmv_y>=20?'#16a34a':'#6b7280';
-    return '<div style="'+hdr_bg+';border:1px solid #e2e8f0;border-radius:8px;padding:10px;margin:6px;min-width:270px;max-width:320px;display:inline-block;vertical-align:top">' +
-      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">' +
-        '<span style="font-weight:700;font-size:13px;color:#1e293b">'+d.n+'</span>' +
-        '<span style="font-size:10px;color:#fff;background:'+badge_bg+';padding:2px 5px;border-radius:4px">DGMV '+(d.dgmv_y>0?'+':'')+d.dgmv_y.toFixed(1)+'%</span>' +
-      '</div>' +
-      '<table style="width:100%;font-size:10px;border-collapse:collapse">' +
-        '<thead><tr style="color:#6b7280;border-bottom:1px solid #e2e8f0">' +
-          '<th style="text-align:left;padding:2px 0;width:60px">指标</th>' +
-          '<th style="text-align:right">值</th><th style="text-align:right">vs基</th><th style="text-align:right">YoY</th>' +
-        '</tr></thead><tbody>' +
-        mrow('总曝光', d.exp.toFixed(2)+'亿', LIVE_BASE.exp_med, d.exp_y, false) +
-        mrow('CTR封面', d.ctr.toFixed(2)+'%', LIVE_BASE.ctr_base, d.ctr_pts, true) +
-        mrow('进播率', d.jinbo.toFixed(2)+'%', LIVE_BASE.jinbo_base, d.jinbo_pts, true) +
-        mrow('CVR转化', d.cvr.toFixed(2)+'%', LIVE_BASE.cvr_base, d.cvr_pts, true) +
-        mrow('GPM', d.gpm.toFixed(1)+'元', LIVE_BASE.gpm_med, d.gpm_y, false) +
-        mrow('客单价', '¥'+d.aov.toFixed(0), null, d.aov_y, false) +
-        mrow('呼吸灯CTR', d.huxi_ctr.toFixed(2)+'%', null, null, false) +
-        mrow('直播卡CTR', d.zhibo_ctr.toFixed(2)+'%', null, null, false) +
-        '</tbody></table>' +
-      '<div style="margin-top:6px;padding-top:6px;border-top:1px solid #e2e8f0">' +
-        '<div style="font-size:10px;font-weight:700;color:#6b7280;margin-bottom:2px">📢 广告投放</div>' +
-        miniBar(d.ad_sp, adMaxSp, d.ad_sp_y, '广告消耗(万)') +
-        miniBar(d.ad_gmv, adMaxGmv, d.ad_gmv_y, '广告DGMV(万)') +
-        miniBar(d.tr, adMaxTr, d.tr_y, 'Takerate(%)') +
-      '</div>' +
-    '</div>';
-  }).join('');
+  const sortedByDgmv = [...liveData2].sort((a,b)=>a.dgmv_y-b.dgmv_y);
+  cont.innerHTML = sortedByDgmv.map((d,i)=>buildLCard(d,i+1)).join('');
 }
 
 function initLiveCharts2() {
