@@ -907,6 +907,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <script>
 // ═══ 笔记数据 ═══
+// ─── 笔记漏斗基准值 ───
+const BASE = {
+  expo: 6.31,   // 总曝光中位数（亿次）
+  pavg: 62,     // 篇均曝光基准（次）
+  pub_avg: 100, // 店均发布数基准（条）
+  gpm: 38.2,    // GPM基准（元）
+  gmv: 0.27,    // 笔记GMV中位（亿）
+  ctr1: 0.1506, // CTR1基准（小数）
+  ctr2: 0.0913, // CTR2基准（小数）
+  cvr: 0.0653,  // CVR基准（小数）
+  aov: 50.9,    // 客单价基准（元）
+};
+
 const noteData = [
   {n:"四组（大健康）",   mer:1132,  mer_y:5.7,   pub_avg:116,  pub_avg_y:-4.5,  pub:12.8,  pub_y:0.6,   expo:7.57,  expo_y:-43.2, pavg:80,  pavg_y:-39.3, ctr1:0.14, ctr1_y:22.2, ctr2:0.06, ctr2_y:-0.5, cvr:0.06, cvr_y:3.8,  aov:78.1,  aov_y:-2.5,  gpm:39.7, gpm_y:23.0,  gmv:0.37, gmv_y:-29.7, buy_pv:38.5,  buy_pv_y:-28.3},
   {n:"五组（休食）",     mer:1841,  mer_y:29.2,  pub_avg:108,  pub_avg_y:-4.9,  pub:19.5,  pub_y:24.5,  expo:17.96, expo_y:-40.4, pavg:100, pavg_y:-42.2, ctr1:0.16, ctr1_y:18.9, ctr2:0.07, ctr2_y:-3.8, cvr:0.07, cvr_y:-7.2, aov:43.0,  aov_y:22.7,  gpm:36.2, gpm_y:30.3,  gmv:0.76, gmv_y:-19.9, buy_pv:150.9, buy_pv_y:-36.8},
