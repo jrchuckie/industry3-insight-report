@@ -1428,6 +1428,89 @@ function initLiveCharts(){
 renderNote('gmv');
 renderLive('gmv');
 // 延迟初始化：等DOM渲染完成后再init图表（避免容器宽高为0）
+
+function switchTab(tab){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.className='tab-btn');
+  document.getElementById('p-'+tab).classList.add('active');
+  document.getElementById('tb-'+tab).classList.add('active-'+tab);
+  document.getElementById('s-note').style.display=tab==='note'?'flex':'none';
+  document.getElementById('s-live').style.display=tab==='live'?'flex':'none';
+  document.getElementById('s-kol').style.display=tab==='kol'?'flex':'none';
+  setTimeout(()=>{
+    if(tab==='note'){
+      ['n-bubble','n-bar-exp','n-bar-gpm','n-bar-gmv'].forEach(id=>{const el=document.getElementById(id);if(el&&echarts.getInstanceByDom(el))echarts.dispose(el);});
+      const bubbleEl=document.getElementById('n-bubble');
+      if(bubbleEl) initNoteCharts();
+    }
+    if(tab==='live'){
+      initLiveCharts();
+    }
+    if(tab==='kol'){
+      initKolCharts();
+    }
+    ['n-bubble','n-bar-exp','n-bar-gpm','n-bar-gmv',
+     'l-bubble','l-bar-exp','l-bar-gpm','l-bar-gmv',
+     'kol-bar-sess','kol-bar-avgd','kol-bar-gmv'].forEach(id=>{
+      const el=document.getElementById(id);
+      const c=el&&echarts.getInstanceByDom(el);
+      if(c) c.resize();
+    });
+  },300);
+}
+
+function initNoteCharts(){
+  // 气泡图
+  (function(){
+    const el=document.getElementById('n-bubble');
+    if(!el) return;
+    const scaleMin=Math.min(...noteData.map(d=>d.gmv));
+    const scaleMax=Math.max(...noteData.map(d=>d.gmv));
+    const logMin=Math.log(scaleMin+0.001), logMax=Math.log(scaleMax+0.001);
+    const jx=[0.2,-0.15,0.25,-0.2,0.1,-0.25,0.15,-0.1,0.2,-0.18,0.12,-0.22,0.08,-0.12,0.22,-0.08,0.18,-0.14,0.16];
+    const jy=[1.2,-0.8,1.5,-1.2,0.6,-1.5,0.9,-0.5,1.3,-0.9,0.7,-1.1,0.5,-0.7,1.4,-0.6,1.0,-0.4,0.8];
+    const pts=noteData.map((d,i)=>{
+      const lv=(Math.log(d.gmv+0.001)-logMin)/(logMax-logMin);
+      const sz=lv*30+10;
+      const jxi=d.expo<10?jx[i%jx.length]:0;
+      const jyi=d.gpm<50?jy[i%jy.length]:0;
+      return [d.expo+jxi, d.gpm+jyi, sz, d.n, d.expo_y, d.gpm_y, d.gmv_y, d.gmv, d.pub, d.pub_avg_y, d.mer];
+    });
+    const ch=echarts.init(el);
+    ch.setOption({
+      tooltip:{trigger:'item',formatter:p=>{
+        if(!Array.isArray(p.data)) return '';
+        const [x,y,sz,n,ey,gy,gmy,g,pub,py,mer]=p.data;
+        const yf=v=>v!=null?(v>0?'+':'')+v.toFixed(1)+'%':'—';
+        return `<b>${n}</b><br>总曝光: ${d3ex(x)}亿 (${yf(ey)})<br>GPM: ¥${y.toFixed(1)} (${yf(gy)})<br>笔记GMV: ¥${g.toFixed(2)}亿 (${yf(gmy)})<br>店均发布: ${pub}条 (${yf(py)})<br>动销商家: ${mer?mer.toLocaleString():'—'}家`;
+      }},
+      grid:{left:50,right:30,top:20,bottom:40,containLabel:true},
+      xAxis:{name:'总曝光（亿次）',nameLocation:'middle',nameGap:25,
+        axisLabel:{fontSize:10,color:'#1e293b'},axisLine:{lineStyle:{color:'#e2e8f0'}},
+        splitLine:{show:false}},
+      yAxis:{name:'GPM（元）',nameLocation:'middle',nameGap:35,min:0,max:110,
+        axisLabel:{fontSize:10,color:'#1e293b'},axisLine:{lineStyle:{color:'#e2e8f0'}},
+        splitLine:{lineStyle:{color:'#f1f5f9'}}},
+      series:[{type:'scatter',
+        symbolSize:p=>p[2],
+        itemStyle:{color:'rgba(59,130,246,0.65)',borderColor:'rgba(59,130,246,0.9)',borderWidth:1},
+        label:{show:true,formatter:p=>{if(!Array.isArray(p.data))return'';return p.data[3].replace(/.*?（/,'').replace('）','');},fontSize:9,color:'#374151',position:'top'},
+        data:pts,
+        markLine:{silent:true,symbol:'none',lineStyle:{type:'dashed',width:1},
+          data:[
+            {xAxis:6.31,lineStyle:{color:'#7c3aed'},label:{formatter:'曝光中位数 6.31亿',color:'#7c3aed',fontSize:9}},
+            {yAxis:38.2,lineStyle:{color:'#f97316'},label:{formatter:'GPM基准 ¥38.2',color:'#f97316',fontSize:9}}
+          ]}
+      }]
+    });
+    function d3ex(v){return v<10?v.toFixed(2):v.toFixed(1);}
+  })();
+  // Bar charts
+  makeBar('n-bar-exp', noteData, 6.31, '曝光中位6.31亿', '亿', 'expo_y', 'expo');
+  makeBar('n-bar-gpm', noteData, 38.2, 'GPM基准38.2元', '元', 'gpm_y', 'gpm');
+  makeBar('n-bar-gmv', noteData, 0.27, 'GMV中位0.27亿', '亿', 'gmv_y', 'gmv');
+}
+
 window.addEventListener('DOMContentLoaded', function(){
   renderNote();
   renderLive();
