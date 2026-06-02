@@ -912,25 +912,25 @@ document.addEventListener('DOMContentLoaded', function() {
 <script>
 // ═══ 笔记数据 ═══
 const noteData = [
-  {n:"四组（大健康）",  mer:1132, mer_y:5.7,  pub_avg:116,  pub_avg_y:-4.5,  pub:12.8,  pub_y:0.6,   expo:7.57,  expo_y:-43.2, pavg:80,  pavg_y:-39.3, ctr1:14.0,  ctr1_y:22.2, ctr2:6.0,   ctr2_y:-0.5, cvr:6.0,   cvr_y:3.8,  aov:78.1,  aov_y:-2.5,  gpm:39.7, gpm_y:23.0,  gmv:0.37, gmv_y:-29.7},
-  {n:"五组（休食）",    mer:1841, mer_y:29.2, pub_avg:108,  pub_avg_y:-4.9,  pub:19.5,  pub_y:24.5,  expo:17.96, expo_y:-40.4, pavg:100, pavg_y:-42.2, ctr1:16.0,  ctr1_y:18.9, ctr2:7.0,   ctr2_y:-3.8, cvr:7.0,   cvr_y:-7.2, aov:43.0,  aov_y:22.7,  gpm:36.2, gpm_y:30.3,  gmv:0.76, gmv_y:-19.9},
-  {n:"八组（消费电子）",mer:1141, mer_y:16.4, pub_avg:127,  pub_avg_y:-11.3, pub:14.2,  pub_y:-1.2,  expo:7.98,  expo_y:-33.5, pavg:67,  pavg_y:-43.7, ctr1:17.0,  ctr1_y:34.9, ctr2:10.0,  ctr2_y:-13.0,cvr:4.0,   cvr_y:3.2,  aov:50.4,  aov_y:2.3,   gpm:36.3, gpm_y:24.0,  gmv:0.35, gmv_y:-14.6},
-  {n:"六组（生鲜）",    mer:958,  mer_y:49.9, pub_avg:139,  pub_avg_y:-4.8,  pub:13.0,  pub_y:47.4,  expo:9.83,  expo_y:-27.7, pavg:111, pavg_y:-47.3, ctr1:14.0,  ctr1_y:8.8,  ctr2:8.0,   ctr2_y:-4.1, cvr:7.0,   cvr_y:3.1,  aov:51.0,  aov_y:8.0,   gpm:38.4, gpm_y:16.3,  gmv:0.40, gmv_y:-14.5},
-  {n:"八组（家电）",    mer:433,  mer_y:8.8,  pub_avg:90.1, pub_avg_y:4.5,   pub:3.7,   pub_y:17.8,  expo:1.33,  expo_y:-50.3, pavg:61,  pavg_y:-43.0, ctr1:14.0,  ctr1_y:9.0,  ctr2:8.0,   ctr2_y:24.3, cvr:5.0,   cvr_y:7.3,  aov:175.0, aov_y:16.7,  gpm:91.9, gpm_y:69.7,  gmv:0.15, gmv_y:-10.2},
-  {n:"十组（家饰）",    mer:1350, mer_y:65.2, pub_avg:50.8, pub_avg_y:-8.5,  pub:6.6,   pub_y:49.8,  expo:3.96,  expo_y:-15.5, pavg:84,  pavg_y:-29.8, ctr1:11.0,  ctr1_y:4.0,  ctr2:14.0,  ctr2_y:-0.2, cvr:4.0,   cvr_y:13.0, aov:52.8,  aov_y:-9.5,  gpm:33.0, gpm_y:6.1,   gmv:0.15, gmv_y:-7.7},
-  {n:"七组（家具）",    mer:757,  mer_y:18.8, pub_avg:70.2, pub_avg_y:-23.6, pub:5.1,   pub_y:-8.9,  expo:1.03,  expo_y:-30.5, pavg:37,  pavg_y:-24.9, ctr1:14.0,  ctr1_y:9.7,  ctr2:11.0,  ctr2_y:-0.1, cvr:2.0,   cvr_y:21.4, aov:127.0, aov_y:-4.1,  gpm:45.6, gpm_y:27.7,  gmv:0.07, gmv_y:-1.1},
-  {n:"十五组（酒旅）",  mer:517,  mer_y:111.9,pub_avg:84.4, pub_avg_y:-62.3, pub:4.0,   pub_y:-25.2, expo:0.60,  expo_y:-46.5, pavg:47,  pavg_y:-68.8, ctr1:12.0,  ctr1_y:-21.3,ctr2:14.0,  ctr2_y:109.4,cvr:2.0,   cvr_y:28.1, aov:345.0, aov_y:-8.8,  gpm:91.8, gpm_y:92.4,  gmv:0.08, gmv_y:-0.6},
-  {n:"十三组（图书）",  mer:484,  mer_y:13.1, pub_avg:248,  pub_avg_y:-34.7, pub:11.8,  pub_y:-22.3, expo:5.77,  expo_y:-29.8, pavg:61,  pavg_y:-46.5, ctr1:12.0,  ctr1_y:4.6,  ctr2:8.0,   ctr2_y:36.8, cvr:8.0,   cvr_y:6.1,  aov:50.8,  aov_y:-8.9,  gpm:35.5, gpm_y:38.3,  gmv:0.24, gmv_y:-0.3},
-  {n:"三组（宠物）",    mer:1349, mer_y:34.0, pub_avg:58.2, pub_avg_y:-1.7,  pub:7.7,   pub_y:33.7,  expo:5.05,  expo_y:3.6,   pavg:67,  pavg_y:-33.0, ctr1:22.0,  ctr1_y:-0.5, ctr2:6.0,   ctr2_y:-5.7, cvr:9.0,   cvr_y:11.5, aov:35.5,  aov_y:-4.3,  gpm:37.7, gpm_y:0.2,   gmv:0.21, gmv_y:1.9},
-  {n:"二组（亲子生活）",mer:1692, mer_y:15.7, pub_avg:96.9, pub_avg_y:18.0,  pub:16.0,  pub_y:37.8,  expo:8.00,  expo_y:-9.0,  pavg:73,  pavg_y:-22.9, ctr1:13.0,  ctr1_y:4.3,  ctr2:11.0,  ctr2_y:8.3,  cvr:5.0,   cvr_y:7.8,  aov:68.1,  aov_y:-2.8,  gpm:48.7, gpm_y:18.3,  gmv:0.46, gmv_y:3.6},
-  {n:"十组（家纺）",    mer:1177, mer_y:58.6, pub_avg:72.5, pub_avg_y:-29.8, pub:8.4,   pub_y:15.6,  expo:7.67,  expo_y:-32.6, pavg:121, pavg_y:-44.3, ctr1:13.0,  ctr1_y:18.6, ctr2:13.0,  ctr2_y:14.2, cvr:4.0,   cvr_y:-20.1,aov:85.2,  aov_y:46.3,  gpm:56.2, gpm_y:58.5,  gmv:0.47, gmv_y:8.9},
-  {n:"九组（家用）",    mer:1949, mer_y:26.6, pub_avg:109,  pub_avg_y:-5.3,  pub:20.7,  pub_y:20.9,  expo:15.38, expo_y:-7.9,  pavg:92,  pavg_y:-21.5, ctr1:19.0,  ctr1_y:22.5, ctr2:6.0,   ctr2_y:-18.9,cvr:7.0,   cvr_y:16.5, aov:45.3,  aov_y:4.6,   gpm:38.4, gpm_y:21.1,  gmv:0.68, gmv_y:12.3},
-  {n:"十二组（手工）",  mer:1844, mer_y:19.0, pub_avg:44.3, pub_avg_y:23.0,  pub:7.9,   pub_y:47.9,  expo:6.27,  expo_y:-12.8, pavg:82,  pavg_y:-42.3, ctr1:20.0,  ctr1_y:-0.1, ctr2:11.0,  ctr2_y:3.9,  cvr:4.0,   cvr_y:10.3, aov:36.2,  aov_y:14.8,  gpm:34.3, gpm_y:31.6,  gmv:0.27, gmv_y:15.8},
-  {n:"一组（文玩玉翠）",mer:1834, mer_y:42.0, pub_avg:45.9, pub_avg_y:10.8,  pub:8.1,   pub_y:56.6,  expo:1.30,  expo_y:5.9,   pavg:46,  pavg_y:-2.8,  ctr1:11.0,  ctr1_y:-6.9, ctr2:30.0,  ctr2_y:15.9, cvr:1.0,   cvr_y:-15.4,aov:383.0, aov_y:11.7,  gpm:90.9, gpm_y:2.0,   gmv:0.18, gmv_y:32.6},
-  {n:"十四组（二奢）",  mer:558,  mer_y:-5.9, pub_avg:46.7, pub_avg_y:22.6,  pub:2.6,   pub_y:16.8,  expo:0.22,  expo_y:-16.9, pavg:15,  pavg_y:-29.9, ctr1:12.0,  ctr1_y:15.5, ctr2:20.0,  ctr2_y:54.4, cvr:1.0,   cvr_y:246.1,aov:473.0, aov_y:-68.0, gpm:59.9, gpm_y:97.3,  gmv:0.03, gmv_y:33.4},
-  {n:"十一组（潮玩）",  mer:30700,mer_y:3.7,  pub_avg:26.5, pub_avg_y:27.0,  pub:79.0,  pub_y:33.5,  expo:26.96, expo_y:6.1,   pavg:55,  pavg_y:-12.9, ctr1:15.0,  ctr1_y:-6.2, ctr2:13.0,  ctr2_y:36.9, cvr:4.0,   cvr_y:-2.7, aov:26.2,  aov_y:4.0,   gpm:19.9, gpm_y:29.8,  gmv:0.66, gmv_y:41.9},
-  {n:"十三组（教育）",  mer:2902, mer_y:192.5,pub_avg:111,  pub_avg_y:107.9, pub:29.4,  pub_y:474.3, expo:4.02,  expo_y:22.6,  pavg:48,  pavg_y:-59.9, ctr1:15.0,  ctr1_y:-5.9, ctr2:6.0,   ctr2_y:44.6, cvr:9.0,   cvr_y:-2.0, aov:50.4,  aov_y:18.4,  gpm:44.0, gpm_y:57.9,  gmv:0.31, gmv_y:111.9},
-  {n:"十一组（虚拟）",  mer:31800,mer_y:185.5,pub_avg:52.9, pub_avg_y:52.0,  pub:162.6, pub_y:348.5, expo:33.59, expo_y:70.7,  pavg:39,  pavg_y:-50.9, ctr1:13.0,  ctr1_y:10.2, ctr2:8.0,   ctr2_y:18.1, cvr:13.0,  cvr_y:11.3, aov:10.0,  aov_y:-5.9,  gpm:14.6, gpm_y:36.3,  gmv:0.58, gmv_y:140.6},
+  {n:"四组（大健康）",   mer:1132,  mer_y:5.7,   pub_avg:116,  pub_avg_y:-4.5,  pub:12.8,  pub_y:0.6,   expo:7.57,  expo_y:-43.2, pavg:80,  pavg_y:-39.3, ctr1:0.14, ctr1_y:22.2, ctr2:0.06, ctr2_y:-0.5, cvr:0.06, cvr_y:3.8,  aov:78.1,  aov_y:-2.5,  gpm:39.7, gpm_y:23.0,  gmv:0.37, gmv_y:-29.7, buy_pv:38.5,  buy_pv_y:-28.3},
+  {n:"五组（休食）",     mer:1841,  mer_y:29.2,  pub_avg:108,  pub_avg_y:-4.9,  pub:19.5,  pub_y:24.5,  expo:17.96, expo_y:-40.4, pavg:100, pavg_y:-42.2, ctr1:0.16, ctr1_y:18.9, ctr2:0.07, ctr2_y:-3.8, cvr:0.07, cvr_y:-7.2, aov:43.0,  aov_y:22.7,  gpm:36.2, gpm_y:30.3,  gmv:0.76, gmv_y:-19.9, buy_pv:150.9, buy_pv_y:-36.8},
+  {n:"八组（消费电子）", mer:1141,  mer_y:16.4,  pub_avg:127,  pub_avg_y:-11.3, pub:14.2,  pub_y:-1.2,  expo:7.98,  expo_y:-33.5, pavg:67,  pavg_y:-43.7, ctr1:0.17, ctr1_y:34.9, ctr2:0.10, ctr2_y:-13.0,cvr:0.04, cvr_y:3.2,  aov:50.4,  aov_y:2.3,   gpm:36.3, gpm_y:24.0,  gmv:0.35, gmv_y:-14.6, buy_pv:57.6,  buy_pv_y:-19.4},
+  {n:"六组（生鲜）",     mer:958,   mer_y:49.9,  pub_avg:139,  pub_avg_y:-4.8,  pub:13.0,  pub_y:47.4,  expo:9.83,  expo_y:-27.7, pavg:111, pavg_y:-47.3, ctr1:0.14, ctr1_y:8.8,  ctr2:0.08, ctr2_y:-4.1, cvr:0.07, cvr_y:3.1,  aov:51.0,  aov_y:8.0,   gpm:38.4, gpm_y:16.3,  gmv:0.40, gmv_y:-14.5, buy_pv:74.0,  buy_pv_y:-22.2},
+  {n:"八组（家电）",     mer:433,   mer_y:8.8,   pub_avg:90.1, pub_avg_y:4.5,   pub:3.7,   pub_y:17.8,  expo:1.33,  expo_y:-50.3, pavg:61,  pavg_y:-43.0, ctr1:0.14, ctr1_y:9.0,  ctr2:0.08, ctr2_y:24.3, cvr:0.05, cvr_y:7.3,  aov:175.0, aov_y:16.7,  gpm:91.9, gpm_y:69.7,  gmv:0.15, gmv_y:-10.2, buy_pv:7.0,   buy_pv_y:-27.7},
+  {n:"十组（家饰）",     mer:1350,  mer_y:65.2,  pub_avg:50.8, pub_avg_y:-8.5,  pub:6.6,   pub_y:49.8,  expo:3.96,  expo_y:-15.5, pavg:84,  pavg_y:-29.8, ctr1:0.11, ctr1_y:4.0,  ctr2:0.14, ctr2_y:-0.2, cvr:0.04, cvr_y:13.0, aov:52.8,  aov_y:-9.5,  gpm:33.0, gpm_y:6.1,   gmv:0.15, gmv_y:-7.7,  buy_pv:24.8,  buy_pv_y:-1.0},
+  {n:"七组（家具）",     mer:757,   mer_y:18.8,  pub_avg:70.2, pub_avg_y:-23.6, pub:5.1,   pub_y:-8.9,  expo:1.03,  expo_y:-30.5, pavg:37,  pavg_y:-24.9, ctr1:0.14, ctr1_y:9.7,  ctr2:0.11, ctr2_y:-0.1, cvr:0.02, cvr_y:21.4, aov:127.0, aov_y:-4.1,  gpm:45.6, gpm_y:27.7,  gmv:0.07, gmv_y:-1.1,  buy_pv:3.7,   buy_pv_y:-7.5},
+  {n:"十五组（酒旅）",   mer:517,   mer_y:111.9, pub_avg:84.4, pub_avg_y:-62.3, pub:4.0,   pub_y:-25.2, expo:0.60,  expo_y:-46.5, pavg:47,  pavg_y:-68.8, ctr1:0.12, ctr1_y:-21.3,ctr2:0.14, ctr2_y:109.4,cvr:0.02, cvr_y:28.1, aov:345.0, aov_y:-8.8,  gpm:91.8, gpm_y:92.4,  gmv:0.08, gmv_y:-0.6,  buy_pv:1.6,   buy_pv_y:12.9},
+  {n:"十三组（图书）",   mer:484,   mer_y:13.1,  pub_avg:248,  pub_avg_y:-34.7, pub:11.8,  pub_y:-22.3, expo:5.77,  expo_y:-29.8, pavg:61,  pavg_y:-46.5, ctr1:0.12, ctr1_y:4.6,  ctr2:0.08, ctr2_y:36.8, cvr:0.08, cvr_y:6.1,  aov:50.8,  aov_y:-8.9,  gpm:35.5, gpm_y:38.3,  gmv:0.24, gmv_y:-0.3,  buy_pv:40.3,  buy_pv_y:6.7},
+  {n:"三组（宠物）",     mer:1349,  mer_y:34.0,  pub_avg:58.2, pub_avg_y:-1.7,  pub:7.7,   pub_y:33.7,  expo:5.05,  expo_y:3.6,   pavg:67,  pavg_y:-33.0, ctr1:0.22, ctr1_y:-0.5, ctr2:0.06, ctr2_y:-5.7, cvr:0.09, cvr_y:11.5, aov:35.5,  aov_y:-4.3,  gpm:37.7, gpm_y:0.2,   gmv:0.21, gmv_y:1.9,   buy_pv:53.6,  buy_pv_y:8.4},
+  {n:"二组（亲子生活）", mer:1692,  mer_y:15.7,  pub_avg:96.9, pub_avg_y:18.0,  pub:16.0,  pub_y:37.8,  expo:8.00,  expo_y:-9.0,  pavg:73,  pavg_y:-22.9, ctr1:0.13, ctr1_y:4.3,  ctr2:0.11, ctr2_y:8.3,  cvr:0.05, cvr_y:7.8,  aov:68.1,  aov_y:-2.8,  gpm:48.7, gpm_y:18.3,  gmv:0.46, gmv_y:3.6,   buy_pv:57.2,  buy_pv_y:10.8},
+  {n:"十组（家纺）",     mer:1177,  mer_y:58.6,  pub_avg:72.5, pub_avg_y:-29.8, pub:8.4,   pub_y:15.6,  expo:7.67,  expo_y:-32.6, pavg:121, pavg_y:-44.3, ctr1:0.13, ctr1_y:18.6, ctr2:0.13, ctr2_y:14.2, cvr:0.04, cvr_y:-20.1,aov:85.2,  aov_y:46.3,  gpm:56.2, gpm_y:58.5,  gmv:0.47, gmv_y:8.9,   buy_pv:50.6,  buy_pv_y:-27.1},
+  {n:"九组（家用）",     mer:1949,  mer_y:26.6,  pub_avg:109,  pub_avg_y:-5.3,  pub:20.7,  pub_y:20.9,  expo:15.38, expo_y:-7.9,  pavg:92,  pavg_y:-21.5, ctr1:0.19, ctr1_y:22.5, ctr2:0.06, ctr2_y:-18.9,cvr:0.07, cvr_y:16.5, aov:45.3,  aov_y:4.6,   gpm:38.4, gpm_y:21.1,  gmv:0.68, gmv_y:12.3,  buy_pv:130.3, buy_pv_y:6.6},
+  {n:"十二组（手工）",   mer:1844,  mer_y:19.0,  pub_avg:44.3, pub_avg_y:23.0,  pub:7.9,   pub_y:47.9,  expo:6.27,  expo_y:-12.8, pavg:82,  pavg_y:-42.3, ctr1:0.20, ctr1_y:-0.1, ctr2:0.11, ctr2_y:3.9,  cvr:0.04, cvr_y:10.3, aov:36.2,  aov_y:14.8,  gpm:34.3, gpm_y:31.6,  gmv:0.27, gmv_y:15.8,  buy_pv:59.3,  buy_pv_y:-0.1},
+  {n:"一组（文玩玉翠）", mer:1834,  mer_y:42.0,  pub_avg:45.9, pub_avg_y:10.8,  pub:8.1,   pub_y:56.6,  expo:1.30,  expo_y:5.9,   pavg:46,  pavg_y:-2.8,  ctr1:0.11, ctr1_y:-6.9, ctr2:0.30, ctr2_y:15.9, cvr:0.01, cvr_y:-15.4,aov:383.0, aov_y:11.7,  gpm:90.9, gpm_y:2.0,   gmv:0.18, gmv_y:32.6,  buy_pv:3.1,   buy_pv_y:-3.2},
+  {n:"十四组（二奢）",   mer:558,   mer_y:-5.9,  pub_avg:46.7, pub_avg_y:22.6,  pub:2.6,   pub_y:16.8,  expo:0.22,  expo_y:-16.9, pavg:15,  pavg_y:-29.9, ctr1:0.12, ctr1_y:15.5, ctr2:0.20, ctr2_y:54.4, cvr:0.01, cvr_y:246.1,aov:473.0, aov_y:-68.0, gpm:59.9, gpm_y:97.3,  gmv:0.03, gmv_y:33.4,  buy_pv:0.3,   buy_pv_y:412.8},
+  {n:"十一组（潮玩）",   mer:30700, mer_y:3.7,   pub_avg:26.5, pub_avg_y:27.0,  pub:79.0,  pub_y:33.5,  expo:26.96, expo_y:6.1,   pavg:55,  pavg_y:-12.9, ctr1:0.15, ctr1_y:-6.2, ctr2:0.13, ctr2_y:36.9, cvr:0.04, cvr_y:-2.7, aov:26.2,  aov_y:4.0,   gpm:19.9, gpm_y:29.8,  gmv:0.66, gmv_y:41.9,  buy_pv:205.0, buy_pv_y:32.5},
+  {n:"十三组（教育）",   mer:2902,  mer_y:192.5, pub_avg:111,  pub_avg_y:107.9, pub:29.4,  pub_y:474.3, expo:4.02,  expo_y:22.6,  pavg:48,  pavg_y:-59.9, ctr1:0.15, ctr1_y:-5.9, ctr2:0.06, ctr2_y:44.6, cvr:0.09, cvr_y:-2.0, aov:50.4,  aov_y:18.4,  gpm:44.0, gpm_y:57.9,  gmv:0.31, gmv_y:111.9, buy_pv:35.1,  buy_pv_y:63.5},
+  {n:"十一组（虚拟）",   mer:31800, mer_y:185.5, pub_avg:52.9, pub_avg_y:52.0,  pub:162.6, pub_y:348.5, expo:33.59, expo_y:70.7,  pavg:39,  pavg_y:-50.9, ctr1:0.13, ctr1_y:10.2, ctr2:0.08, ctr2_y:18.1, cvr:0.13, cvr_y:11.3, aov:10.0,  aov_y:-5.9,  gpm:14.6, gpm_y:36.3,  gmv:0.58, gmv_y:140.6, buy_pv:491.2, buy_pv_y:147.1},
 ];
 // 笔记漏斗基准（YoY中位数供参考）
 const NB2 = {expo_med:6.31, gpm_med:38.2, pavg_med:62, pub_avg_med:100};
@@ -951,7 +951,7 @@ function frow(lbl,val,base,dispV,dispB,diffStr,cls,width,isSup,yoyVal){
 }
 
 // ═══ 笔记漏斗卡片 ═══
-const NB={pv:62,notePerMer:373,ctr1:15.06,ctr2:9.13,cvr:6.53,aov:50.9,gpm:38.2};
+const NB={pv:62,ctr1:0.15,ctr2:0.09,cvr:0.065,aov:50.9,gpm:38.2,pub_avg:100};
 function nSev(d){let n=0;if(d.pavg<NB.pv*.8)n++;if(d.ctr1<NB.ctr1*.9)n++;if(d.ctr2<NB.ctr2*.85)n++;if(d.cvr<NB.cvr*.7)n++;if(d.aov<NB.aov*0.7)n++;return Math.min(3,n);}
 function nTags(d){const t=[];
   if(d.pavg<40)t.push('<span class="tag tr">🔵 流量严重稀释</span>');
@@ -972,12 +972,25 @@ function nTags(d){const t=[];
 
 function buildNCard(d,rank){
   const sev=nSev(d);const scls=['sl0','sl1','sl2','sl3'][sev];const stxt=['✅ 健康','🟡 轻微','🟠 中等','🔴 严重'][sev];
-  const npm=Math.round(d.pub*10000/d.totalMer);
   const aovBarCls=d.aov>=NB.aov?'ok':d.aov>=NB.aov*.7?'warn':'bad';
   const aovW=bw(d.aov,NB.aov,500);
-  const lowPills=(d.low||[]).map(x=>`<span class="diag-pill low">${x}</span>`).join('');
-  const yoyPills=(d.yoy_bad||[]).map(x=>`<span class="diag-pill yoy">${x}</span>`).join('');
-  const actionHtml=(d.actions||[]).map(a=>`<div style="margin-bottom:3px">${a}</div>`).join('');
+  // 动态计算诊断pills
+  const lowList=[];const yoyList=[];
+  if(d.pavg<NB.pv*0.7)lowList.push('篇均曝光');
+  if(d.pub_avg<NB.pub_avg*0.7)lowList.push('店均发布数');
+  if(d.ctr1<NB.ctr1*0.8)lowList.push('CTR1');
+  if(d.ctr2<NB.ctr2*0.8)lowList.push('CTR2');
+  if(d.cvr<NB.cvr*0.7)lowList.push('CVR');
+  if(d.gpm<NB.gpm*0.8)lowList.push('GPM');
+  if(d.expo_y<=-30)yoyList.push(`曝光${d.expo_y}%`);
+  if(d.pavg_y<=-30)yoyList.push(`篇均曝光${d.pavg_y}%`);
+  if(d.gmv_y<=-20)yoyList.push(`笔记GMV${d.gmv_y}%`);
+  if(d.gpm_y<=-20)yoyList.push(`GPM${d.gpm_y}%`);
+  if(d.pub_avg_y<=-30)yoyList.push(`店均发布${d.pub_avg_y}%`);
+  if(d.ctr2_y<=-20)yoyList.push(`CTR2${d.ctr2_y}%`);
+  if(d.cvr_y<=-20)yoyList.push(`CVR${d.cvr_y}%`);
+  const lowPills=lowList.map(x=>`<span class="diag-pill low">${x}</span>`).join('');
+  const yoyPills=yoyList.map(x=>`<span class="diag-pill yoy">${x}</span>`).join('');
   const hasYoy=yoyPills.length>0;
 
   return `<div class="diag-card sev-${sev}" data-gmv="${d.gmv}" data-sev="${sev}" data-pv="${d.pavg}">
@@ -986,10 +999,9 @@ function buildNCard(d,rank){
     <div class="card-name-block">
       <div class="card-name">${d.n}</div>
       <div class="card-meta">
-        <span><span class="${CARRIER_CLS[d.type]||'cb-gr'}">${d.type}</span></span>
         <span>笔记GMV <b>${d.gmv}亿</b> <span class="${d.gmv_y>=0?'up':'dn'}">YoY${d.gmv_y>=0?'+':''}${d.gmv_y}%</span></span>
-        <span>发布量 <b>${d.pub}万条</b></span>
-        <span>商家 <b>${d.totalMer}</b>家 · B5/6 <b>${d.b56}</b>家</span>
+        <span>发布量 <b>${d.pub}万条</b> <span class="${d.pub_y>=0?'up':'dn'}">YoY${d.pub_y>=0?'+':''}${d.pub_y}%</span></span>
+        <span>动销商家 <b>${d.mer>=10000?(d.mer/10000).toFixed(2)+'万':d.mer}</b>家 <span class="${d.mer_y>=0?'up':'dn'}">YoY${d.mer_y>=0?'+':''}${d.mer_y}%</span></span>
         <span>店均发布 <b>${d.pub_avg}条</b> <span class="${d.pub_avg_y>=0?'up':'dn'}">YoY${d.pub_avg_y>=0?'+':''}${d.pub_avg_y}%</span></span>
       </div>
     </div>
@@ -1008,7 +1020,7 @@ function buildNCard(d,rank){
       <div class="conn"><div class="cl"></div><div class="cn">→ CVR 转化率</div><div class="cl"></div></div>
       ${frow('CVR 转化率',d.cvr,NB.cvr,d.cvr.toFixed(3)+'%',NB.cvr+'%',(d.cvr-NB.cvr>=0?'+':'')+((d.cvr-NB.cvr).toFixed(3))+'%',bc(d.cvr,NB.cvr),bw(d.cvr,NB.cvr),false,d.cvr_y)}
       <div class="conn"><div class="cl"></div><div class="cn">→ 客单价（基准¥${NB.aov}中位数）</div><div class="cl"></div></div>
-      ${frow('客单价',d.aov,NB.aov,'¥'+d.aov,'¥'+NB.aov,(d.aov-NB.aov>=0?'▲':'-')+'¥'+Math.round(Math.abs(d.aov-NB.aov)),aovBarCls,aovW,false,null)}
+      ${frow('客单价',d.aov,NB.aov,'¥'+d.aov,'¥'+NB.aov,(d.aov-NB.aov>=0?'▲':'-')+'¥'+Math.round(Math.abs(d.aov-NB.aov)),aovBarCls,aovW,false,d.aov_y)}
       <div class="gbar">
         <span style="font-size:11px;color:#6b7280">GPM：</span>
         <span style="font-size:15px;font-weight:700;color:${d.gpm>=NB.gpm?'#16a34a':'#e8372c'}">${d.gpm}</span> <span style="font-size:10px;color:${d.gpm_y>=0?'#16a34a':'#dc2626'}">YoY ${d.gpm_y>=0?'+':''}${d.gpm_y}%</span>
@@ -1150,7 +1162,7 @@ function mkBubble(elId,data,xField,yField,sizeField,xBase,yBase,xUnit,yUnit){
   const pts=data.map(d=>{
     const x=d[xField],y=d[yField],s=d[sizeField];
     const q=x>=xBase&&y>=yBase?'#16a34a':x<xBase&&y>=yBase?'#7c3aed':x>=xBase&&y<yBase?'#f97316':'#e8372c';
-    return {name:d.n,value:[x,y,s],symbolSize:Math.max(10,Math.sqrt(s/scaleMax)*80),itemStyle:{color:q+'cc',borderColor:q,borderWidth:1.5}};
+    return {name:d.n,value:[x,y,s],symbolSize:Math.max(8,Math.sqrt(s/scaleMax)*45),itemStyle:{color:q+'cc',borderColor:q,borderWidth:1.5}};
   });
   c.setOption({
     grid:{left:'8%',right:'5%',top:'8%',bottom:'8%'},
@@ -1210,7 +1222,7 @@ function switchTab(tab){
   document.getElementById('s-kol').style.display=tab==='kol'?'flex':'none';
   // ResizeObserver自动处理首次init；切换后强制resize
   setTimeout(()=>{
-    ['n-bubble','n-bar-exp','n-bar-gpm','n-bar-gmv','n-bar-pub',
+    ['n-bubble','n-bar-exp','n-bar-gpm','n-bar-gmv',
      'l-bubble','l-bar-exp','l-bar-gpm','l-bar-gmv',
      'kol-bar-sess','kol-bar-avgd','kol-bar-gmv'].forEach(id=>{
       const c=echarts.getInstanceByDom(document.getElementById(id));
@@ -1239,10 +1251,10 @@ function initNoteCharts(){
           `篇均曝光: ${fmt(d.pavg+'次',d.pavg_y)}`;
       }},
       xAxis:{type:'value',name:'总曝光（亿次）',nameLocation:'middle',nameGap:28,
-        splitLine:{lineStyle:{color:'#f1f5f9'}},axisLabel:{color:'#374151',fontSize:10},
+        splitLine:{lineStyle:{color:'#f1f5f9'}},axisLabel:{color:'#1e293b',fontSize:10},
         axisLine:{lineStyle:{color:'#e2e8f0'}}},
       yAxis:{type:'value',name:'GPM（元）',nameLocation:'middle',nameGap:40,
-        splitLine:{lineStyle:{color:'#f1f5f9'}},axisLabel:{color:'#374151',fontSize:10},
+        splitLine:{lineStyle:{color:'#f1f5f9'}},axisLabel:{color:'#1e293b',fontSize:10},
         axisLine:{lineStyle:{color:'#e2e8f0'}}},
       series:[
         {type:'scatter',
@@ -1275,16 +1287,18 @@ function initNoteCharts(){
     ch.setOption({
       backgroundColor:'#fff',
       grid:{left:100,right:80,top:10,bottom:20},
-      xAxis:{type:'value',splitLine:{lineStyle:{color:'#f1f5f9'}},axisLabel:{color:'#374151',fontSize:9}},
-      yAxis:{type:'category',data:sorted.map(d=>d.n.replace(/.*?（/,'').replace('）','')),axisLabel:{color:'#374151',fontSize:9}},
+      xAxis:{type:'value',splitLine:{lineStyle:{color:'#f1f5f9'}},axisLabel:{color:'#1e293b',fontSize:9}},
+      yAxis:{type:'category',data:sorted.map(d=>d.n.replace(/.*?（/,'').replace('）','')),axisLabel:{color:'#1e293b',fontSize:9}},
       series:[{type:'bar',barMaxWidth:14,
         data:sorted.map(d=>({value:d.expo,
           itemStyle:{color:d.expo>=med*1.5?'#16a34a':d.expo>=med?'#3b82f6':d.expo>=med*0.5?'#f59e0b':'#e05c5c'}})),
-        label:{show:true,position:'right',fontSize:9,color:'#374151',
+        label:{show:true,position:'right',fontSize:9,color:'#1e293b',
           formatter:p=>{
             const d=sorted[p.dataIndex];
-            const yoy=d.expo_y; const sign=yoy>=0?'+':'';
-            return `${p.value}亿  YoY${sign}${yoy}%`;
+            const yoy=d.expo_y;
+            const sign=yoy>=0?'+':'';
+            const mark=Math.abs(yoy)>=25?'★':'';
+            return p.value.toFixed(2)+'亿  '+mark+sign+yoy+'%'+mark;
           }}
       },{type:'line',markLine:{silent:true,symbol:'none',lineStyle:{color:'#6366f1',type:'dashed'},
         data:[{xAxis:med}],label:{formatter:'中位数',fontSize:9,color:'#6366f1'}}}]
@@ -1300,16 +1314,18 @@ function initNoteCharts(){
     ch.setOption({
       backgroundColor:'#fff',
       grid:{left:100,right:80,top:10,bottom:20},
-      xAxis:{type:'value',splitLine:{lineStyle:{color:'#f1f5f9'}},axisLabel:{color:'#374151',fontSize:9}},
-      yAxis:{type:'category',data:sorted.map(d=>d.n.replace(/.*?（/,'').replace('）','')),axisLabel:{color:'#374151',fontSize:9}},
+      xAxis:{type:'value',splitLine:{lineStyle:{color:'#f1f5f9'}},axisLabel:{color:'#1e293b',fontSize:9}},
+      yAxis:{type:'category',data:sorted.map(d=>d.n.replace(/.*?（/,'').replace('）','')),axisLabel:{color:'#1e293b',fontSize:9}},
       series:[{type:'bar',barMaxWidth:14,
         data:sorted.map(d=>({value:d.gpm,
           itemStyle:{color:d.gpm>=med*1.5?'#16a34a':d.gpm>=med?'#3b82f6':d.gpm>=med*0.5?'#f59e0b':'#e05c5c'}})),
-        label:{show:true,position:'right',fontSize:9,color:'#374151',
+        label:{show:true,position:'right',fontSize:9,color:'#1e293b',
           formatter:p=>{
             const d=sorted[p.dataIndex];
-            const sign=d.gpm_y>=0?'+':'';
-            return `${p.value}元  YoY${sign}${d.gpm_y}%`;
+            const yoy=d.gpm_y;
+            const sign=yoy>=0?'+':'';
+            const mark=Math.abs(yoy)>=25?'★':'';
+            return p.value.toFixed(1)+'元  '+mark+sign+yoy+'%'+mark;
           }}
       },{type:'line',markLine:{silent:true,symbol:'none',lineStyle:{color:'#6366f1',type:'dashed'},
         data:[{xAxis:med}],label:{formatter:'中位数',fontSize:9,color:'#6366f1'}}}]
@@ -1325,16 +1341,18 @@ function initNoteCharts(){
     ch.setOption({
       backgroundColor:'#fff',
       grid:{left:100,right:90,top:10,bottom:20},
-      xAxis:{type:'value',splitLine:{lineStyle:{color:'#f1f5f9'}},axisLabel:{color:'#374151',fontSize:9}},
-      yAxis:{type:'category',data:sorted.map(d=>d.n.replace(/.*?（/,'').replace('）','')),axisLabel:{color:'#374151',fontSize:9}},
+      xAxis:{type:'value',splitLine:{lineStyle:{color:'#f1f5f9'}},axisLabel:{color:'#1e293b',fontSize:9}},
+      yAxis:{type:'category',data:sorted.map(d=>d.n.replace(/.*?（/,'').replace('）','')),axisLabel:{color:'#1e293b',fontSize:9}},
       series:[{type:'bar',barMaxWidth:14,
         data:sorted.map(d=>({value:d.gmv,
           itemStyle:{color:d.gmv_y>=10?'#16a34a':d.gmv_y>=-10?'#3b82f6':'#e05c5c'}})),
-        label:{show:true,position:'right',fontSize:9,color:'#374151',
+        label:{show:true,position:'right',fontSize:9,color:'#1e293b',
           formatter:p=>{
             const d=sorted[p.dataIndex];
-            const sign=d.gmv_y>=0?'+':'';
-            return `${p.value}亿  YoY${sign}${d.gmv_y}%`;
+            const yoy=d.gmv_y;
+            const sign=yoy>=0?'+':'';
+            const mark=Math.abs(yoy)>=25?'★':'';
+            return p.value.toFixed(2)+'亿  '+mark+sign+yoy+'%'+mark;
           }}
       },{type:'line',markLine:{silent:true,symbol:'none',lineStyle:{color:'#6366f1',type:'dashed'},
         data:[{xAxis:med}],label:{formatter:'中位数',fontSize:9,color:'#6366f1'}}}]
@@ -1350,8 +1368,8 @@ function initNoteCharts(){
     ch.setOption({
       backgroundColor:'#fff',
       grid:{left:100,right:90,top:10,bottom:20},
-      xAxis:{type:'value',splitLine:{lineStyle:{color:'#f1f5f9'}},axisLabel:{color:'#374151',fontSize:9}},
-      yAxis:{type:'category',data:sorted.map(d=>d.n.replace(/.*?（/,'').replace('）','')),axisLabel:{color:'#374151',fontSize:9}},
+      xAxis:{type:'value',splitLine:{lineStyle:{color:'#f1f5f9'}},axisLabel:{color:'#1e293b',fontSize:9}},
+      yAxis:{type:'category',data:sorted.map(d=>d.n.replace(/.*?（/,'').replace('）','')),axisLabel:{color:'#1e293b',fontSize:9}},
       series:[{type:'bar',barMaxWidth:14,
         data:sorted.map(d=>({value:d.pub_avg,
           itemStyle:{color:d.pub_avg_y>=10?'#16a34a':d.pub_avg_y>=-10?'#3b82f6':'#e05c5c'}})),
