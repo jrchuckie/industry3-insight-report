@@ -1274,6 +1274,50 @@ function switchTab(tab){
   },300);
 }
 
+
+function makeBar(id, data, baseVal, baseLabel, unit, yoyField, valField){
+  const el = document.getElementById(id);
+  if(!el) return;
+  try{ const inst=echarts.getInstanceByDom(el); if(inst) echarts.dispose(el); }catch(e){}
+  const ch = echarts.init(el);
+  const sorted = [...data].sort((a,b)=>b[valField]-a[valField]);
+  ch.setOption({
+    grid:{left:8,right:130,top:8,bottom:8,containLabel:true},
+    xAxis:{type:'value',splitLine:{lineStyle:{color:'#f1f5f9'}},axisLabel:{show:false}},
+    yAxis:{type:'category',
+      data:sorted.map(d=>d.n.replace(/.*?（/,'').replace('）','')),
+      axisLabel:{fontSize:10,color:'#1e293b',width:60}},
+    series:[{
+      type:'bar',barMaxWidth:14,
+      itemStyle:{color:'#3b82f6'},
+      label:{show:true,position:'right',fontSize:9,
+        formatter: p => {
+          const d = sorted[p.dataIndex];
+          const yoy = d[yoyField];
+          if(yoy===undefined||yoy===null) return `{v|${p.value.toFixed(2)}${unit}}`;
+          const yoyStr = yoy >= 0 ? `+${yoy.toFixed(1)}%` : `${yoy.toFixed(1)}%`;
+          const ycol = yoy >= 25 ? '#16a34a' : yoy <= -25 ? '#dc2626' : '#6b7280';
+          const ybg  = yoy >= 25 ? '#dcfce7' : yoy <= -25 ? '#fee2e2' : 'transparent';
+          return `{v|${p.value.toFixed(2)}${unit}} {yoy_${ycol.replace('#','')}|${yoyStr}}`;
+        },
+        rich:(()=>{
+          const r={v:{color:'#1e293b',fontSize:9,width:55,align:'right'}};
+          [['16a34a','#16a34a','#dcfce7'],['dc2626','#dc2626','#fee2e2'],['6b7280','#6b7280','transparent']].forEach(([k,c,bg])=>{
+            r[`yoy_${k}`]={fontSize:9,width:58,align:'right',color:c,
+              backgroundColor:bg==='transparent'?undefined:bg,borderRadius:4,padding:[1,4,1,4]};
+          });
+          return r;
+        })()
+      },
+      markLine:{silent:true,symbol:'none',
+        lineStyle:{color:'#7c3aed',type:'dashed',width:1.5},
+        data:[{xAxis:baseVal,label:{show:true,formatter:baseLabel,
+          position:'insideEndTop',fontSize:8,color:'#7c3aed'}}]},
+      data: sorted.map(d=>d[valField])
+    }]
+  });
+}
+
 function initNoteCharts(){
   // 气泡图
   (function(){
