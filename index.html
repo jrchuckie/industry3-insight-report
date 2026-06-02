@@ -368,7 +368,11 @@ document.addEventListener('DOMContentLoaded', function() {
   if(b56tbody){
     b56Data.forEach(d=>{
       const chgCls = d.arpu_chg>=15?'up':d.arpu_chg<=-15?'down':'flat';
-      const demCls = d.demote_pct>=35?'cell-red':d.demote_pct>=28.6?'cell-orange':'';
+      const demStyle = d.demote_pct>=35
+        ? 'color:#dc2626;font-weight:700;background:#fef2f2'
+        : d.demote_pct>=28.6
+          ? 'color:#d97706;font-weight:700;background:#fffbeb'
+          : 'color:#374151';
       b56tbody.innerHTML+=`<tr>
         <td>${d.n}</td>
         <td>${d.cur}</td>
@@ -376,7 +380,7 @@ document.addEventListener('DOMContentLoaded', function() {
         <td style="color:#94a3b8">${d.arpu_prev.toFixed(2)}</td>
         <td class="${chgCls}">${d.arpu_chg>=0?'+':''}${d.arpu_chg.toFixed(2)}%</td>
         <td>${d.demote}</td>
-        <td class="${demCls}" style="font-weight:${d.demote_pct>=35?'700':'400'}">${d.demote_pct.toFixed(1)}%</td>
+        <td style="${demStyle}">${d.demote_pct.toFixed(1)}%</td>
       </tr>`;
     });
   }
@@ -386,7 +390,11 @@ document.addEventListener('DOMContentLoaded', function() {
   if(b4tbody){
     b4Data.forEach(d=>{
       const chgCls = d.arpu_chg>=15?'up':d.arpu_chg<=-15?'down':'flat';
-      const promoCls = d.promo_pct>=25?'up cell-green':d.promo_pct<12?'down cell-red':'flat';
+      const promoStyle = d.promo_pct>=25
+        ? 'color:#16a34a;font-weight:700;background:#f0fdf4'
+        : d.promo_pct<12
+          ? 'color:#dc2626;font-weight:700;background:#fef2f2'
+          : 'color:#374151';
       b4tbody.innerHTML+=`<tr>
         <td>${d.n}</td>
         <td>${d.cur}</td>
@@ -394,7 +402,7 @@ document.addEventListener('DOMContentLoaded', function() {
         <td style="color:#94a3b8">${d.arpu_prev.toFixed(2)}</td>
         <td class="${chgCls}">${d.arpu_chg>=0?'+':''}${d.arpu_chg.toFixed(2)}%</td>
         <td>${d.promo}</td>
-        <td class="${promoCls}" style="font-weight:${d.promo_pct>=25||d.promo_pct<12?'700':'400'}">${d.promo_pct.toFixed(1)}%</td>
+        <td style="${promoStyle}">${d.promo_pct.toFixed(1)}%</td>
       </tr>`;
     });
   }
@@ -582,9 +590,9 @@ document.addEventListener('DOMContentLoaded', function() {
   <!-- 板块2：B4/5/6 腰部跃迁 -->
   <div style="background:#fff;border-radius:10px;padding:16px;margin-bottom:16px;border:1px solid #e2e8f0">
     <div style="font-size:14px;font-weight:700;color:#1e293b;margin-bottom:12px;display:flex;align-items:center;gap:8px">
-      <span style="background:#7c3aed;color:#fff;padding:2px 10px;border-radius:12px;font-size:11px">B4 腰部</span>
-      本月B4+商家数 · 跃迁商家数 · 跃迁率
-      <span style="margin-left:auto;font-size:11px;color:#64748b;font-weight:400">跃迁率 &gt;25% <span style="color:#16a34a">■</span> 优秀 · &lt;12% <span style="color:#e8372c">■</span> 偏弱</span>
+      <span style="background:#7c3aed;color:#fff;padding:2px 10px;border-radius:12px;font-size:11px">B4- 商家</span>
+      本月B4-商家数 · 跃迁商家数 · B4-跃迁率
+      <span style="margin-left:auto;font-size:11px;color:#64748b;font-weight:400">跃迁率 &gt;25% <span style="color:#16a34a">■</span> 优秀 · &lt;12% <span style="color:#dc2626">■</span> 偏弱</span>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
       <div>
@@ -600,12 +608,12 @@ document.addEventListener('DOMContentLoaded', function() {
       <table>
         <thead><tr>
           <th>行业组</th>
-          <th>本月B4+商家数</th>
+          <th>本月B4-商家数</th>
           <th>店均GMV（万）</th>
           <th>上月店均GMV（万）</th>
           <th>店均环比</th>
           <th>跃迁商家数</th>
-          <th>跃迁占比</th>
+          <th>B4-跃迁占比</th>
         </tr></thead>
         <tbody id="b4-tbody"></tbody>
         <tfoot><tr style="font-weight:700;background:#f8fafc;color:#1e293b">
@@ -1422,11 +1430,11 @@ function initMerchantCharts(){
     ch.setOption({
       grid:{left:110,right:60,top:10,bottom:20},
       xAxis:{type:'value',axisLabel:{formatter:v=>v+'%'},splitLine:{lineStyle:{color:'#f1f5f9'}}},
-      yAxis:{type:'category',data:sorted.map(d=>d.n.replace(/.*?（/,'').replace('）','')),axisLabel:{fontSize:10,color:'#374151'}},
+      yAxis:{type:'category',data:sorted.map(d=>d.n.replace(/.*?（/,'').replace('）','')),axisLabel:{fontSize:10,color:'#1e293b'}},
       series:[{type:'bar',barMaxWidth:14,
         data:sorted.map(d=>({value:d.arpu_chg,
           itemStyle:{color:d.arpu_chg>=15?'#16a34a':d.arpu_chg>=-15?'#eab308':'#e8372c'}})),
-        label:{show:true,position:'right',formatter:p=>(p.value>=0?'+':'')+p.value.toFixed(1)+'%',fontSize:9,color:'#e2e8f0'}},
+        label:{show:true,position:'right',formatter:p=>(p.value>=0?'+':'')+p.value.toFixed(1)+'%',fontSize:9,color:'#1e293b'}},
         {type:'line',markLine:{silent:true,symbol:'none',lineStyle:{color:'#475569',type:'dashed'},data:[{xAxis:0}]}}
       ]
     });
@@ -1441,11 +1449,11 @@ function initMerchantCharts(){
     ch.setOption({
       grid:{left:110,right:60,top:10,bottom:20},
       xAxis:{type:'value',axisLabel:{formatter:v=>v+'%'},splitLine:{lineStyle:{color:'#f1f5f9'}}},
-      yAxis:{type:'category',data:sorted.map(d=>d.n.replace(/.*?（/,'').replace('）','')),axisLabel:{fontSize:10,color:'#374151'}},
+      yAxis:{type:'category',data:sorted.map(d=>d.n.replace(/.*?（/,'').replace('）','')),axisLabel:{fontSize:10,color:'#1e293b'}},
       series:[{type:'bar',barMaxWidth:14,
         data:sorted.map(d=>({value:d.demote_pct,
           itemStyle:{color:d.demote_pct>=35?'#e8372c':d.demote_pct>=28.6?'#eab308':'#16a34a'}})),
-        label:{show:true,position:'right',formatter:p=>p.value.toFixed(1)+'%',fontSize:9,color:'#e2e8f0'}},
+        label:{show:true,position:'right',formatter:p=>p.value.toFixed(1)+'%',fontSize:9,color:'#1e293b'}},
         {type:'line',markLine:{silent:true,symbol:'none',lineStyle:{color:'#e8372c',type:'dashed',width:2},data:[{xAxis:28.6}]}}
       ]
     });
@@ -1460,11 +1468,11 @@ function initMerchantCharts(){
     ch.setOption({
       grid:{left:110,right:60,top:10,bottom:20},
       xAxis:{type:'value',axisLabel:{formatter:v=>v+'%'},splitLine:{lineStyle:{color:'#f1f5f9'}}},
-      yAxis:{type:'category',data:sorted.map(d=>d.n.replace(/.*?（/,'').replace('）','')),axisLabel:{fontSize:10,color:'#374151'}},
+      yAxis:{type:'category',data:sorted.map(d=>d.n.replace(/.*?（/,'').replace('）','')),axisLabel:{fontSize:10,color:'#1e293b'}},
       series:[{type:'bar',barMaxWidth:14,
         data:sorted.map(d=>({value:d.promo_pct,
           itemStyle:{color:d.promo_pct>=25?'#16a34a':d.promo_pct>=18.93?'#3b82f6':d.promo_pct>=12?'#eab308':'#e8372c'}})),
-        label:{show:true,position:'right',formatter:p=>p.value.toFixed(1)+'%',fontSize:9,color:'#e2e8f0'}},
+        label:{show:true,position:'right',formatter:p=>p.value.toFixed(1)+'%',fontSize:9,color:'#1e293b'}},
         {type:'line',markLine:{silent:true,symbol:'none',lineStyle:{color:'#94a3b8',type:'dashed'},data:[{xAxis:18.93}]}}
       ]
     });
@@ -1479,11 +1487,11 @@ function initMerchantCharts(){
     ch.setOption({
       grid:{left:110,right:60,top:10,bottom:20},
       xAxis:{type:'value',axisLabel:{formatter:v=>v+'%'},splitLine:{lineStyle:{color:'#f1f5f9'}}},
-      yAxis:{type:'category',data:sorted.map(d=>d.n.replace(/.*?（/,'').replace('）','')),axisLabel:{fontSize:10,color:'#374151'}},
+      yAxis:{type:'category',data:sorted.map(d=>d.n.replace(/.*?（/,'').replace('）','')),axisLabel:{fontSize:10,color:'#1e293b'}},
       series:[{type:'bar',barMaxWidth:14,
         data:sorted.map(d=>({value:d.arpu_chg,
           itemStyle:{color:d.arpu_chg>=15?'#16a34a':d.arpu_chg>=-15?'#eab308':'#e8372c'}})),
-        label:{show:true,position:'right',formatter:p=>(p.value>=0?'+':'')+p.value.toFixed(1)+'%',fontSize:9,color:'#e2e8f0'}},
+        label:{show:true,position:'right',formatter:p=>(p.value>=0?'+':'')+p.value.toFixed(1)+'%',fontSize:9,color:'#1e293b'}},
         {type:'line',markLine:{silent:true,symbol:'none',lineStyle:{color:'#475569',type:'dashed'},data:[{xAxis:0}]}}
       ]
     });
@@ -1498,7 +1506,7 @@ function initMerchantCharts(){
     ch.setOption({
       grid:{left:90,right:60,top:10,bottom:20},
       xAxis:{type:'value',splitLine:{lineStyle:{color:'#f1f5f9'}}},
-      yAxis:{type:'category',data:sorted.map(d=>d.n.replace(/.*?（/,'').replace('）','')),axisLabel:{fontSize:10,color:'#374151'}},
+      yAxis:{type:'category',data:sorted.map(d=>d.n.replace(/.*?（/,'').replace('）','')),axisLabel:{fontSize:10,color:'#1e293b'}},
       series:[{type:'bar',barMaxWidth:14,
         data:sorted.map(d=>({value:d.cnt,itemStyle:{color:'#3b82f6'}})),
         label:{show:true,position:'right',formatter:p=>p.value.toLocaleString(),fontSize:9,color:'#374151'}
@@ -1515,7 +1523,7 @@ function initMerchantCharts(){
     ch.setOption({
       grid:{left:90,right:80,top:10,bottom:20},
       xAxis:{type:'value',splitLine:{lineStyle:{color:'#f1f5f9'}}},
-      yAxis:{type:'category',data:sorted.map(d=>d.n.replace(/.*?（/,'').replace('）','')),axisLabel:{fontSize:10,color:'#374151'}},
+      yAxis:{type:'category',data:sorted.map(d=>d.n.replace(/.*?（/,'').replace('）','')),axisLabel:{fontSize:10,color:'#1e293b'}},
       series:[
         {type:'bar',barMaxWidth:14,
           data:sorted.map(d=>({value:d.arpu,itemStyle:{color:d.arpu>=10?'#16a34a':d.arpu>=2.14?'#3b82f6':'#94a3b8'}})),
