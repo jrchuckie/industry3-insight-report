@@ -723,7 +723,7 @@ document.addEventListener('DOMContentLoaded', function() {
       <div class="kpi"><div class="kpi-val" style="color:#f87171">¥6.43亿</div><div class="kpi-label">笔记GMV</div></div>
       <div class="kpi"><div class="kpi-val" style="color:#fb923c">429万条</div><div class="kpi-label">发布量（内卷）</div></div>
       <div class="kpi"><div class="kpi-val">62次/篇</div><div class="kpi-label">篇均曝光基准</div></div>
-      <div class="kpi"><div class="kpi-val">373条</div><div class="kpi-label">笔记/商家 中位数</div></div>
+      <div class="kpi"><div class="kpi-val">100条</div><div class="kpi-label">店均笔记发布数 基准</div></div>
       <div class="kpi"><div class="kpi-val">15.06%</div><div class="kpi-label">CTR1基准</div></div>
       <div class="kpi"><div class="kpi-val">9.13%</div><div class="kpi-label">CTR2基准</div></div>
       <div class="kpi"><div class="kpi-val">6.53%</div><div class="kpi-label">CVR基准</div></div>
@@ -752,11 +752,16 @@ document.addEventListener('DOMContentLoaded', function() {
         <div class="chart-sub">基准线 = 0.27亿（中位数）</div>
         <div id="n-bar-gmv" style="height:500px"></div>
       </div>
+      <div class="bar-card">
+        <div class="chart-title">店均笔记发布数 · YoY标注</div>
+        <div class="chart-sub">基准线 = 100条/店</div>
+        <div id="n-bar-pub" style="height:500px"></div>
+      </div>
     </div>
   </div>
   <div class="funnel-ref">
     <b style="color:#6b7280;margin-right:4px">商笔漏斗：</b>
-    <span class="fdot" style="background:#6366f1"></span>笔记/商家<span class="farrow">→</span>
+    <span class="fdot" style="background:#6366f1"></span>店均笔记<span class="farrow">→</span>
     <span class="fdot" style="background:#3b82f6"></span>篇均曝光<span class="farrow">→</span>
     <span class="fdot" style="background:#eab308"></span>CTR1<span class="farrow">→</span>
     <span class="fdot" style="background:#f97316"></span>CTR2商卡点击<span class="farrow">→</span>
@@ -907,26 +912,28 @@ document.addEventListener('DOMContentLoaded', function() {
 <script>
 // ═══ 笔记数据 ═══
 const noteData = [
-  {"n":"四组（大健康）","gmv":0.37,"gmv_y":-29.7,"expo":7.57,"expo_y":-43.2,"pavg":80.5,"ctr1":14.42,"ctr2":5.69,"gpm":39.7,"cvr":6.186,"pub":12.8,"totalMer":288,"b56":78,"gmvShare":23.0,"type":"混合","pvT":-39.3,"ctr2T":-0.5,"cvrT":3.8,"aov":78.1,"aovT":-2.5,"issue":"流量分发问题＋CTR2极弱","kpi":"曝光YoY -43.2%，篇均PV -39.3%，CTR2=5.69%","low":["CTR2=5.69%（最低）","篇均PV=80.5次"],"yoy_bad":["GMV YoY -29.7%","曝光 YoY -43.2%"],"actions":["①流量问题向上确认：发布稳定但曝光大跌YoY -43%","②CTR2核心战役：突出功效差异化（成分/功效/人群适配）"],"pavg_y":-39.3,"ctr1_y":22.2,"ctr2_y":-0.5,"cvr_y":3.8,"gpm_y":23.0,"aov_yoy":-2.5},
-  {"n":"五组（休食）","gmv":0.76,"gmv_y":-19.9,"expo":17.96,"expo_y":-40.4,"pavg":100.0,"ctr1":16.4,"ctr2":6.89,"gpm":36.2,"cvr":7.43,"pub":19.5,"totalMer":516,"b56":101,"gmvShare":32.3,"type":"混合","pvT":-42.2,"ctr2T":-3.8,"cvrT":-7.2,"aov":43.1,"aovT":22.7,"issue":"曝光大跌+CTR2断层","kpi":"曝光YoY -40.4%，篇均PV -42.2%，CTR2=6.89%","low":["CTR2=6.89%","篇均PV=100次（但YoY-42%）"],"yoy_bad":["GMV YoY -19.9%","曝光 YoY -40.4%","CVR YoY -7.2%"],"actions":["①CTR2核心战役：黄金位置强化商卡引导","②商卡价格力：胶囊显示价vs划线价","③内容质量提升：发布+24.5%但曝光-40%，控制低质内卷"],"pavg_y":-42.2,"ctr1_y":18.9,"ctr2_y":-3.8,"cvr_y":-7.2,"gpm_y":30.3,"aov_yoy":22.7},
-  {"n":"八组（消费电子）","gmv":0.35,"gmv_y":-14.6,"expo":7.98,"expo_y":-33.5,"pavg":67.2,"ctr1":17.18,"ctr2":10.04,"gpm":36.3,"cvr":4.169,"pub":14.2,"totalMer":268,"b56":40,"gmvShare":21.8,"type":"商卡主导","pvT":-43.7,"ctr2T":-13.0,"cvrT":3.2,"aov":50.4,"aovT":2.3,"issue":"CVR断层：被种草了但没下单","kpi":"CTR1 YoY+34.9%强，但CVR=4.17%，曝光YoY-33.5%","low":["CVR=4.17%","篇均PV YoY -43.7%"],"yoy_bad":["GMV YoY -14.6%","曝光 YoY -33.5%","CTR2 YoY -13.0%"],"actions":["①CVR核心断点：优化商品详情页","②搜索场景强化：标题优化型号+使用场景","③CTR1 YoY+35%说明内容在改善，继续"],"pavg_y":-43.7,"ctr1_y":34.9,"ctr2_y":-13.0,"cvr_y":3.2,"gpm_y":24.0,"aov_yoy":2.3},
-  {"n":"六组（生鲜）","gmv":0.40,"gmv_y":-14.5,"expo":9.83,"expo_y":-27.7,"pavg":111.0,"ctr1":13.59,"ctr2":7.79,"gpm":38.4,"cvr":7.11,"pub":13.0,"totalMer":284,"b56":62,"gmvShare":30.2,"type":"混合","pvT":-47.3,"ctr2T":-4.1,"cvrT":3.1,"aov":51.0,"aovT":8.0,"issue":"内卷+曝光大跌（发布+47%但曝光-28%）","kpi":"发布+47.4%，曝光YoY-27.7%，CTR2=7.79%","low":["CTR1=13.59%","CTR2=7.79%"],"yoy_bad":["GMV YoY -14.5%","曝光 YoY -27.7%","篇均 YoY -47.3%"],"actions":["①控制内卷：收缩低质内容","②CTR2：商卡突出价格力（克重单价/配送保障）"],"pavg_y":-47.3,"ctr1_y":8.8,"ctr2_y":-4.1,"cvr_y":3.1,"gpm_y":16.3,"aov_yoy":8.0},
-  {"n":"八组（家电）","gmv":0.15,"gmv_y":-10.2,"expo":1.33,"expo_y":-50.3,"pavg":61.0,"ctr1":13.65,"ctr2":7.53,"gpm":91.9,"cvr":5.082,"pub":3.7,"totalMer":112,"b56":37,"gmvShare":17.0,"type":"混合","pvT":-43.0,"ctr2T":24.3,"cvrT":7.3,"aov":175.0,"aovT":16.7,"issue":"流量严重稀释：GPM最高但曝光YoY-50%","kpi":"GPM=91.9（最高），曝光YoY-50.3%，篇均YoY-43%","low":["篇均PV YoY -43%","CVR=5.08%"],"yoy_bad":["GMV YoY -10.2%","曝光 YoY -50.3%"],"actions":["①流量问题优先：曝光-50%，排查分发侧问题","②精品化策略：每篇对应具体型号/使用场景"],"pavg_y":-43.0,"ctr1_y":9.0,"ctr2_y":24.3,"cvr_y":7.3,"gpm_y":69.7,"aov_yoy":16.7},
-  {"n":"十五组（酒旅）","gmv":0.08,"gmv_y":-0.6,"expo":0.60,"expo_y":-46.5,"pavg":47.0,"ctr1":11.84,"ctr2":13.95,"gpm":91.8,"cvr":1.619,"pub":4.0,"totalMer":122,"b56":41,"gmvShare":5.7,"type":"店播主导","pvT":-68.8,"ctr2T":109.4,"cvrT":28.1,"aov":345.0,"aovT":-8.8,"issue":"供给萎缩+曝光暴跌","kpi":"发布-25.2%，篇均YoY-68.8%，CVR天然低","low":["CVR=1.62%（品类特性）","篇均PV=47次 YoY-68.8%"],"yoy_bad":["曝光 YoY -46.5%","篇均 YoY -68.8%"],"actions":["①接受CVR天然低：笔记主打'收藏种草'","②供给萎缩：激励商家恢复内容产出"],"pavg_y":-68.8,"ctr1_y":-21.3,"ctr2_y":109.4,"cvr_y":28.1,"gpm_y":92.4,"aov_yoy":-8.8},
-  {"n":"七组（家具）","gmv":0.07,"gmv_y":-1.1,"expo":1.03,"expo_y":-30.5,"pavg":37.0,"ctr1":14.08,"ctr2":11.22,"gpm":45.6,"cvr":2.259,"pub":5.1,"totalMer":192,"b56":60,"gmvShare":5.1,"type":"K播主导","pvT":-24.9,"ctr2T":-0.1,"cvrT":21.4,"aov":127.0,"aovT":-4.1,"issue":"笔记场景CVR极低+篇均曝光YoY-25%","kpi":"篇均PV=37次（最低），CVR=2.26%，曝光YoY-30.5%","low":["篇均PV=37次（最低）","CVR=2.26%"],"yoy_bad":["曝光 YoY -30.5%","篇均 YoY -24.9%"],"actions":["①笔记定位：高客单CVR天然低，笔记作为种草引流","②篇均曝光=37次YoY-25%：排查内容质量分"],"pavg_y":-24.9,"ctr1_y":9.7,"ctr2_y":-0.1,"cvr_y":21.4,"gpm_y":27.7,"aov_yoy":-4.1},
-  {"n":"十三组（图书）","gmv":0.24,"gmv_y":-0.3,"expo":5.77,"expo_y":-29.8,"pavg":61.0,"ctr1":11.55,"ctr2":7.51,"gpm":35.5,"cvr":8.03,"pub":11.8,"totalMer":117,"b56":18,"gmvShare":52.5,"type":"笔记主导","pvT":-46.5,"ctr2T":36.8,"cvrT":6.1,"aov":50.8,"aovT":-8.9,"issue":"内容吸引力弱：CTR1最低，曝光YoY-30%","kpi":"CTR1=11.55%（最低），曝光YoY-29.8%","low":["CTR1=11.55%（最低）","篇均PV=61次 YoY-46.5%"],"yoy_bad":["曝光 YoY -29.8%","篇均 YoY -46.5%"],"actions":["①CTR1核心战役：封面突出'结论/金句/改变'","②视频形态：图书视频CTR1通常远高于图文"],"pavg_y":-46.5,"ctr1_y":4.6,"ctr2_y":36.8,"cvr_y":6.1,"gpm_y":38.3,"aov_yoy":-8.9},
-  {"n":"三组（宠物）","gmv":0.21,"gmv_y":1.9,"expo":5.05,"expo_y":3.6,"pavg":67.0,"ctr1":21.57,"ctr2":5.55,"gpm":37.7,"cvr":8.854,"pub":7.7,"totalMer":120,"b56":8,"gmvShare":41.0,"type":"混合","pvT":-33.0,"ctr2T":-5.7,"cvrT":11.5,"aov":35.5,"aovT":-4.3,"issue":"最典型CTR2断层（内容留人但商卡引导极弱）","kpi":"CTR1=21.57%最高，CTR2=5.55%最低，曝光YoY+3.6%健康","low":["CTR2=5.55%（全行业最低）"],"yoy_bad":[],"actions":["①CTR2是宠物商笔的唯一核心战役","②自然融入式商品引导","③商卡价格力：折扣/满减/赠品要可见"],"pavg_y":-33.0,"ctr1_y":-0.5,"ctr2_y":-5.7,"cvr_y":11.5,"gpm_y":0.2,"aov_yoy":-4.3},
-  {"n":"二组（亲子生活）","gmv":0.46,"gmv_y":3.6,"expo":8.00,"expo_y":-9.0,"pavg":73.0,"ctr1":13.12,"ctr2":11.22,"gpm":48.7,"cvr":4.845,"pub":16.0,"totalMer":532,"b56":97,"gmvShare":20.6,"type":"混合","pvT":-22.9,"ctr2T":8.3,"cvrT":7.8,"aov":68.1,"aovT":-2.8,"issue":"曝光轻微承压，全链路基本健康","kpi":"曝光YoY-9.0%，CTR2+8.3%在改善","low":["CTR1=13.12%","CVR=4.85%"],"yoy_bad":["曝光 YoY -9.0%","篇均 YoY -22.9%"],"actions":["①视频形态测试：亲子场景视频CTR1更高","②入门款+试用装降低决策门槛"],"pavg_y":-22.9,"ctr1_y":4.3,"ctr2_y":8.3,"cvr_y":7.8,"gpm_y":18.3,"aov_yoy":-2.8},
-  {"n":"十组（家纺）","gmv":0.47,"gmv_y":8.9,"expo":7.67,"expo_y":-32.6,"pavg":121.0,"ctr1":12.54,"ctr2":12.78,"gpm":56.2,"cvr":4.116,"pub":8.4,"totalMer":295,"b56":63,"gmvShare":26.7,"type":"混合","pvT":-44.3,"ctr2T":14.2,"cvrT":-20.1,"aov":85.2,"aovT":46.3,"issue":"整体健康，曝光趋势YoY-33%需关注","kpi":"GMV YoY+8.9%，GPM=56.2，客单+46.3%","low":["CTR1=12.54%略低","CVR YoY -20.1%"],"yoy_bad":["曝光 YoY -32.6%","篇均 YoY -44.3%"],"actions":["①保持健康大盘，关注曝光趋势","②CVR YoY-20%：试用装降低决策门槛"],"pavg_y":-44.3,"ctr1_y":18.6,"ctr2_y":14.2,"cvr_y":-20.1,"gpm_y":58.5,"aov_yoy":46.3},
-  {"n":"九组（家用）","gmv":0.68,"gmv_y":12.3,"expo":15.38,"expo_y":-7.9,"pavg":92.0,"ctr1":18.59,"ctr2":6.46,"gpm":38.4,"cvr":7.049,"pub":20.7,"totalMer":534,"b56":98,"gmvShare":26.6,"type":"混合","pvT":-21.5,"ctr2T":-18.9,"cvrT":16.5,"aov":45.3,"aovT":4.6,"issue":"CTR2单点断层（CTR2 YoY-18.9%）","kpi":"CTR1=18.59%强，CTR2=6.46%且YoY跌-18.9%","low":["CTR2=6.46%","CTR2 YoY -18.9%"],"yoy_bad":["CTR2 YoY -18.9%","曝光 YoY -7.9%"],"actions":["①CTR2是唯一核心战役：商卡引导优化","②胶囊价格力展示：显示价vs划线价","③笔记选品精简：2-3个主推SKU"],"pavg_y":-21.5,"ctr1_y":22.5,"ctr2_y":-18.9,"cvr_y":16.5,"gpm_y":21.1,"aov_yoy":4.6},
-  {"n":"十二组（手工）","gmv":0.27,"gmv_y":15.8,"expo":6.27,"expo_y":-12.8,"pavg":82.0,"ctr1":19.46,"ctr2":11.37,"gpm":34.3,"cvr":4.27,"pub":7.9,"totalMer":562,"b56":70,"gmvShare":12.0,"type":"店播主导","pvT":-42.3,"ctr2T":3.9,"cvrT":10.3,"aov":36.2,"aovT":14.8,"issue":"整体较健康，CVR略弱","kpi":"CTR1=19.46%强，GMV YoY+15.8%，曝光YoY-12.8%","low":["CVR=4.27%"],"yoy_bad":["曝光 YoY -12.8%","篇均 YoY -42.3%"],"actions":["①CVR：手工品细节质量感展示（材质特写/制作精度）","②适当收缩内卷：优先推高CES制作过程视频"],"pavg_y":-42.3,"ctr1_y":-0.1,"ctr2_y":3.9,"cvr_y":10.3,"gpm_y":31.6,"aov_yoy":14.8},
-  {"n":"一组（文玩玉翠）","gmv":0.18,"gmv_y":32.6,"expo":1.30,"expo_y":5.9,"pavg":46.0,"ctr1":10.88,"ctr2":29.58,"gpm":90.9,"cvr":0.733,"pub":8.1,"totalMer":847,"b56":395,"gmvShare":1.8,"type":"店播主导","pvT":-2.8,"ctr2T":15.9,"cvrT":-15.4,"aov":383.0,"aovT":11.7,"issue":"CVR天然极低（高客单非标品品类特性）","kpi":"CTR2=29.58%全行业第一，GMV YoY+32.6%","low":["CVR=0.73%（品类天花板）","篇均PV=46次"],"yoy_bad":[],"actions":["①接受CVR极低是品类特性：笔记定位为品鉴内容","②笔记引流至直播间建立信任后成交"],"pavg_y":-2.8,"ctr1_y":-6.9,"ctr2_y":15.9,"cvr_y":-15.4,"gpm_y":2.0,"aov_yoy":11.7},
-  {"n":"十四组（二奢）","gmv":0.03,"gmv_y":33.4,"expo":0.22,"expo_y":-16.9,"pavg":15.0,"ctr1":12.45,"ctr2":20.16,"gpm":59.9,"cvr":0.512,"pub":2.6,"totalMer":227,"b56":39,"gmvShare":2.5,"type":"店播主导","pvT":-29.9,"ctr2T":54.4,"cvrT":246.1,"aov":473.0,"aovT":-68.0,"issue":"篇均极低+客单暴跌-68%","kpi":"篇均PV=15次（最低），客单YoY-68%","low":["篇均PV=15次（最低）","CVR=0.51%"],"yoy_bad":["曝光 YoY -16.9%","客单价 -68.0%"],"actions":["①客单价-68%最紧急：紧急介入货盘引导","②篇均曝光=15次：大幅提升内容质量（鉴定故事）"],"pavg_y":-29.9,"ctr1_y":15.5,"ctr2_y":54.4,"cvr_y":246.1,"gpm_y":97.3,"aov_yoy":-68.0},
-  {"n":"十一组（潮玩）","gmv":0.66,"gmv_y":41.9,"expo":26.96,"expo_y":6.1,"pavg":55.0,"ctr1":15.12,"ctr2":12.96,"gpm":19.9,"cvr":3.88,"pub":79.0,"totalMer":886,"b56":92,"gmvShare":14.2,"type":"店播主导","pvT":-12.9,"ctr2T":36.9,"cvrT":-2.7,"aov":26.2,"aovT":4.0,"issue":"货盘结构：CVR偏弱+客单过低","kpi":"GMV YoY+41.9%，曝光YoY+6.1%，客单¥26.2","low":["CVR=3.88%","客单¥26.2偏低","GPM=19.9"],"yoy_bad":[],"actions":["①货盘升级：引入高客单/高品质SKU","②笔记定位调整：种草引流至店播完成高客单成交"],"pavg_y":-12.9,"ctr1_y":-6.2,"ctr2_y":36.9,"cvr_y":-2.7,"gpm_y":29.8,"aov_yoy":4.0},
-  {"n":"十三组（教育）","gmv":0.31,"gmv_y":111.9,"expo":4.02,"expo_y":22.6,"pavg":48.0,"ctr1":14.42,"ctr2":6.46,"gpm":44.0,"cvr":9.351,"pub":29.4,"totalMer":187,"b56":35,"gmvShare":24.3,"type":"混合","pvT":-59.9,"ctr2T":44.6,"cvrT":-2.0,"aov":50.4,"aovT":18.4,"issue":"内卷严重（发布+474%），篇均YoY-60%","kpi":"GMV YoY+111.9%，发布+474.3%，篇均YoY-59.9%","low":["篇均PV=48次 YoY-59.9%","CTR2=6.46%"],"yoy_bad":[],"actions":["①收缩低质内容：发布+474%但篇均跌-60%","②CTR2=6.46%：商卡突出课程效果/限时优惠"],"pavg_y":-59.9,"ctr1_y":-5.9,"ctr2_y":44.6,"cvr_y":-2.0,"gpm_y":57.9,"aov_yoy":18.4},
-  {"n":"十一组（虚拟）","gmv":0.58,"gmv_y":140.6,"expo":33.59,"expo_y":70.7,"pavg":39.0,"ctr1":13.21,"ctr2":8.33,"gpm":14.6,"cvr":13.223,"pub":162.6,"totalMer":89,"b56":19,"gmvShare":54.0,"type":"笔记主导","pvT":-50.9,"ctr2T":18.1,"cvrT":11.3,"aov":10.0,"aovT":-5.9,"issue":"供给严重内卷：发布+348%但篇均仅39次","kpi":"GMV YoY+140.6%，曝光YoY+70.7%，篇均YoY-50.9%","low":["篇均PV=39次 YoY-50.9%","GPM=14.6最低","客单¥10极低"],"yoy_bad":[],"actions":["①收缩内卷：优先提升单篇质量","②客单提升：引入课程包/会员年卡等高客单品"],"pavg_y":-50.9,"ctr1_y":10.2,"ctr2_y":18.1,"cvr_y":11.3,"gpm_y":36.3,"aov_yoy":-5.9},
-  {"n":"十组（家饰）","gmv":0.15,"gmv_y":-7.7,"expo":3.96,"expo_y":-15.5,"pavg":84.0,"ctr1":11.29,"ctr2":13.49,"gpm":33.0,"cvr":4.106,"pub":6.6,"totalMer":231,"b56":30,"gmvShare":16.3,"type":"店播主导","pvT":-29.8,"ctr2T":-0.2,"cvrT":13.0,"aov":52.8,"aovT":-9.5,"issue":"CTR1弱+曝光YoY-15.5%","kpi":"CTR1=11.29%偏低，曝光YoY-15.5%","low":["CTR1=11.29%（偏低）","CVR=4.11%"],"yoy_bad":["曝光 YoY -15.5%","GMV YoY -7.7%"],"actions":["①CTR1是核心：家饰封面必须做'空间感'设计","②CVR：商品详情页降低高客单决策门槛"],"pavg_y":-29.8,"ctr1_y":4.0,"ctr2_y":-0.2,"cvr_y":13.0,"gpm_y":6.1,"aov_yoy":-9.5}
+  {n:"四组（大健康）",  mer:1132, mer_y:5.7,  pub_avg:116,  pub_avg_y:-4.5,  pub:12.8,  pub_y:0.6,   expo:7.57,  expo_y:-43.2, pavg:80,  pavg_y:-39.3, ctr1:14.0,  ctr1_y:22.2, ctr2:6.0,   ctr2_y:-0.5, cvr:6.0,   cvr_y:3.8,  aov:78.1,  aov_y:-2.5,  gpm:39.7, gpm_y:23.0,  gmv:0.37, gmv_y:-29.7},
+  {n:"五组（休食）",    mer:1841, mer_y:29.2, pub_avg:108,  pub_avg_y:-4.9,  pub:19.5,  pub_y:24.5,  expo:17.96, expo_y:-40.4, pavg:100, pavg_y:-42.2, ctr1:16.0,  ctr1_y:18.9, ctr2:7.0,   ctr2_y:-3.8, cvr:7.0,   cvr_y:-7.2, aov:43.0,  aov_y:22.7,  gpm:36.2, gpm_y:30.3,  gmv:0.76, gmv_y:-19.9},
+  {n:"八组（消费电子）",mer:1141, mer_y:16.4, pub_avg:127,  pub_avg_y:-11.3, pub:14.2,  pub_y:-1.2,  expo:7.98,  expo_y:-33.5, pavg:67,  pavg_y:-43.7, ctr1:17.0,  ctr1_y:34.9, ctr2:10.0,  ctr2_y:-13.0,cvr:4.0,   cvr_y:3.2,  aov:50.4,  aov_y:2.3,   gpm:36.3, gpm_y:24.0,  gmv:0.35, gmv_y:-14.6},
+  {n:"六组（生鲜）",    mer:958,  mer_y:49.9, pub_avg:139,  pub_avg_y:-4.8,  pub:13.0,  pub_y:47.4,  expo:9.83,  expo_y:-27.7, pavg:111, pavg_y:-47.3, ctr1:14.0,  ctr1_y:8.8,  ctr2:8.0,   ctr2_y:-4.1, cvr:7.0,   cvr_y:3.1,  aov:51.0,  aov_y:8.0,   gpm:38.4, gpm_y:16.3,  gmv:0.40, gmv_y:-14.5},
+  {n:"八组（家电）",    mer:433,  mer_y:8.8,  pub_avg:90.1, pub_avg_y:4.5,   pub:3.7,   pub_y:17.8,  expo:1.33,  expo_y:-50.3, pavg:61,  pavg_y:-43.0, ctr1:14.0,  ctr1_y:9.0,  ctr2:8.0,   ctr2_y:24.3, cvr:5.0,   cvr_y:7.3,  aov:175.0, aov_y:16.7,  gpm:91.9, gpm_y:69.7,  gmv:0.15, gmv_y:-10.2},
+  {n:"十组（家饰）",    mer:1350, mer_y:65.2, pub_avg:50.8, pub_avg_y:-8.5,  pub:6.6,   pub_y:49.8,  expo:3.96,  expo_y:-15.5, pavg:84,  pavg_y:-29.8, ctr1:11.0,  ctr1_y:4.0,  ctr2:14.0,  ctr2_y:-0.2, cvr:4.0,   cvr_y:13.0, aov:52.8,  aov_y:-9.5,  gpm:33.0, gpm_y:6.1,   gmv:0.15, gmv_y:-7.7},
+  {n:"七组（家具）",    mer:757,  mer_y:18.8, pub_avg:70.2, pub_avg_y:-23.6, pub:5.1,   pub_y:-8.9,  expo:1.03,  expo_y:-30.5, pavg:37,  pavg_y:-24.9, ctr1:14.0,  ctr1_y:9.7,  ctr2:11.0,  ctr2_y:-0.1, cvr:2.0,   cvr_y:21.4, aov:127.0, aov_y:-4.1,  gpm:45.6, gpm_y:27.7,  gmv:0.07, gmv_y:-1.1},
+  {n:"十五组（酒旅）",  mer:517,  mer_y:111.9,pub_avg:84.4, pub_avg_y:-62.3, pub:4.0,   pub_y:-25.2, expo:0.60,  expo_y:-46.5, pavg:47,  pavg_y:-68.8, ctr1:12.0,  ctr1_y:-21.3,ctr2:14.0,  ctr2_y:109.4,cvr:2.0,   cvr_y:28.1, aov:345.0, aov_y:-8.8,  gpm:91.8, gpm_y:92.4,  gmv:0.08, gmv_y:-0.6},
+  {n:"十三组（图书）",  mer:484,  mer_y:13.1, pub_avg:248,  pub_avg_y:-34.7, pub:11.8,  pub_y:-22.3, expo:5.77,  expo_y:-29.8, pavg:61,  pavg_y:-46.5, ctr1:12.0,  ctr1_y:4.6,  ctr2:8.0,   ctr2_y:36.8, cvr:8.0,   cvr_y:6.1,  aov:50.8,  aov_y:-8.9,  gpm:35.5, gpm_y:38.3,  gmv:0.24, gmv_y:-0.3},
+  {n:"三组（宠物）",    mer:1349, mer_y:34.0, pub_avg:58.2, pub_avg_y:-1.7,  pub:7.7,   pub_y:33.7,  expo:5.05,  expo_y:3.6,   pavg:67,  pavg_y:-33.0, ctr1:22.0,  ctr1_y:-0.5, ctr2:6.0,   ctr2_y:-5.7, cvr:9.0,   cvr_y:11.5, aov:35.5,  aov_y:-4.3,  gpm:37.7, gpm_y:0.2,   gmv:0.21, gmv_y:1.9},
+  {n:"二组（亲子生活）",mer:1692, mer_y:15.7, pub_avg:96.9, pub_avg_y:18.0,  pub:16.0,  pub_y:37.8,  expo:8.00,  expo_y:-9.0,  pavg:73,  pavg_y:-22.9, ctr1:13.0,  ctr1_y:4.3,  ctr2:11.0,  ctr2_y:8.3,  cvr:5.0,   cvr_y:7.8,  aov:68.1,  aov_y:-2.8,  gpm:48.7, gpm_y:18.3,  gmv:0.46, gmv_y:3.6},
+  {n:"十组（家纺）",    mer:1177, mer_y:58.6, pub_avg:72.5, pub_avg_y:-29.8, pub:8.4,   pub_y:15.6,  expo:7.67,  expo_y:-32.6, pavg:121, pavg_y:-44.3, ctr1:13.0,  ctr1_y:18.6, ctr2:13.0,  ctr2_y:14.2, cvr:4.0,   cvr_y:-20.1,aov:85.2,  aov_y:46.3,  gpm:56.2, gpm_y:58.5,  gmv:0.47, gmv_y:8.9},
+  {n:"九组（家用）",    mer:1949, mer_y:26.6, pub_avg:109,  pub_avg_y:-5.3,  pub:20.7,  pub_y:20.9,  expo:15.38, expo_y:-7.9,  pavg:92,  pavg_y:-21.5, ctr1:19.0,  ctr1_y:22.5, ctr2:6.0,   ctr2_y:-18.9,cvr:7.0,   cvr_y:16.5, aov:45.3,  aov_y:4.6,   gpm:38.4, gpm_y:21.1,  gmv:0.68, gmv_y:12.3},
+  {n:"十二组（手工）",  mer:1844, mer_y:19.0, pub_avg:44.3, pub_avg_y:23.0,  pub:7.9,   pub_y:47.9,  expo:6.27,  expo_y:-12.8, pavg:82,  pavg_y:-42.3, ctr1:20.0,  ctr1_y:-0.1, ctr2:11.0,  ctr2_y:3.9,  cvr:4.0,   cvr_y:10.3, aov:36.2,  aov_y:14.8,  gpm:34.3, gpm_y:31.6,  gmv:0.27, gmv_y:15.8},
+  {n:"一组（文玩玉翠）",mer:1834, mer_y:42.0, pub_avg:45.9, pub_avg_y:10.8,  pub:8.1,   pub_y:56.6,  expo:1.30,  expo_y:5.9,   pavg:46,  pavg_y:-2.8,  ctr1:11.0,  ctr1_y:-6.9, ctr2:30.0,  ctr2_y:15.9, cvr:1.0,   cvr_y:-15.4,aov:383.0, aov_y:11.7,  gpm:90.9, gpm_y:2.0,   gmv:0.18, gmv_y:32.6},
+  {n:"十四组（二奢）",  mer:558,  mer_y:-5.9, pub_avg:46.7, pub_avg_y:22.6,  pub:2.6,   pub_y:16.8,  expo:0.22,  expo_y:-16.9, pavg:15,  pavg_y:-29.9, ctr1:12.0,  ctr1_y:15.5, ctr2:20.0,  ctr2_y:54.4, cvr:1.0,   cvr_y:246.1,aov:473.0, aov_y:-68.0, gpm:59.9, gpm_y:97.3,  gmv:0.03, gmv_y:33.4},
+  {n:"十一组（潮玩）",  mer:30700,mer_y:3.7,  pub_avg:26.5, pub_avg_y:27.0,  pub:79.0,  pub_y:33.5,  expo:26.96, expo_y:6.1,   pavg:55,  pavg_y:-12.9, ctr1:15.0,  ctr1_y:-6.2, ctr2:13.0,  ctr2_y:36.9, cvr:4.0,   cvr_y:-2.7, aov:26.2,  aov_y:4.0,   gpm:19.9, gpm_y:29.8,  gmv:0.66, gmv_y:41.9},
+  {n:"十三组（教育）",  mer:2902, mer_y:192.5,pub_avg:111,  pub_avg_y:107.9, pub:29.4,  pub_y:474.3, expo:4.02,  expo_y:22.6,  pavg:48,  pavg_y:-59.9, ctr1:15.0,  ctr1_y:-5.9, ctr2:6.0,   ctr2_y:44.6, cvr:9.0,   cvr_y:-2.0, aov:50.4,  aov_y:18.4,  gpm:44.0, gpm_y:57.9,  gmv:0.31, gmv_y:111.9},
+  {n:"十一组（虚拟）",  mer:31800,mer_y:185.5,pub_avg:52.9, pub_avg_y:52.0,  pub:162.6, pub_y:348.5, expo:33.59, expo_y:70.7,  pavg:39,  pavg_y:-50.9, ctr1:13.0,  ctr1_y:10.2, ctr2:8.0,   ctr2_y:18.1, cvr:13.0,  cvr_y:11.3, aov:10.0,  aov_y:-5.9,  gpm:14.6, gpm_y:36.3,  gmv:0.58, gmv_y:140.6},
 ];
+// 笔记漏斗基准（YoY中位数供参考）
+const NB2 = {expo_med:6.31, gpm_med:38.2, pavg_med:62, pub_avg_med:100};
 
 // ═══ 店播数据 ═══
 const liveData = [{"n": "十一组（潮玩）", "type": "店播主导", "gmv": 2.77, "gmv_y": 17.2, "exp": 17.76, "expT": 11.2, "hexp": 4011, "hexpT": -1.0, "avgdur": 14781, "avgdurT": 12.3, "avgsess": 13.5, "ctr": 3.22, "cvr": 4.23, "conv": 9.1, "aov": 215.8, "aovT": 11.8, "gpm": 155.7, "huxi_ctr": 1.52, "huxi_cvr": 3.19, "zhibo_ctr": 3.94, "zhibo_cvr": 2.21, "fans": 98.2, "fansT": -34.2, "b56": 92, "totalMer": 886, "gmvShare": 54.4, "issue": "流量分发问题（漏斗效率全行业最强）", "kpi": "单h曝光=4014次（最低），CTR/CVR/转化全行业最高", "low": ["单h曝光4014次（最低）"], "yoy_bad": [], "actions": ["①流量分发是唯一核心问题：向上确认潮玩品类分发", "②开播间数优化：12.3间/商家过多导致稀释"], "exp_y": 11.8, "hexp_y": -1.0, "dur": 1594594542, "dur_y": 12.9, "ctr_y": -2.7, "cvr_y": 24.0, "conv_y": 18.5, "aov_y": 11.6, "gpm_y": 4.9}, {"n": "一组（文玩玉翠）", "type": "店播主导", "gmv": 6.99, "gmv_y": -9.6, "exp": 8.59, "expT": 1.9, "hexp": 4891, "hexpT": -2.3, "avgdur": 5842, "avgdurT": 4.3, "avgsess": 17.7, "ctr": 3.95, "cvr": 1.03, "conv": 1.92, "aov": 1720.2, "aovT": -3.7, "gpm": 814.1, "huxi_ctr": 2.16, "huxi_cvr": 1.18, "zhibo_ctr": 5.26, "zhibo_cvr": 0.93, "fans": 53.9, "fansT": -34.4, "b56": 395, "totalMer": 847, "gmvShare": 45.4, "issue": "CVR天然低（高客单非标品品类特性）", "kpi": "GMV+7.9%正增长，CTR=3.98%极高，CVR/转化低是品类特性", "low": ["单h曝光4893次偏低", "CVR=1.03%（品类特性）"], "yoy_bad": ["商品转化 YoY -34.0%"], "actions": ["①单h曝光偏低：向上争取更多分发资源", "②接受CVR低：优化直播间成交节奏（鉴定环节/历史成交展示）"], "exp_y": 2.8, "hexp_y": -1.6, "dur": 632365839, "dur_y": 4.5, "ctr_y": -0.8, "cvr_y": -8.0, "conv_y": -34.0, "aov_y": -3.2, "gpm_y": -12.1}, {"n": "十二组（手工）", "type": "店播主导", "gmv": 1.45, "gmv_y": 16.1, "exp": 8.27, "expT": 8.2, "hexp": 7572, "hexpT": -1.1, "avgdur": 3644, "avgdurT": 9.4, "avgsess": 17.2, "ctr": 3.63, "cvr": 2.24, "conv": 4.28, "aov": 235.5, "aovT": 1.0, "gpm": 175.9, "huxi_ctr": 1.81, "huxi_cvr": 3.0, "zhibo_ctr": 5.18, "zhibo_cvr": 2.15, "fans": 47.8, "fansT": -13.9, "b56": 70, "totalMer": 562, "gmvShare": 68.0, "issue": "单h曝光偏低制约GMV", "kpi": "CTR=3.64%极高，单h曝光7641次低于基准", "low": ["单h曝光7641次"], "yoy_bad": [], "actions": ["①单h曝光7641次：优质开播素材提升质量分", "②直播卡CTR=5.2%：充分利用直播卡入口扩大触达"], "exp_y": 8.1, "hexp_y": -1.6, "dur": 393100823, "dur_y": 9.8, "ctr_y": -6.2, "cvr_y": -0.4, "conv_y": -9.9, "aov_y": 1.5, "gpm_y": 7.4}, {"n": "二组（亲子生活）", "type": "混合", "gmv": 0.83, "gmv_y": 14.9, "exp": 13.37, "expT": -10.3, "hexp": 10185, "hexpT": -28.5, "avgdur": 4340, "avgdurT": 25.4, "avgsess": 20.3, "ctr": 1.78, "cvr": 2.17, "conv": 3.19, "aov": 128.3, "aovT": 11.9, "gpm": 62.1, "huxi_ctr": 1.23, "huxi_cvr": 3.84, "zhibo_ctr": 2.78, "zhibo_cvr": 2.28, "fans": 57.9, "fansT": -42.5, "b56": 97, "totalMer": 532, "gmvShare": 63.3, "issue": "商品转化断层＋单h曝光趋势跌", "kpi": "商品转化3.19%<基准3.6%，单h曝光趋势跌-28.5%", "low": ["商品转化3.19%", "客单¥128.6"], "yoy_bad": ["单h曝光 YoY -28.3%"], "actions": ["①商品转化3.19%：优化选品和讲品节奏", "②单h曝光趋势跌：向上确认平台分发权重变化"], "exp_y": -9.6, "hexp_y": -28.3, "dur": 472511196, "dur_y": 26.0, "ctr_y": 1.1, "cvr_y": 4.8, "conv_y": 8.5, "aov_y": 11.2, "gpm_y": 27.1}, {"n": "十组（家饰）", "type": "店播主导", "gmv": 0.52, "gmv_y": 4.4, "exp": 8.45, "expT": -25.4, "hexp": 11208, "hexpT": -34.3, "avgdur": 2508, "avgdurT": 13.5, "avgsess": 17.4, "ctr": 2.48, "cvr": 1.65, "conv": 3.45, "aov": 107.7, "aovT": 28.3, "gpm": 61.8, "huxi_ctr": 1.55, "huxi_cvr": 3.61, "zhibo_ctr": 4.23, "zhibo_cvr": 1.68, "fans": 49.0, "fansT": -43.0, "b56": 30, "totalMer": 231, "gmvShare": 67.4, "issue": "单h曝光跌-34.3%＋涨粉跌-43%", "kpi": "客单+28.3%是亮点，曝光趋势跌需警惕", "low": ["单h曝光-34.3%"], "yoy_bad": ["单h曝光 YoY -35.1%", "CVR YoY -19.9%", "商品转化 YoY -19.2%"], "actions": ["①单h曝光跌-34.3%：排查直播间分类/标签问题", "②涨粉跌-43%：加大直播卡投入"], "exp_y": -26.2, "hexp_y": -35.1, "dur": 271561944, "dur_y": 13.7, "ctr_y": 25.9, "cvr_y": -19.9, "conv_y": -19.2, "aov_y": 29.1, "gpm_y": 41.4}, {"n": "九组（家用）", "type": "混合", "gmv": 1.02, "gmv_y": -2.7, "exp": 17.83, "expT": -11.3, "hexp": 17100, "hexpT": -15.3, "avgdur": 3465, "avgdurT": 4.7, "avgsess": 17.9, "ctr": 1.62, "cvr": 2.39, "conv": 4.19, "aov": 137.5, "aovT": 8.2, "gpm": 57.1, "huxi_ctr": 1.08, "huxi_cvr": 4.03, "zhibo_ctr": 3.4, "zhibo_cvr": 1.88, "fans": 93.9, "fansT": -40.6, "b56": 98, "totalMer": 534, "gmvShare": 68.7, "issue": "客单价偏低拖累GMV", "kpi": "单h曝光17127次（高于基准），客单¥139低于基准¥168.6", "low": ["客单¥139偏低", "涨粉-40.6%"], "yoy_bad": ["单h曝光 YoY -15.5%"], "actions": ["①货盘升级：引入高客单SKU", "②涨粉跌-40.6%：优化开场钩子和互动引导"], "exp_y": -11.3, "hexp_y": -15.5, "dur": 375420012, "dur_y": 4.9, "ctr_y": -7.4, "cvr_y": 3.0, "conv_y": -13.1, "aov_y": 7.5, "gpm_y": 9.7}, {"n": "十四组（二奢）", "type": "店播主导", "gmv": 0.77, "gmv_y": -10.6, "exp": 2.67, "expT": -14.5, "hexp": 4285, "hexpT": -19.5, "avgdur": 2055, "avgdurT": 6.2, "avgsess": 18.4, "ctr": 2.84, "cvr": 0.14, "conv": 0.16, "aov": 4898.0, "aovT": -11.8, "gpm": 286.9, "huxi_ctr": 2.19, "huxi_cvr": 0.17, "zhibo_ctr": 3.94, "zhibo_cvr": 0.09, "fans": 9.4, "fansT": -39.1, "b56": 39, "totalMer": 227, "gmvShare": 72.3, "issue": "CVR/转化极低（高客单非标品品类特性）＋GPM极低", "kpi": "CVR=0.14%最低，商品转化0.16%，GPM=10.4", "low": ["CVR=0.14%（最低）", "商品转化0.16%（最低）", "GPM=10.4"], "yoy_bad": ["GMV YoY -10.6%", "单h曝光 YoY -19.9%"], "actions": ["①接受CVR极低是品类特性：直播间作为品鉴展示引导至私域成交", "②重新评估直播间资源投入ROI"], "exp_y": -13.7, "hexp_y": -19.9, "dur": 224373965, "dur_y": 7.8, "ctr_y": 14.1, "cvr_y": 16.7, "conv_y": -5.9, "aov_y": -11.2, "gpm_y": 3.5}, {"n": "十组（家纺）", "type": "混合", "gmv": 0.54, "gmv_y": 20.8, "exp": 6.86, "expT": 10.1, "hexp": 8904, "hexpT": -18.3, "avgdur": 2562, "avgdurT": 34.8, "avgsess": 18.8, "ctr": 2.04, "cvr": 2.21, "conv": 4.12, "aov": 168.1, "aovT": -4.9, "gpm": 79.4, "huxi_ctr": 1.08, "huxi_cvr": 3.0, "zhibo_ctr": 3.46, "zhibo_cvr": 2.09, "fans": 35.4, "fansT": -27.3, "b56": 63, "totalMer": 295, "gmvShare": 74.5, "issue": "整体健康，单h曝光轻微偏低", "kpi": "GMV+3.2%，CTR/CVR/转化均高于基准", "low": ["单h曝光8802次略低"], "yoy_bad": ["单h曝光 YoY -17.1%"], "actions": ["①关注单h曝光趋势（若继续下滑会影响GMV）", "②涨粉跌-27.3%：加大直播卡触达"], "exp_y": 11.4, "hexp_y": -17.1, "dur": 277360402, "dur_y": 34.4, "ctr_y": -5.1, "cvr_y": 9.4, "conv_y": -7.6, "aov_y": -4.8, "gpm_y": 8.4}, {"n": "五组（休食）", "type": "混合", "gmv": 0.58, "gmv_y": 5.9, "exp": 13.14, "expT": -9.5, "hexp": 12929, "hexpT": -25.3, "avgdur": 3375, "avgdurT": 21.1, "avgsess": 18.4, "ctr": 1.17, "cvr": 3.01, "conv": 5.84, "aov": 109.8, "aovT": 0.0, "gpm": 44.1, "huxi_ctr": 0.64, "huxi_cvr": 6.57, "zhibo_ctr": 2.88, "zhibo_cvr": 1.98, "fans": 34.4, "fansT": 3.7, "b56": 101, "totalMer": 516, "gmvShare": 54.0, "issue": "CTR封面点击弱（但进来就买）", "kpi": "CTR=1.18%偏低，呼吸灯CVR=6.57%全行业最高", "low": ["CTR=1.18%", "呼吸灯CTR=0.64%极低"], "yoy_bad": ["单h曝光 YoY -26.0%"], "actions": ["①CTR核心断点：优化直播间封面（突出视觉诱惑感）", "②呼吸灯CTR=0.64%：这个入口CVR极高，重点投入提升点击率"], "exp_y": -9.9, "hexp_y": -26.0, "dur": 366001942, "dur_y": 21.7, "ctr_y": 6.4, "cvr_y": 2.4, "conv_y": 7.2, "aov_y": 2.1, "gpm_y": 17.6}, {"n": "八组（消费电子）", "type": "商卡主导", "gmv": 0.28, "gmv_y": -17.8, "exp": 11.3, "expT": -13.9, "hexp": 17898, "hexpT": -18.5, "avgdur": 2094, "avgdurT": 5.5, "avgsess": 19.2, "ctr": 1.29, "cvr": 1.25, "conv": 1.66, "aov": 111.0, "aovT": 8.9, "gpm": 25.1, "huxi_ctr": 0.85, "huxi_cvr": 2.6, "zhibo_ctr": 2.9, "zhibo_cvr": 0.53, "fans": 44.7, "fansT": -29.7, "b56": 40, "totalMer": 268, "gmvShare": 33.0, "issue": "商品转化断点（全行业漏斗最明显断点之一）", "kpi": "商品转化1.66%（基准3.6%），直播卡CVR=0.53%极低", "low": ["商品转化1.66%", "CVR=1.26%", "直播卡CVR=0.53%"], "yoy_bad": ["GMV YoY -17.8%", "单h曝光 YoY -18.0%", "商品转化 YoY -16.2%"], "actions": ["①商品转化1.66%核心战役：实测+对比+参数讲解", "②直播卡CVR=0.53%：检查定向精准度"], "exp_y": -13.1, "hexp_y": -18.0, "dur": 227273185, "dur_y": 6.0, "ctr_y": -5.8, "cvr_y": -12.0, "conv_y": -16.2, "aov_y": 7.1, "gpm_y": -5.4}, {"n": "十三组（教育）", "type": "混合", "gmv": 0.19, "gmv_y": -44.3, "exp": 5.08, "expT": -12.2, "hexp": 14747, "hexpT": -6.6, "avgdur": 1138, "avgdurT": -6.0, "avgsess": 12.3, "ctr": 1.52, "cvr": 0.39, "conv": 5.35, "aov": 392.4, "aovT": -53.0, "gpm": 36.5, "huxi_ctr": 0.45, "huxi_cvr": 2.0, "zhibo_ctr": 3.96, "zhibo_cvr": 0.23, "fans": 17.3, "fansT": -16.1, "b56": 35, "totalMer": 187, "gmvShare": 62.1, "issue": "CVR极低＋客单暴跌-53%", "kpi": "CVR=0.39%（最低），客单价-53%（¥391）", "low": ["CVR=0.39%（最低）", "直播卡CVR=0.23%（最低）"], "yoy_bad": ["GMV YoY -44.3%", "客单价 YoY -52.4%", "GPM YoY -36.8%"], "actions": ["①客单价跌-53%最紧急：引入高客单课程/系列课", "②CVR=0.39%：内容驱动成交（试听/学员展示）"], "exp_y": -11.7, "hexp_y": -6.0, "dur": 124097372, "dur_y": -6.1, "ctr_y": 23.6, "cvr_y": 11.4, "conv_y": 33.8, "aov_y": -52.4, "gpm_y": -36.8}, {"n": "三组（宠物）", "type": "混合", "gmv": 0.08, "gmv_y": 23.1, "exp": 2.25, "expT": 35.8, "hexp": 5747, "hexpT": -10.9, "avgdur": 1298, "avgdurT": 52.5, "avgsess": 15.3, "ctr": 2.01, "cvr": 1.12, "conv": 4.46, "aov": 108.7, "aovT": 2.2, "gpm": 35.5, "huxi_ctr": 0.8, "huxi_cvr": 3.74, "zhibo_ctr": 4.27, "zhibo_cvr": 0.73, "fans": 7.0, "fansT": -18.1, "b56": 8, "totalMer": 120, "gmvShare": 82.1, "issue": "CVR进播率偏低（开场留存差）", "kpi": "CVR=1.13%，开播时长+52.5%但曝光没同步增加", "low": ["CVR=1.13%", "单h曝光5734次"], "yoy_bad": ["CVR YoY -29.1%"], "actions": ["①CVR=1.13%：优化直播间开场（萌宠出镜/互动/即时福利）", "②直播卡CVR=0.74%：定向更精准（有宠物用户画像）"], "exp_y": 36.0, "hexp_y": -11.2, "dur": 140746886, "dur_y": 53.1, "ctr_y": -6.5, "cvr_y": -29.1, "conv_y": 4.4, "aov_y": 1.1, "gpm_y": -9.5}, {"n": "七组（家具）", "type": "K播主导", "gmv": 0.32, "gmv_y": -34.0, "exp": 4.02, "expT": -20.0, "hexp": 8979, "hexpT": -15.0, "avgdur": 1483, "avgdurT": -5.9, "avgsess": 17.7, "ctr": 1.53, "cvr": 0.81, "conv": 1.51, "aov": 472.7, "aovT": -16.5, "gpm": 78.7, "huxi_ctr": 0.93, "huxi_cvr": 2.25, "zhibo_ctr": 3.24, "zhibo_cvr": 0.37, "fans": 19.6, "fansT": -37.0, "b56": 60, "totalMer": 192, "gmvShare": 49.9, "issue": "CVR偏低＋转化弱＋客单-16.5%", "kpi": "CVR=0.81%，商品转化1.52%，客单¥479跌-16.5%", "low": ["CVR=0.81%", "商品转化1.52%"], "yoy_bad": ["GMV YoY -34.0%", "单h曝光 YoY -15.9%", "客单价 YoY -16.6%", "GPM YoY -17.3%"], "actions": ["①家具店播定位：高客单难直接成交，引导预约到店", "②客单跌-16.5%：引导商家展示高客单主力品"], "exp_y": -20.1, "hexp_y": -15.9, "dur": 161065954, "dur_y": -5.0, "ctr_y": -12.1, "cvr_y": 8.0, "conv_y": 8.6, "aov_y": -16.6, "gpm_y": -17.3}, {"n": "四组（大健康）", "type": "混合", "gmv": 0.27, "gmv_y": -42.2, "exp": 5.32, "expT": -32.5, "hexp": 9665, "hexpT": -19.4, "avgdur": 1830, "avgdurT": -16.2, "avgsess": 21.0, "ctr": 1.74, "cvr": 0.94, "conv": 2.73, "aov": 240.2, "aovT": -10.2, "gpm": 51.3, "huxi_ctr": 0.38, "huxi_cvr": 3.97, "zhibo_ctr": 4.17, "zhibo_cvr": 0.24, "fans": 13.3, "fansT": -36.8, "b56": 78, "totalMer": 288, "gmvShare": 54.6, "issue": "CVR极弱＋呼吸灯CTR全行业最低", "kpi": "CVR=0.94%，呼吸灯CTR=0.38%（最低），开播时长-16.2%", "low": ["CVR=0.94%", "呼吸灯CTR=0.38%（最低）", "直播卡CVR=0.24%"], "yoy_bad": ["GMV YoY -42.2%", "单h曝光 YoY -19.6%", "CVR YoY -26.0%"], "actions": ["①CVR=0.94%核心断点：更强信任建立（KOL背书/使用前后对比）", "②呼吸灯CTR=0.38%：重新设计封面（突出功效结果）"], "exp_y": -32.7, "hexp_y": -19.6, "dur": 198005208, "dur_y": -16.2, "ctr_y": 20.8, "cvr_y": -26.0, "conv_y": -2.5, "aov_y": -9.6, "gpm_y": -14.1}, {"n": "六组（生鲜）", "type": "混合", "gmv": 0.3, "gmv_y": 16.8, "exp": 9.8, "expT": -3.7, "hexp": 13950, "hexpT": -40.0, "avgdur": 2303, "avgdurT": 60.5, "avgsess": 14.6, "ctr": 1.52, "cvr": 1.89, "conv": 4.88, "aov": 52.3, "aovT": 7.3, "gpm": 31.1, "huxi_ctr": 0.84, "huxi_cvr": 3.7, "zhibo_ctr": 3.65, "zhibo_cvr": 0.77, "fans": 95.8, "fansT": 85.9, "b56": 62, "totalMer": 284, "gmvShare": 48.3, "issue": "供给放量但分发没跟上（单h曝光跌-40%）", "kpi": "开播时长+60.5%，单h曝光跌-40%，涨粉+85.9%", "low": ["单h曝光-40%", "GPM=28.6偏低"], "yoy_bad": ["单h曝光 YoY -40.7%", "CVR YoY -21.3%"], "actions": ["①单h曝光跌-40%：优化直播间质量分（互动率/留存率）", "②直播卡CVR=0.79%极低：检查素材是否与直播间内容匹配"], "exp_y": -3.2, "hexp_y": -40.7, "dur": 252858433, "dur_y": 63.2, "ctr_y": 50.5, "cvr_y": -21.3, "conv_y": -6.3, "aov_y": 6.7, "gpm_y": 20.6}, {"n": "十五组（酒旅）", "type": "店播主导", "gmv": 0.91, "gmv_y": 8.9, "exp": 9.79, "expT": 157.9, "hexp": 17870, "hexpT": -19.2, "avgdur": 1818, "avgdurT": 219.0, "avgsess": 15.0, "ctr": 0.97, "cvr": 1.63, "conv": 3.57, "aov": 689.0, "aovT": -67.5, "gpm": 93.1, "huxi_ctr": 0.31, "huxi_cvr": 4.34, "zhibo_ctr": 1.57, "zhibo_cvr": 1.11, "fans": 17.1, "fansT": 42.4, "b56": 41, "totalMer": 122, "gmvShare": 14.7, "issue": "CTR全行业最低＋客单暴跌-67.5%", "kpi": "CTR=0.97%（最低），客单¥680跌-67.5%", "low": ["CTR=0.97%（最低）", "呼吸灯CTR=0.31%（最低）"], "yoy_bad": ["单h曝光 YoY -18.7%", "CTR YoY -24.8%", "客单价 YoY -67.5%", "GPM YoY -57.8%"], "actions": ["①CTR=0.97%全行业最低：重新设计封面（突出限时特价/目的地）", "②客单价跌-67.5%最紧急：货盘干预回归高客单套餐"], "exp_y": 158.3, "hexp_y": -18.7, "dur": 197160948, "dur_y": 217.7, "ctr_y": -24.8, "cvr_y": 64.6, "conv_y": 88.9, "aov_y": -67.5, "gpm_y": -57.8}, {"n": "十一组（虚拟）", "type": "笔记主导", "gmv": 0.1, "gmv_y": 61.7, "exp": 3.92, "expT": 40.5, "hexp": 16216, "hexpT": -68.4, "avgdur": 800, "avgdurT": 344.1, "avgsess": 7.5, "ctr": 1.49, "cvr": 1.68, "conv": 6.59, "aov": 67.7, "aovT": -36.9, "gpm": 24.7, "huxi_ctr": 0.49, "huxi_cvr": 4.24, "zhibo_ctr": 2.52, "zhibo_cvr": 1.23, "fans": 23.0, "fansT": 68.8, "b56": 19, "totalMer": 89, "gmvShare": 10.4, "issue": "供给激增+单h曝光暴跌-68.4%＋客单跌-36.9%", "kpi": "开播时长+344%，单h曝光-68.4%，GPM=9.8（最低之一）", "low": ["GPM=9.8", "客单¥67.1跌-36.9%", "单h曝光-68.4%"], "yoy_bad": ["单h曝光 YoY -67.9%", "客单价 YoY -37.5%"], "actions": ["①单h曝光跌-68.4%：收缩低质直播间，减量提质", "②客单价跌-36.9%：引导主推高价值产品（年卡/高级会员）"], "exp_y": 43.7, "hexp_y": -67.9, "dur": 87053114, "dur_y": 347.1, "ctr_y": 28.4, "cvr_y": 0.0, "conv_y": 16.0, "aov_y": -37.5, "gpm_y": 12.5}, {"n": "十三组（图书）", "type": "笔记主导", "gmv": 0.05, "gmv_y": -17.9, "exp": 1.56, "expT": -12.9, "hexp": 5500, "hexpT": -26.4, "avgdur": 932, "avgdurT": 18.3, "avgsess": 14.8, "ctr": 1.05, "cvr": 1.44, "conv": 3.18, "aov": 145.6, "aovT": -8.3, "gpm": 33.6, "huxi_ctr": 0.53, "huxi_cvr": 3.73, "zhibo_ctr": 2.52, "zhibo_cvr": 1.12, "fans": 2.9, "fansT": -38.0, "b56": 18, "totalMer": 117, "gmvShare": 11.2, "issue": "店播供给极不充分（开播仅16min），CTR弱", "kpi": "CTR=1.05%，开播时长932s（约16min）", "low": ["CTR=1.05%", "开播时长仅932s"], "yoy_bad": ["GMV YoY -17.9%", "单h曝光 YoY -25.6%", "CVR YoY -25.0%"], "actions": ["①图书店播定位：笔记的辅助补充，重心在笔记端", "②CTR=1.05%：封面突出'书单主题/知识点'"], "exp_y": -11.7, "hexp_y": -25.6, "dur": 102338818, "dur_y": 18.6, "ctr_y": 1.0, "cvr_y": -25.0, "conv_y": -4.8, "aov_y": -9.7, "gpm_y": -7.0}, {"n": "八组（家电）", "type": "混合", "gmv": 0.24, "gmv_y": -15.6, "exp": 1.45, "expT": 15.3, "hexp": 5047, "hexpT": -15.6, "avgdur": 949, "avgdurT": 36.7, "avgsess": 17.2, "ctr": 1.13, "cvr": 0.93, "conv": 2.49, "aov": 1158.1, "aovT": 24.7, "gpm": 168.5, "huxi_ctr": 0.54, "huxi_cvr": 1.62, "zhibo_ctr": 2.64, "zhibo_cvr": 0.59, "fans": 3.9, "fansT": -18.3, "b56": 37, "totalMer": 112, "gmvShare": 19.8, "issue": "GPM最高但CVR/转化偏低（高客单品类特性）", "kpi": "GPM=177.3（最高），GMV+25.7%", "low": ["CVR=0.94%", "商品转化2.49%", "单h曝光5009次"], "yoy_bad": ["GMV YoY -15.6%", "CTR YoY -21.0%", "CVR YoY -16.2%", "商品转化 YoY -15.9%", "GPM YoY -27.6%"], "actions": ["①GPM=177.3是宝贵资产：优先做大开播商家基数", "②CVR偏低：家电需要'实测+对比+参数讲解'，至少5-8分钟讲品"], "exp_y": 16.5, "hexp_y": -15.0, "dur": 103429053, "dur_y": 37.1, "ctr_y": -21.0, "cvr_y": -16.2, "conv_y": -15.9, "aov_y": 32.1, "gpm_y": -27.6}];
@@ -983,7 +990,7 @@ function buildNCard(d,rank){
         <span>笔记GMV <b>${d.gmv}亿</b> <span class="${d.gmv_y>=0?'up':'dn'}">YoY${d.gmv_y>=0?'+':''}${d.gmv_y}%</span></span>
         <span>发布量 <b>${d.pub}万条</b></span>
         <span>商家 <b>${d.totalMer}</b>家 · B5/6 <b>${d.b56}</b>家</span>
-        <span>笔记/商家 <b>${npm}条</b></span>
+        <span>店均发布 <b>${d.pub_avg}条</b> <span class="${d.pub_avg_y>=0?'up':'dn'}">YoY${d.pub_avg_y>=0?'+':''}${d.pub_avg_y}%</span></span>
       </div>
     </div>
     <div class="card-severity"><span class="severity-label ${scls}">${stxt}</span></div>
@@ -991,7 +998,7 @@ function buildNCard(d,rank){
   <div class="card-body">
     <div class="funnel-visual">
       <div style="font-size:10px;color:#94a3b8;margin-bottom:2px;padding-left:108px">← 不足 ｜ ▌基准60% ｜ 达标 →</div>
-      ${frow('笔记/商家',npm,NB.notePerMer,npm+'条',NB.notePerMer+'条',npm>=NB.notePerMer?'+':''+Math.round(npm-NB.notePerMer)+'条',bc(npm,NB.notePerMer),bw(npm,NB.notePerMer,2000),true,null)}
+      ${frow('店均发布数',d.pub_avg,100,d.pub_avg+'条','100条',(d.pub_avg>=100?'+':'')+Math.round(d.pub_avg-100)+'条',bc(d.pub_avg,100),bw(d.pub_avg,100,400),true,d.pub_avg_y)}
       <div class="conn"><div class="cl"></div><div class="cn">→ 篇均曝光</div><div class="cl"></div></div>
       ${frow('篇均曝光',d.pavg,NB.pv,Math.round(d.pavg)+'次',NB.pv+'次',(d.pavg-NB.pv>=0?'+':'')+Math.round(d.pavg-NB.pv)+'次',bc(d.pavg,NB.pv),bw(d.pavg,NB.pv,300),false,d.pavg_y)}
       <div class="conn"><div class="cl"></div><div class="cn">→ CTR1 阅读率</div><div class="cl"></div></div>
@@ -1022,10 +1029,6 @@ function buildNCard(d,rank){
           ${hasYoy?`<div class="diag-row yoy-row"><div class="diag-row-label">📉 YoY跌幅严重</div><div class="diag-pills">${yoyPills}</div></div>`:''}
           ${(!lowPills&&!hasYoy)?'<div style="font-size:11px;color:#16a34a;padding:4px 0">✅ 无显著异常，重点是维持当前趋势</div>':''}
         </div>
-      </div>
-      <div class="action-box">
-        <div class="action-title">▶ 行动建议</div>
-        <div class="action-text">${actionHtml}</div>
       </div>
     </div>
   </div>
@@ -1207,7 +1210,7 @@ function switchTab(tab){
   document.getElementById('s-kol').style.display=tab==='kol'?'flex':'none';
   // ResizeObserver自动处理首次init；切换后强制resize
   setTimeout(()=>{
-    ['n-bubble','n-bar-exp','n-bar-gpm','n-bar-gmv',
+    ['n-bubble','n-bar-exp','n-bar-gpm','n-bar-gmv','n-bar-pub',
      'l-bubble','l-bar-exp','l-bar-gpm','l-bar-gmv',
      'kol-bar-sess','kol-bar-avgd','kol-bar-gmv'].forEach(id=>{
       const c=echarts.getInstanceByDom(document.getElementById(id));
@@ -1217,10 +1220,151 @@ function switchTab(tab){
 }
 
 function initNoteCharts(){
-  mkBubble('n-bubble',noteData,'expo','gpm','gmv',6.31,38.2,'亿','元');
-  mkBarChart('n-bar-exp',noteData.map(d=>[d.n,d.expo]),6.31,'亿','note');
-  mkBarChart('n-bar-gpm',noteData.map(d=>[d.n,d.gpm]),38.2,'元','note');
-  mkBarChart('n-bar-gmv',noteData.map(d=>[d.n,d.gmv]),0.27,'亿','note');
+  // ── 气泡图：总曝光×GPM，气泡大小=笔记GMV，统一蓝色，加分区线，去象限名 ──
+  (function(){
+    const el=document.getElementById('n-bubble'); if(!el) return;
+    const ch=echarts.init(el);
+    const expoMed=6.31, gpmMed=38.2;
+    ch.setOption({
+      backgroundColor:'#fff',
+      tooltip:{trigger:'item',formatter:p=>{
+        const d=noteData.find(x=>x.n===p.data[3])||{};
+        const fmt=(v,y)=>v!=null?`${v} <span style="color:${y>=0?'#16a34a':'#dc2626'}">(YoY${y>=0?'+':''}${y}%)</span>`:'—';
+        return `<b>${d.n||''}</b><br>`+
+          `笔记发布数: ${fmt(d.pub+'万',d.pub_y)}<br>`+
+          `总曝光: ${fmt(d.expo+'亿',d.expo_y)}<br>`+
+          `动销商家数: ${fmt((d.mer>999?(d.mer/10000).toFixed(2)+'万':d.mer)+'家',d.mer_y)}<br>`+
+          `笔记GMV: ${fmt(d.gmv+'亿',d.gmv_y)}<br>`+
+          `GPM: ${fmt(d.gpm+'元',d.gpm_y)}<br>`+
+          `篇均曝光: ${fmt(d.pavg+'次',d.pavg_y)}`;
+      }},
+      xAxis:{type:'value',name:'总曝光（亿次）',nameLocation:'middle',nameGap:28,
+        splitLine:{lineStyle:{color:'#f1f5f9'}},axisLabel:{color:'#374151',fontSize:10},
+        axisLine:{lineStyle:{color:'#e2e8f0'}}},
+      yAxis:{type:'value',name:'GPM（元）',nameLocation:'middle',nameGap:40,
+        splitLine:{lineStyle:{color:'#f1f5f9'}},axisLabel:{color:'#374151',fontSize:10},
+        axisLine:{lineStyle:{color:'#e2e8f0'}}},
+      series:[
+        {type:'scatter',
+          symbolSize:d=>Math.max(12,Math.sqrt(d[2])*120),
+          itemStyle:{color:'rgba(59,130,246,0.65)',borderColor:'#2563eb',borderWidth:1},
+          label:{show:true,position:'right',formatter:p=>p.data[3].replace(/.*?（/,'').replace('）',''),
+            fontSize:9,color:'#374151'},
+          data:noteData.map(d=>[d.expo,d.gpm,d.gmv,d.n])
+        },
+        // X轴分区线（总曝光中位数）
+        {type:'line',markLine:{silent:true,symbol:'none',
+          lineStyle:{color:'#6366f1',type:'dashed',width:1.5},
+          label:{formatter:'中位数 '+expoMed+'亿',color:'#6366f1',fontSize:9},
+          data:[{xAxis:expoMed}]}},
+        // Y轴分区线（GPM中位数）
+        {type:'line',markLine:{silent:true,symbol:'none',
+          lineStyle:{color:'#f59e0b',type:'dashed',width:1.5},
+          label:{formatter:'GPM中位数 '+gpmMed+'元',color:'#b45309',fontSize:9},
+          data:[{yAxis:gpmMed}]}}
+      ]
+    });
+  })();
+
+  // ── Bar: 总曝光（含YoY标注）──
+  (function(){
+    const el=document.getElementById('n-bar-exp'); if(!el) return;
+    const ch=echarts.init(el);
+    const med=6.31;
+    const sorted=[...noteData].sort((a,b)=>b.expo-a.expo);
+    ch.setOption({
+      backgroundColor:'#fff',
+      grid:{left:100,right:80,top:10,bottom:20},
+      xAxis:{type:'value',splitLine:{lineStyle:{color:'#f1f5f9'}},axisLabel:{color:'#374151',fontSize:9}},
+      yAxis:{type:'category',data:sorted.map(d=>d.n.replace(/.*?（/,'').replace('）','')),axisLabel:{color:'#374151',fontSize:9}},
+      series:[{type:'bar',barMaxWidth:14,
+        data:sorted.map(d=>({value:d.expo,
+          itemStyle:{color:d.expo>=med*1.5?'#16a34a':d.expo>=med?'#3b82f6':d.expo>=med*0.5?'#f59e0b':'#e05c5c'}})),
+        label:{show:true,position:'right',fontSize:9,color:'#374151',
+          formatter:p=>{
+            const d=sorted[p.dataIndex];
+            const yoy=d.expo_y; const sign=yoy>=0?'+':'';
+            return `${p.value}亿  YoY${sign}${yoy}%`;
+          }}
+      },{type:'line',markLine:{silent:true,symbol:'none',lineStyle:{color:'#6366f1',type:'dashed'},
+        data:[{xAxis:med}],label:{formatter:'中位数',fontSize:9,color:'#6366f1'}}}]
+    });
+  })();
+
+  // ── Bar: GPM（含YoY标注）──
+  (function(){
+    const el=document.getElementById('n-bar-gpm'); if(!el) return;
+    const ch=echarts.init(el);
+    const med=38.2;
+    const sorted=[...noteData].sort((a,b)=>b.gpm-a.gpm);
+    ch.setOption({
+      backgroundColor:'#fff',
+      grid:{left:100,right:80,top:10,bottom:20},
+      xAxis:{type:'value',splitLine:{lineStyle:{color:'#f1f5f9'}},axisLabel:{color:'#374151',fontSize:9}},
+      yAxis:{type:'category',data:sorted.map(d=>d.n.replace(/.*?（/,'').replace('）','')),axisLabel:{color:'#374151',fontSize:9}},
+      series:[{type:'bar',barMaxWidth:14,
+        data:sorted.map(d=>({value:d.gpm,
+          itemStyle:{color:d.gpm>=med*1.5?'#16a34a':d.gpm>=med?'#3b82f6':d.gpm>=med*0.5?'#f59e0b':'#e05c5c'}})),
+        label:{show:true,position:'right',fontSize:9,color:'#374151',
+          formatter:p=>{
+            const d=sorted[p.dataIndex];
+            const sign=d.gpm_y>=0?'+':'';
+            return `${p.value}元  YoY${sign}${d.gpm_y}%`;
+          }}
+      },{type:'line',markLine:{silent:true,symbol:'none',lineStyle:{color:'#6366f1',type:'dashed'},
+        data:[{xAxis:med}],label:{formatter:'中位数',fontSize:9,color:'#6366f1'}}}]
+    });
+  })();
+
+  // ── Bar: 笔记GMV（含YoY）──
+  (function(){
+    const el=document.getElementById('n-bar-gmv'); if(!el) return;
+    const ch=echarts.init(el);
+    const med=0.27;
+    const sorted=[...noteData].sort((a,b)=>b.gmv-a.gmv);
+    ch.setOption({
+      backgroundColor:'#fff',
+      grid:{left:100,right:90,top:10,bottom:20},
+      xAxis:{type:'value',splitLine:{lineStyle:{color:'#f1f5f9'}},axisLabel:{color:'#374151',fontSize:9}},
+      yAxis:{type:'category',data:sorted.map(d=>d.n.replace(/.*?（/,'').replace('）','')),axisLabel:{color:'#374151',fontSize:9}},
+      series:[{type:'bar',barMaxWidth:14,
+        data:sorted.map(d=>({value:d.gmv,
+          itemStyle:{color:d.gmv_y>=10?'#16a34a':d.gmv_y>=-10?'#3b82f6':'#e05c5c'}})),
+        label:{show:true,position:'right',fontSize:9,color:'#374151',
+          formatter:p=>{
+            const d=sorted[p.dataIndex];
+            const sign=d.gmv_y>=0?'+':'';
+            return `${p.value}亿  YoY${sign}${d.gmv_y}%`;
+          }}
+      },{type:'line',markLine:{silent:true,symbol:'none',lineStyle:{color:'#6366f1',type:'dashed'},
+        data:[{xAxis:med}],label:{formatter:'中位数',fontSize:9,color:'#6366f1'}}}]
+    });
+  })();
+
+  // ── 新增 Bar: 店均笔记发布数（含YoY）──
+  (function(){
+    const el=document.getElementById('n-bar-pub'); if(!el) return;
+    const ch=echarts.init(el);
+    const med=100;
+    const sorted=[...noteData].sort((a,b)=>b.pub_avg-a.pub_avg);
+    ch.setOption({
+      backgroundColor:'#fff',
+      grid:{left:100,right:90,top:10,bottom:20},
+      xAxis:{type:'value',splitLine:{lineStyle:{color:'#f1f5f9'}},axisLabel:{color:'#374151',fontSize:9}},
+      yAxis:{type:'category',data:sorted.map(d=>d.n.replace(/.*?（/,'').replace('）','')),axisLabel:{color:'#374151',fontSize:9}},
+      series:[{type:'bar',barMaxWidth:14,
+        data:sorted.map(d=>({value:d.pub_avg,
+          itemStyle:{color:d.pub_avg_y>=10?'#16a34a':d.pub_avg_y>=-10?'#3b82f6':'#e05c5c'}})),
+        label:{show:true,position:'right',fontSize:9,color:'#374151',
+          formatter:p=>{
+            const d=sorted[p.dataIndex];
+            const sign=d.pub_avg_y>=0?'+':'';
+            return `${p.value}条  YoY${sign}${d.pub_avg_y}%`;
+          }}
+      },{type:'line',markLine:{silent:true,symbol:'none',lineStyle:{color:'#6366f1',type:'dashed'},
+        data:[{xAxis:med}],label:{formatter:'基准100条',fontSize:9,color:'#6366f1'}}}]
+    });
+  })();
 }
 function initLiveCharts(){
   mkBubble('l-bubble',liveData,'exp','gpm','gmv',8.35,44.1,'亿','元');
