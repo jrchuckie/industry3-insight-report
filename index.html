@@ -12,6 +12,7 @@ function switchDiag(layerId, btn) {
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
   document.getElementById('p-gmv').classList.add('active');
   // 切换layer
+  if(layerId==='l2'){setTimeout(()=>{initMerchantCharts();['b56-bar-arpu','b56-bar-demote','b4-bar-promo','b4-bar-arpu','new-scatter','new-donut'].forEach(id=>{const c=echarts.getInstanceByDom(document.getElementById(id));if(c)c.resize();});},100);}
   document.querySelectorAll('.layer').forEach(l => l.classList.remove('active'));
   document.getElementById(layerId).classList.add('active');
   // tab按钮高亮
@@ -228,27 +229,74 @@ const l1Data=[
   {n:'四组（大健康）',gmv:1.66,gmv_y:-34.0,note:0.37,note_y:-30,kol:0.55,kol_y:-47,shop:0.46,shop_y:-15,live:0.27,live_y:-34,type:'混合'},
 ];
 
-const l2Data = [
-  {n:'一组（文玩玉翠）',type:'店播主导',b56:395,gmvRatio:46.6,demotion:12.3,b4:87,keep:68.2,status:'健康'},
-  {n:'二组（亲子生活）',type:'混合',b56:97,gmvRatio:18.2,demotion:8.1,b4:124,keep:72.4,status:'健康'},
-  {n:'三组（宠物）',type:'混合',b56:8,gmvRatio:6.7,demotion:15.2,b4:43,keep:65.1,status:'观察'},
-  {n:'四组（大健康）',type:'混合',b56:null,gmvRatio:null,demotion:null,b4:null,keep:null,status:'数据缺失'},
-  {n:'五组（休食）',type:'混合',b56:101,gmvRatio:19.6,demotion:22.4,b4:98,keep:58.3,status:'预警'},
-  {n:'六组（生鲜）',type:'混合',b56:62,gmvRatio:21.8,demotion:11.5,b4:67,keep:63.7,status:'观察'},
-  {n:'七组（家具）',type:'K播主导',b56:60,gmvRatio:31.3,demotion:9.2,b4:52,keep:70.1,status:'健康'},
-  {n:'八组（消费电子）',type:'商卡主导',b56:40,gmvRatio:14.9,demotion:7.8,b4:38,keep:73.5,status:'健康'},
-  {n:'八组（家电）',type:'混合',b56:37,gmvRatio:38.5,demotion:13.6,b4:29,keep:61.2,status:'观察'},
-  {n:'九组（家用）',type:'混合',b56:98,gmvRatio:18.4,demotion:10.3,b4:119,keep:69.8,status:'健康'},
-  {n:'十组（家纺）',type:'混合',b56:63,gmvRatio:21.4,demotion:18.7,b4:72,keep:64.3,status:'观察'},
-  {n:'十组（家饰）',type:'店播主导',b56:30,gmvRatio:13.0,demotion:14.2,b4:41,keep:66.7,status:'观察'},
-  {n:'十一组（潮玩）',type:'店播主导',b56:92,gmvRatio:10.4,demotion:6.9,b4:108,keep:78.2,status:'健康'},
-  {n:'十一组（虚拟）',type:'笔记主导',b56:19,gmvRatio:17.8,demotion:5.1,b4:22,keep:81.3,status:'健康'},
-  {n:'十二组（手工）',type:'店播主导',b56:70,gmvRatio:12.5,demotion:11.8,b4:83,keep:67.4,status:'观察'},
-  {n:'十三组（教育）',type:'混合',b56:35,gmvRatio:18.7,demotion:9.4,b4:48,keep:72.9,status:'健康'},
-  {n:'十三组（图书）',type:'笔记主导',b56:18,gmvRatio:38.3,demotion:16.1,b4:21,keep:60.8,status:'观察'},
-  {n:'十四组（二奢）',type:'店播主导',b56:39,gmvRatio:37.9,demotion:19.3,b4:27,keep:55.6,status:'预警'},
-  {n:'十五组（酒旅）',type:'店播主导',b56:41,gmvRatio:28.7,demotion:8.6,b4:35,keep:74.2,status:'健康'},
+
+// ─── 商家分层数据（2026-04-26~05-25）───
+const b56Data = [
+  {n:'十一组（潮玩）',cur:92,prev:90,arpu:141.8,arpu_prev:156.8,arpu_chg:-9.56,demote:42,demote_pct:46.67},
+  {n:'十三组（教育）',cur:35,prev:34,arpu:213.41,arpu_prev:101.92,arpu_chg:109.38,demote:15,demote_pct:44.12},
+  {n:'三组（宠物）',cur:8,prev:7,arpu:80.71,arpu_prev:72.90,arpu_chg:10.70,demote:3,demote_pct:42.86},
+  {n:'十三组（图书）',cur:18,prev:22,arpu:98.60,arpu_prev:127.66,arpu_chg:-22.76,demote:9,demote_pct:40.91},
+  {n:'二组（亲子生活）',cur:97,prev:122,arpu:99.22,arpu_prev:111.68,arpu_chg:-11.15,demote:49,demote_pct:40.16},
+  {n:'十组（家纺）',cur:63,prev:70,arpu:160.66,arpu_prev:121.70,arpu_chg:32.02,demote:28,demote_pct:40.00},
+  {n:'六组（生鲜）',cur:62,prev:73,arpu:104.08,arpu_prev:98.48,arpu_chg:5.69,demote:28,demote_pct:38.36},
+  {n:'十组（家饰）',cur:30,prev:32,arpu:93.16,arpu_prev:92.29,arpu_chg:0.94,demote:12,demote_pct:37.50},
+  {n:'十四组（二奢）',cur:39,prev:39,arpu:127.70,arpu_prev:144.85,arpu_chg:-11.84,demote:13,demote_pct:33.33},
+  {n:'八组（消费电子）',cur:40,prev:40,arpu:215.33,arpu_prev:160.29,arpu_chg:34.34,demote:13,demote_pct:32.50},
+  {n:'十二组（手工）',cur:70,prev:72,arpu:113.37,arpu_prev:114.47,arpu_chg:-0.96,demote:20,demote_pct:27.78},
+  {n:'九组（家用）',cur:98,prev:94,arpu:127.55,arpu_prev:120.62,arpu_chg:5.75,demote:26,demote_pct:27.66},
+  {n:'五组（休食）',cur:101,prev:109,arpu:118.39,arpu_prev:108.78,arpu_chg:8.84,demote:29,demote_pct:26.61},
+  {n:'十五组（酒旅）',cur:41,prev:37,arpu:291.72,arpu_prev:379.53,arpu_chg:-23.14,demote:9,demote_pct:24.32},
+  {n:'十一组（虚拟）',cur:19,prev:18,arpu:163.99,arpu_prev:147.36,arpu_chg:11.28,demote:4,demote_pct:22.22},
+  {n:'一组（文玩玉翠）',cur:395,prev:407,arpu:219.40,arpu_prev:225.41,arpu_chg:-2.66,demote:81,demote_pct:19.90},
+  {n:'四组（大健康）',cur:78,prev:76,arpu:130.24,arpu_prev:128.55,arpu_chg:1.31,demote:14,demote_pct:18.42},
+  {n:'七组（家具）',cur:60,prev:44,arpu:152.95,arpu_prev:136.39,arpu_chg:12.14,demote:7,demote_pct:15.91},
+  {n:'八组（家电）',cur:37,prev:31,arpu:176.00,arpu_prev:147.87,arpu_chg:19.02,demote:3,demote_pct:9.68},
 ];
+
+const b4Data = [
+  {n:'十一组（虚拟）',cur:89,prev:69,arpu:50.63,arpu_prev:52.30,arpu_chg:-3.19,promo:31,promo_pct:34.83},
+  {n:'十一组（潮玩）',cur:886,prev:931,arpu:32.44,arpu_prev:32.78,arpu_chg:-1.05,promo:284,promo_pct:32.05},
+  {n:'十三组（教育）',cur:187,prev:188,arpu:57.05,arpu_prev:33.82,arpu_chg:68.68,promo:55,promo_pct:29.41},
+  {n:'七组（家具）',cur:192,prev:196,arpu:63.52,arpu_prev:47.70,arpu_chg:33.16,promo:42,promo_pct:21.88},
+  {n:'六组（生鲜）',cur:284,prev:288,arpu:41.20,arpu_prev:42.44,arpu_chg:-2.93,promo:60,promo_pct:21.13},
+  {n:'十组（家饰）',cur:231,prev:235,arpu:29.80,arpu_prev:29.49,arpu_chg:1.04,promo:48,promo_pct:20.78},
+  {n:'十组（家纺）',cur:295,prev:306,arpu:51.43,arpu_prev:44.04,arpu_chg:16.78,promo:58,promo_pct:19.66},
+  {n:'十三组（图书）',cur:117,prev:123,arpu:32.92,arpu_prev:40.05,arpu_chg:-17.80,promo:23,promo_pct:19.66},
+  {n:'八组（家电）',cur:112,prev:112,arpu:70.59,arpu_prev:55.60,arpu_chg:26.96,promo:22,promo_pct:19.64},
+  {n:'九组（家用）',cur:534,prev:550,arpu:41.42,arpu_prev:38.65,arpu_chg:7.16,promo:102,promo_pct:19.10},
+  {n:'十二组（手工）',cur:562,prev:595,arpu:31.83,arpu_prev:31.94,arpu_chg:-0.34,promo:99,promo_pct:17.62},
+  {n:'十四组（二奢）',cur:227,prev:238,arpu:40.35,arpu_prev:42.98,arpu_chg:-6.10,promo:39,promo_pct:17.18},
+  {n:'三组（宠物）',cur:120,prev:125,arpu:22.38,arpu_prev:21.09,arpu_chg:6.12,promo:19,promo_pct:15.83},
+  {n:'一组（文玩玉翠）',cur:847,prev:817,arpu:115.89,arpu_prev:124.70,arpu_chg:-7.06,promo:132,promo_pct:15.58},
+  {n:'十五组（酒旅）',cur:122,prev:158,arpu:113.79,arpu_prev:106.04,arpu_chg:7.31,promo:16,promo_pct:13.11},
+  {n:'二组（亲子生活）',cur:532,prev:576,arpu:36.42,arpu_prev:40.89,arpu_chg:-10.93,promo:66,promo_pct:12.41},
+  {n:'四组（大健康）',cur:288,prev:295,arpu:50.58,arpu_prev:49.25,arpu_chg:2.68,promo:35,promo_pct:12.15},
+  {n:'八组（消费电子）',cur:268,prev:296,arpu:50.34,arpu_prev:40.12,arpu_chg:25.50,promo:30,promo_pct:11.19},
+  {n:'五组（休食）',cur:516,prev:542,arpu:41.01,arpu_prev:40.41,arpu_chg:1.49,promo:52,promo_pct:10.08},
+];
+
+const newMerData = [
+  {n:'一组（文玩玉翠）',cnt:122,arpu:41.95,b4plus:28},
+  {n:'七组（家具）',cnt:27,arpu:18.06,b4plus:5},
+  {n:'十组（家纺）',cnt:88,arpu:12.23,b4plus:17},
+  {n:'九组（家用）',cnt:75,arpu:11.61,b4plus:11},
+  {n:'十二组（手工）',cnt:31,arpu:7.75,b4plus:5},
+  {n:'十五组（酒旅）',cnt:26,arpu:5.61,b4plus:2},
+  {n:'十四组（二奢）',cnt:25,arpu:5.04,b4plus:5},
+  {n:'八组（消费电子）',cnt:12,arpu:3.46,b4plus:1},
+  {n:'二组（亲子生活）',cnt:33,arpu:3.44,b4plus:3},
+  {n:'五组（休食）',cnt:59,arpu:3.35,b4plus:5},
+  {n:'六组（生鲜）',cnt:58,arpu:2.68,b4plus:5},
+  {n:'十组（家饰）',cnt:133,arpu:2.29,b4plus:6},
+  {n:'十三组（教育）',cnt:40,arpu:1.92,b4plus:1},
+  {n:'十一组（潮玩）',cnt:2009,arpu:1.27,b4plus:42},
+  {n:'八组（家电）',cnt:5,arpu:0.93,b4plus:0},
+  {n:'四组（大健康）',cnt:15,arpu:0.84,b4plus:0},
+  {n:'十三组（图书）',cnt:3,arpu:0.72,b4plus:0},
+  {n:'三组（宠物）',cnt:20,arpu:0.40,b4plus:0},
+  {n:'十一组（虚拟）',cnt:2757,arpu:0.10,b4plus:4},
+];
+
 
 const l3Data = [
   {n:'一组（文玩玉翠）',gmv:2.29,dian:42.8,k:61.6,shang:25.3,bi:7.9},
@@ -314,25 +362,59 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  // 填充商家分层表格（l2-tbody）- 保持原有数据
-  const tbody2 = document.getElementById('l2-tbody');
-  if(tbody2 && typeof l2Data !== 'undefined') {
-    l2Data.forEach(d => {
-      const dT = (d.demotion!=null) ? (d.demotion>0?'+':'')+d.demotion.toFixed(1)+'%' : '—';
-      const kT = (d.keep!=null) ? (d.keep>0?'+':'')+d.keep.toFixed(1)+'%' : '—';
-      const sevCls = d.demotion>=30?'cell-red':d.demotion>=15?'cell-orange':'';
-      tbody2.innerHTML += `<tr>
-        <td style="font-size:18px">${d.health||'🟡'}</td>
+  
+  // ── 填充 B5/6 表格 ──
+  const b56tbody = document.getElementById('b56-tbody');
+  if(b56tbody){
+    b56Data.forEach(d=>{
+      const chgCls = d.arpu_chg>=15?'up':d.arpu_chg<=-15?'down':'flat';
+      const demCls = d.demote_pct>=35?'cell-red':d.demote_pct>=28.6?'cell-orange':'';
+      b56tbody.innerHTML+=`<tr>
         <td>${d.n}</td>
-        <td><span class="badge ${typeClass[d.type]||'badge-gray'}">${d.type||'混合'}</span></td>
-        <td>${d.b56!=null?d.b56:'—'}</td>
-        <td>${d.gmvRatio!=null?d.gmvRatio.toFixed(1)+'%':'—'}</td>
-        <td class="${colorClass(d.demotion!=null?-d.demotion:null)}">${d.demotion!=null?d.demotion.toFixed(1)+'%':'—'}</td>
-        <td class="${colorClass(d.keep)}">${d.keep!=null?(d.keep>0?'+':'')+d.keep.toFixed(1)+'%':'—'}</td>
-        <td>${d.status||'—'}</td>
+        <td>${d.cur}</td>
+        <td>${d.arpu.toFixed(2)}</td>
+        <td style="color:#94a3b8">${d.arpu_prev.toFixed(2)}</td>
+        <td class="${chgCls}">${d.arpu_chg>=0?'+':''}${d.arpu_chg.toFixed(2)}%</td>
+        <td>${d.demote}</td>
+        <td class="${demCls}" style="font-weight:${d.demote_pct>=35?'700':'400'}">${d.demote_pct.toFixed(1)}%</td>
       </tr>`;
     });
   }
+
+  // ── 填充 B4 表格 ──
+  const b4tbody = document.getElementById('b4-tbody');
+  if(b4tbody){
+    b4Data.forEach(d=>{
+      const chgCls = d.arpu_chg>=15?'up':d.arpu_chg<=-15?'down':'flat';
+      const promoCls = d.promo_pct>=25?'up cell-green':d.promo_pct<12?'down cell-red':'flat';
+      b4tbody.innerHTML+=`<tr>
+        <td>${d.n}</td>
+        <td>${d.cur}</td>
+        <td>${d.arpu.toFixed(2)}</td>
+        <td style="color:#94a3b8">${d.arpu_prev.toFixed(2)}</td>
+        <td class="${chgCls}">${d.arpu_chg>=0?'+':''}${d.arpu_chg.toFixed(2)}%</td>
+        <td>${d.promo}</td>
+        <td class="${promoCls}" style="font-weight:${d.promo_pct>=25||d.promo_pct<12?'700':'400'}">${d.promo_pct.toFixed(1)}%</td>
+      </tr>`;
+    });
+  }
+
+  // ── 填充新开商家表格 ──
+  const newTbody = document.getElementById('new-tbody');
+  if(newTbody){
+    newMerData.forEach(d=>{
+      const arpuCls = d.arpu>=10?'up':d.arpu<0.5?'down':'flat';
+      const b4pct = d.cnt>0?(d.b4plus/d.cnt*100).toFixed(1):'0.0';
+      newTbody.innerHTML+=`<tr>
+        <td>${d.n}</td>
+        <td>${d.cnt.toLocaleString()}</td>
+        <td class="${arpuCls}">${d.arpu.toFixed(2)}</td>
+        <td>${d.b4plus}</td>
+        <td>${b4pct}%</td>
+      </tr>`;
+    });
+  }
+
 
   // 填充载体结构表格（l3-tbody）- 保持原有数据
   const tbody3 = document.getElementById('l3-tbody');
@@ -429,29 +511,145 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <!-- L2 商家分层 -->
 <div class="layer" id="l2">
-  <div class="section-title">② 商家分层健康度 · B5/6降级率 + B4跃迁率</div>
-  <div class="kpi-row">
-    <div class="kpi"><div class="kpi-label">B5/6商家数</div><div class="kpi-value">1,383家</div><div class="kpi-sub">降级405家 <span class="down">(28.6%)</span></div></div>
-    <div class="kpi"><div class="kpi-label">B4跃迁基准</div><div class="kpi-value">18.93%</div><div class="kpi-sub flat">行业整体</div></div>
-    <div class="kpi"><div class="kpi-label">🔴 红线</div><div class="kpi-value" style="color:#e8372c">>35%降级</div><div class="kpi-sub down">8个行业触发</div></div>
-    <div class="kpi"><div class="kpi-label">🟡 黄线</div><div class="kpi-value" style="color:#eab308">20-35%</div><div class="kpi-sub flat">7个行业在此</div></div>
+  <div class="section-title">② 商家分层健康度 · B5/6降级 + B4跃迁 + 新开激活</div>
+
+  <!-- 顶部KPI总览 -->
+  <div class="kpi-row" style="margin-bottom:16px">
+    <div class="kpi">
+      <div class="kpi-label">本月 B5/6 头部商家</div>
+      <div class="kpi-value">1,383家</div>
+      <div class="kpi-sub flat">上月 1,417家（-34）</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">B5/6 店均GMV 环比</div>
+      <div class="kpi-value up">+2.47%</div>
+      <div class="kpi-sub flat">163.1万→163.1万</div>
+    </div>
+    <div class="kpi" style="background:rgba(232,55,44,0.08);border:1px solid rgba(232,55,44,0.3)">
+      <div class="kpi-label">B5/6 降级商家</div>
+      <div class="kpi-value down">405家</div>
+      <div class="kpi-sub down">占比 28.6%</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">B4→跃迁商家</div>
+      <div class="kpi-value up">1,213家</div>
+      <div class="kpi-sub up">跃迁率 18.93%</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">新开商家数</div>
+      <div class="kpi-value">5,538家</div>
+      <div class="kpi-sub flat">店均 2.14万 · B4+共140家</div>
+    </div>
   </div>
-  <div class="tbl-wrap"><table>
-    <thead>
-  <tr>
-    <th>健康度</th>
-    <th>行业组</th>
-    <th>行业类型</th>
-    <th>B5/6数</th>
-    <th>近期GMV占比</th>
-    <th>降级率</th>
-    <th>跃迁率</th>
-    <th>诊断</th>
-  </tr>
-</thead>
-    <tbody id="l2-tbody"></tbody>
-  </table></div>
+
+  <!-- 板块1：B5/6 头部商家 -->
+  <div style="background:#1e2533;border-radius:10px;padding:16px;margin-bottom:16px">
+    <div style="font-size:14px;font-weight:700;color:#f1f5f9;margin-bottom:12px;display:flex;align-items:center;gap:8px">
+      <span style="background:#2563eb;color:#fff;padding:2px 10px;border-radius:12px;font-size:11px">B5/6 头部</span>
+      本月头部商家数 · 店均GMV · 降级情况
+      <span style="margin-left:auto;font-size:11px;color:#94a3b8;font-weight:400">降级率 &gt;35% <span style="color:#e8372c">■</span> 红警 · &gt;28.6% <span style="color:#eab308">■</span> 黄警</span>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+      <div>
+        <div style="font-size:11px;color:#94a3b8;margin-bottom:4px">店均GMV 环比（万元）</div>
+        <div id="b56-bar-arpu" style="height:320px"></div>
+      </div>
+      <div>
+        <div style="font-size:11px;color:#94a3b8;margin-bottom:4px">降级率（%）· 红线=28.6%</div>
+        <div id="b56-bar-demote" style="height:320px"></div>
+      </div>
+    </div>
+    <div class="tbl-wrap" style="margin-top:8px">
+      <table>
+        <thead><tr>
+          <th>行业组</th>
+          <th>本月商家数</th>
+          <th>店均GMV（万）</th>
+          <th>上月店均GMV（万）</th>
+          <th>店均环比</th>
+          <th>降级商家数</th>
+          <th>降级占比</th>
+        </tr></thead>
+        <tbody id="b56-tbody"></tbody>
+        <tfoot><tr style="font-weight:700;background:#1a2030">
+          <td>【合计】</td><td>1,383</td><td>163.05</td><td>159.12</td>
+          <td class="up">+2.47%</td><td class="down">405</td><td class="down">28.6%</td>
+        </tr></tfoot>
+      </table>
+    </div>
+  </div>
+
+  <!-- 板块2：B4/5/6 腰部跃迁 -->
+  <div style="background:#1e2533;border-radius:10px;padding:16px;margin-bottom:16px">
+    <div style="font-size:14px;font-weight:700;color:#f1f5f9;margin-bottom:12px;display:flex;align-items:center;gap:8px">
+      <span style="background:#7c3aed;color:#fff;padding:2px 10px;border-radius:12px;font-size:11px">B4 腰部</span>
+      本月B4+商家数 · 跃迁商家数 · 跃迁率
+      <span style="margin-left:auto;font-size:11px;color:#94a3b8;font-weight:400">跃迁率 &gt;25% <span style="color:#16a34a">■</span> 优秀 · &lt;12% <span style="color:#e8372c">■</span> 偏弱</span>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+      <div>
+        <div style="font-size:11px;color:#94a3b8;margin-bottom:4px">跃迁率（%）· 基准线=18.93%</div>
+        <div id="b4-bar-promo" style="height:320px"></div>
+      </div>
+      <div>
+        <div style="font-size:11px;color:#94a3b8;margin-bottom:4px">B4+ 店均GMV 环比（%）</div>
+        <div id="b4-bar-arpu" style="height:320px"></div>
+      </div>
+    </div>
+    <div class="tbl-wrap" style="margin-top:8px">
+      <table>
+        <thead><tr>
+          <th>行业组</th>
+          <th>本月B4+商家数</th>
+          <th>店均GMV（万）</th>
+          <th>上月店均GMV（万）</th>
+          <th>店均环比</th>
+          <th>跃迁商家数</th>
+          <th>跃迁占比</th>
+        </tr></thead>
+        <tbody id="b4-tbody"></tbody>
+        <tfoot><tr style="font-weight:700;background:#1a2030">
+          <td>【合计】</td><td>6,409</td><td>52.13</td><td>50.79</td>
+          <td class="up">+2.65%</td><td class="up">1,213</td><td class="up">18.93%</td>
+        </tr></tfoot>
+      </table>
+    </div>
+  </div>
+
+  <!-- 板块3：新开商家 -->
+  <div style="background:#1e2533;border-radius:10px;padding:16px">
+    <div style="font-size:14px;font-weight:700;color:#f1f5f9;margin-bottom:12px;display:flex;align-items:center;gap:8px">
+      <span style="background:#16a34a;color:#fff;padding:2px 10px;border-radius:12px;font-size:11px">新开激活</span>
+      新开商家数 · 店均GMV · B4+达标情况
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px">
+      <div style="grid-column:span 2">
+        <div style="font-size:11px;color:#94a3b8;margin-bottom:4px">新开商家：店均GMV（万）vs 商家数（气泡大小）</div>
+        <div id="new-scatter" style="height:280px"></div>
+      </div>
+      <div>
+        <div style="font-size:11px;color:#94a3b8;margin-bottom:4px">B4+达标商家（新开中）</div>
+        <div id="new-donut" style="height:280px"></div>
+      </div>
+    </div>
+    <div class="tbl-wrap" style="margin-top:8px">
+      <table>
+        <thead><tr>
+          <th>行业组</th>
+          <th>新开商家数</th>
+          <th>店均GMV（万）</th>
+          <th>B4+商家数</th>
+          <th>B4+占比</th>
+        </tr></thead>
+        <tbody id="new-tbody"></tbody>
+        <tfoot><tr style="font-weight:700;background:#1a2030">
+          <td>【合计】</td><td>5,538</td><td>2.14</td><td>140</td><td>2.5%</td>
+        </tr></tfoot>
+      </table>
+    </div>
+  </div>
 </div>
+
 
 <!-- L3 载体结构 -->
 <div class="layer" id="l3">
@@ -1208,6 +1406,128 @@ function sortKol(mode,btn){
   document.querySelectorAll('#s-kol .sort-btn').forEach(b=>{b.className='sort-btn';});
   btn.className='sort-btn ak';
   renderKol(mode);
+}
+
+
+function initMerchantCharts(){
+  if(window._merchantInited) return;
+  window._merchantInited = true;
+
+  // ── B5/6 店均环比条形图 ──
+  (function(){
+    const el = document.getElementById('b56-bar-arpu');
+    if(!el) return;
+    const ch = echarts.init(el);
+    const sorted = [...b56Data].sort((a,b)=>a.arpu_chg-b.arpu_chg);
+    ch.setOption({
+      grid:{left:110,right:60,top:10,bottom:20},
+      xAxis:{type:'value',axisLabel:{formatter:v=>v+'%'},splitLine:{lineStyle:{color:'#2a3344'}}},
+      yAxis:{type:'category',data:sorted.map(d=>d.n.replace(/.*?（/,'').replace('）','')),axisLabel:{fontSize:10,color:'#94a3b8'}},
+      series:[{type:'bar',barMaxWidth:14,
+        data:sorted.map(d=>({value:d.arpu_chg,
+          itemStyle:{color:d.arpu_chg>=15?'#16a34a':d.arpu_chg>=-15?'#eab308':'#e8372c'}})),
+        label:{show:true,position:'right',formatter:p=>(p.value>=0?'+':'')+p.value.toFixed(1)+'%',fontSize:9,color:'#e2e8f0'}},
+        {type:'line',markLine:{silent:true,symbol:'none',lineStyle:{color:'#475569',type:'dashed'},data:[{xAxis:0}]}}
+      ]
+    });
+  })();
+
+  // ── B5/6 降级率条形图 ──
+  (function(){
+    const el = document.getElementById('b56-bar-demote');
+    if(!el) return;
+    const ch = echarts.init(el);
+    const sorted = [...b56Data].sort((a,b)=>b.demote_pct-a.demote_pct);
+    ch.setOption({
+      grid:{left:110,right:60,top:10,bottom:20},
+      xAxis:{type:'value',axisLabel:{formatter:v=>v+'%'},splitLine:{lineStyle:{color:'#2a3344'}}},
+      yAxis:{type:'category',data:sorted.map(d=>d.n.replace(/.*?（/,'').replace('）','')),axisLabel:{fontSize:10,color:'#94a3b8'}},
+      series:[{type:'bar',barMaxWidth:14,
+        data:sorted.map(d=>({value:d.demote_pct,
+          itemStyle:{color:d.demote_pct>=35?'#e8372c':d.demote_pct>=28.6?'#eab308':'#16a34a'}})),
+        label:{show:true,position:'right',formatter:p=>p.value.toFixed(1)+'%',fontSize:9,color:'#e2e8f0'}},
+        {type:'line',markLine:{silent:true,symbol:'none',lineStyle:{color:'#e8372c',type:'dashed',width:2},data:[{xAxis:28.6}]}}
+      ]
+    });
+  })();
+
+  // ── B4 跃迁率条形图 ──
+  (function(){
+    const el = document.getElementById('b4-bar-promo');
+    if(!el) return;
+    const ch = echarts.init(el);
+    const sorted = [...b4Data].sort((a,b)=>b.promo_pct-a.promo_pct);
+    ch.setOption({
+      grid:{left:110,right:60,top:10,bottom:20},
+      xAxis:{type:'value',axisLabel:{formatter:v=>v+'%'},splitLine:{lineStyle:{color:'#2a3344'}}},
+      yAxis:{type:'category',data:sorted.map(d=>d.n.replace(/.*?（/,'').replace('）','')),axisLabel:{fontSize:10,color:'#94a3b8'}},
+      series:[{type:'bar',barMaxWidth:14,
+        data:sorted.map(d=>({value:d.promo_pct,
+          itemStyle:{color:d.promo_pct>=25?'#16a34a':d.promo_pct>=18.93?'#3b82f6':d.promo_pct>=12?'#eab308':'#e8372c'}})),
+        label:{show:true,position:'right',formatter:p=>p.value.toFixed(1)+'%',fontSize:9,color:'#e2e8f0'}},
+        {type:'line',markLine:{silent:true,symbol:'none',lineStyle:{color:'#94a3b8',type:'dashed'},data:[{xAxis:18.93}]}}
+      ]
+    });
+  })();
+
+  // ── B4 店均GMV环比 ──
+  (function(){
+    const el = document.getElementById('b4-bar-arpu');
+    if(!el) return;
+    const ch = echarts.init(el);
+    const sorted = [...b4Data].sort((a,b)=>a.arpu_chg-b.arpu_chg);
+    ch.setOption({
+      grid:{left:110,right:60,top:10,bottom:20},
+      xAxis:{type:'value',axisLabel:{formatter:v=>v+'%'},splitLine:{lineStyle:{color:'#2a3344'}}},
+      yAxis:{type:'category',data:sorted.map(d=>d.n.replace(/.*?（/,'').replace('）','')),axisLabel:{fontSize:10,color:'#94a3b8'}},
+      series:[{type:'bar',barMaxWidth:14,
+        data:sorted.map(d=>({value:d.arpu_chg,
+          itemStyle:{color:d.arpu_chg>=15?'#16a34a':d.arpu_chg>=-15?'#eab308':'#e8372c'}})),
+        label:{show:true,position:'right',formatter:p=>(p.value>=0?'+':'')+p.value.toFixed(1)+'%',fontSize:9,color:'#e2e8f0'}},
+        {type:'line',markLine:{silent:true,symbol:'none',lineStyle:{color:'#475569',type:'dashed'},data:[{xAxis:0}]}}
+      ]
+    });
+  })();
+
+  // ── 新开商家散点图 ──
+  (function(){
+    const el = document.getElementById('new-scatter');
+    if(!el) return;
+    const ch = echarts.init(el);
+    ch.setOption({
+      tooltip:{formatter:p=>`${p.data[3]}<br>店均GMV: ¥${p.data[1]}万<br>商家数: ${p.data[0]}<br>B4+: ${p.data[2]}`},
+      xAxis:{name:'新开商家数',nameLocation:'middle',nameGap:22,splitLine:{show:false},axisLabel:{fontSize:9,color:'#94a3b8'}},
+      yAxis:{name:'店均GMV（万）',nameLocation:'middle',nameGap:40,splitLine:{show:false},axisLabel:{fontSize:9,color:'#94a3b8'}},
+      series:[{type:'scatter',
+        symbolSize:d=>Math.max(8,Math.sqrt(d[0])*2.5),
+        itemStyle:{color:d=>d.data[1]>=10?'rgba(22,163,74,0.8)':d.data[1]>=2.14?'rgba(59,130,246,0.8)':'rgba(100,116,139,0.7)',borderColor:'#fff',borderWidth:1},
+        label:{show:true,position:'right',formatter:d=>d.data[3].replace(/.*?（/,'').replace('）',''),fontSize:8,color:'#94a3b8'},
+        data:newMerData.map(d=>[d.cnt,d.arpu,d.b4plus,d.n])
+      }],
+      graphic:[{type:'line',shape:{x1:'25%',y1:'95%',x2:'25%',y2:'5%'},style:{stroke:'rgba(255,255,255,0.1)',lineDash:[3,3]}}]
+    });
+  })();
+
+  // ── 新开 B4+ Donut ──
+  (function(){
+    const el = document.getElementById('new-donut');
+    if(!el) return;
+    const ch = echarts.init(el);
+    const b4plus = newMerData.reduce((s,d)=>s+d.b4plus,0);
+    const total = newMerData.reduce((s,d)=>s+d.cnt,0);
+    ch.setOption({
+      tooltip:{formatter:p=>`${p.name}: ${p.value}家 (${(p.percent).toFixed(1)}%)`},
+      legend:{show:false},
+      series:[{type:'pie',radius:['50%','70%'],center:['50%','50%'],
+        label:{show:true,formatter:p=>p.name+'\n'+p.value+'家',fontSize:9,color:'#e2e8f0'},
+        data:[
+          {value:b4plus,name:'B4+达标',itemStyle:{color:'#16a34a'}},
+          {value:total-b4plus,name:'B3以下',itemStyle:{color:'#334155'}}
+        ]}],
+      graphic:[{type:'text',left:'center',top:'42%',style:{text:'B4+达标',fill:'#94a3b8',fontSize:9}},
+               {type:'text',left:'center',top:'52%',style:{text:'2.5%',fill:'#f1f5f9',fontSize:18,fontWeight:'bold'}}]
+    });
+  })();
 }
 
 function initKolCharts(){
