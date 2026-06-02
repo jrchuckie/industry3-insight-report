@@ -1135,7 +1135,7 @@ function buildLCard(d,rank){
 
 // ═══ ECharts 图表 ═══
 function mkBarChart(elId,data,base,unit,colorBase){
-  const sorted=[...data].sort((a,b)=>a[1]-b[1]);
+  const sorted=[...data].sort((a,b)=>b[1]-a[1]);
   const names=sorted.map(x=>x[0]);
   const vals=sorted.map(x=>x[1]);
   const colors=vals.map(v=>v>=base?'#16a34a':v>=base*.7?'#eab308':'#e8372c');
@@ -1186,88 +1186,35 @@ function renderNote(sort){
   else if(sort==='pv')sorted.sort((a,b)=>a.pavg-b.pavg);
   document.getElementById('n-cards').innerHTML=sorted.map((d,i)=>buildNCard(d,i+1)).join('');
   // 更新汇总摘要
-  renderNoteAttn(noteData);
+  (function(){
+    const attn=document.getElementById('n-attn-bar');
+    if(!attn) return;
+    const sn=n=>n.replace(/.*?（/,'').replace('）','');
+    const pill=(n,bg,tc)=>`<span style="background:${bg};color:${tc};padding:1px 6px;border-radius:8px;margin:1px;display:inline-block;font-size:10px">${n}</span>`;
+    const metrics=[
+      {label:'店均发布数',base:100,unit:'条',lowThr:70, yoyThr:-20,vFn:d=>d.pub_avg,   yFn:d=>d.pub_avg_y},
+      {label:'篇均曝光',  base:62, unit:'次',lowThr:43, yoyThr:-20,vFn:d=>d.pavg,      yFn:d=>d.expo_y},
+      {label:'CTR1',      base:15.06,unit:'%',lowThr:10.5,yoyThr:-15,vFn:d=>d.ctr1*100,yFn:d=>d.ctr1_y},
+      {label:'CTR2',      base:9.13,unit:'%', lowThr:6.4, yoyThr:-15,vFn:d=>d.ctr2*100,yFn:d=>d.ctr2_y},
+      {label:'CVR',       base:6.53,unit:'%', lowThr:4.6, yoyThr:-15,vFn:d=>d.cvr*100, yFn:d=>d.cvr_y},
+      {label:'客单价',    base:50.9,unit:'元',lowThr:35,  yoyThr:-15,vFn:d=>d.aov,      yFn:d=>d.aov_y},
+    ];
+    const cards=metrics.map(m=>{
+      const lowBad=noteData.filter(d=>d[m.vFn.toString()]!==undefined||true).filter(d=>m.vFn(d)!==undefined&&m.vFn(d)<m.lowThr).map(d=>sn(d.n));
+      const yoyBad=noteData.filter(d=>m.yFn(d)!==undefined&&m.yFn(d)<=m.yoyThr).map(d=>sn(d.n));
+      const hasAny=lowBad.length||yoyBad.length;
+      return `<div style="background:#fff;border:1px solid ${hasAny?'#fbbf24':'#e2e8f0'};border-radius:8px;padding:8px 10px;${hasAny?'border-left:3px solid #f59e0b':''}">
+        <div style="font-size:11px;font-weight:700;color:#1e293b;margin-bottom:2px">${m.label}<span style="font-weight:400;color:#64748b;font-size:9px;margin-left:4px">基准${m.base}${m.unit}</span></div>
+        ${lowBad.length?`<div style="display:flex;align-items:center;gap:4px;margin-bottom:3px"><span style="font-size:9px;color:#92400e;white-space:nowrap">🔶 绝对值偏低</span><span style="display:flex;flex-wrap:wrap;gap:2px">${lowBad.map(n=>pill(n,'#fde68a','#78350f')).join('')}</span></div>`:''}
+        ${yoyBad.length?`<div style="display:flex;align-items:center;gap:4px"><span style="font-size:9px;color:#991b1b;white-space:nowrap">📉 YoY下滑</span><span style="display:flex;flex-wrap:wrap;gap:2px">${yoyBad.map(n=>pill(n,'#fee2e2','#7f1d1d')).join('')}</span></div>`:''}
+        ${!hasAny?'<span style="font-size:9px;color:#16a34a">✓ 无异常</span>':''}
+      </div>`;
+    }).join('');
+    attn.innerHTML=`<div style="background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:10px 14px;margin-bottom:12px"><div style="font-size:12px;font-weight:700;color:#92400e;margin-bottom:8px">📌 需关注行业（按指标）</div><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">${cards}</div></div>`;
+  })();
 }
 
-function renderNoteAttn(data){
-  const el=document.getElementById('n-attn-bar');
-  if(!el) return;
-  // 各指标有问题的行业
-  const NB2={pub_avg:100,pavg:62,gpm:38.2,ctr1:0.15,ctr2:0.09,cvr:0.065};
-  const issues={
-    '店均发布数<70条': data.filter(d=>d.pub_avg<70).map(d=>d.n.replace(/.*?（/,'').replace('）','')),
-    '篇均曝光<40次':  data.filter(d=>d.pavg<40).map(d=>d.n.replace(/.*?（/,'').replace('）','')),
-    'GPM<30元':       data.filter(d=>d.gpm<30).map(d=>d.n.replace(/.*?（/,'').replace('）','')),
-    '曝光YoY<-30%':   data.filter(d=>d.expo_y<=-30).map(d=>d.n.replace(/.*?（/,'').replace('）','')),
-    'GMV YoY<-20%':   data.filter(d=>d.gmv_y<=-20).map(d=>d.n.replace(/.*?（/,'').replace('）','')),
-    '店均发布YoY<-30%':data.filter(d=>d.pub_avg_y<=-30).map(d=>d.n.replace(/.*?（/,'').replace('）','')),
-  };
-  el.innerHTML=Object.entries(issues).filter(([k,v])=>v.length>0).map(([k,v])=>
-    `<div style="display:flex;align-items:baseline;gap:6px;padding:5px 0;border-bottom:1px solid #fde68a">
-      <span style="font-size:11px;color:#92400e;font-weight:600;white-space:nowrap;min-width:120px">⚠️ ${k}</span>
-      <span style="font-size:11px;color:#374151">${v.join('、')}</span>
-    </div>`
-  ).join('') || '<div style="color:#16a34a;font-size:11px;padding:4px 0">✅ 无明显异常行业</div>';
-}
-function renderLive(sort){
-  const sorted=[...liveData];
-  if(sort==='gmv')sorted.sort((a,b)=>b.gmv-a.gmv);
-  else if(sort==='sev')sorted.sort((a,b)=>lSev(b)-lSev(a)||b.gmv-a.gmv);
-  else if(sort==='hexp')sorted.sort((a,b)=>a.hexp-b.hexp);
-  document.getElementById('l-cards').innerHTML=sorted.map((d,i)=>buildLCard(d,i+1)).join('');
-}
-
-function sortNote(k,btn){
-  noteSort=k;
-  document.querySelectorAll('#s-note .sort-btn').forEach(b=>b.classList.remove('an'));
-  btn.classList.add('an');renderNote(k);
-}
-function sortLive(k,btn){
-  liveSort=k;
-  document.querySelectorAll('#s-live .sort-btn').forEach(b=>b.classList.remove('al'));
-  btn.classList.add('al');renderLive(k);
-}
-
-let nInited=false,lInited=false,kInited=false;
-function switchTab(tab){
-  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(b=>b.className='tab-btn');
-  document.getElementById('p-'+tab).classList.add('active');
-  document.getElementById('tb-'+tab).classList.add('active-'+tab);
-  document.getElementById('s-note').style.display=tab==='note'?'flex':'none';
-  document.getElementById('s-live').style.display=tab==='live'?'flex':'none';
-  document.getElementById('s-kol').style.display=tab==='kol'?'flex':'none';
-  // 按需初始化 + resize
-  setTimeout(()=>{
-    if(tab==='note'){
-      const bubbleEl=document.getElementById('n-bubble');
-      if(!echarts.getInstanceByDom(bubbleEl)) initNoteCharts();
-    }
-    if(tab==='live'){
-      const lBubble=document.getElementById('l-bubble');
-      if(!echarts.getInstanceByDom(lBubble)) initLiveCharts();
-    }
-    if(tab==='kol'){
-      const kEl=document.getElementById('kol-bar-sess');
-      if(!echarts.getInstanceByDom(kEl)) initKolCharts();
-    }
-    ['n-bubble','n-bar-exp','n-bar-gpm','n-bar-gmv',
-     'l-bubble','l-bar-exp','l-bar-gpm','l-bar-gmv',
-     'kol-bar-sess','kol-bar-avgd','kol-bar-gmv'].forEach(id=>{
-      const el=document.getElementById(id);
-      const c=el&&echarts.getInstanceByDom(el);
-      if(c) c.resize();
-    });
-  },100);
-}
-
-function initNoteCharts(){
-  if(echarts.getInstanceByDom(document.getElementById('n-bubble'))) return;
-
-  // ── 基准值 ──
-  const BASE = {expo:6.31, pavg:62, gpm:38.2, gmv:0.27, pub_avg:100,
-                ctr1:0.1506, ctr2:0.0913, cvr:0.0653, aov:50.9};
-
+  
   // ── 气泡图：总曝光 × GPM，气泡大小=笔记GMV（对数缩放），统一蓝色 ──
   (function(){
     const el = document.getElementById('n-bubble');
@@ -1350,16 +1297,19 @@ GPM: ¥${d.gpm} ${ystr(d.gpm_y)}<br>
           formatter: p => {
             const d = sorted[p.dataIndex];
             const yoy = d[yoyField];
+            if(yoy===undefined||yoy===null) return `{v|${p.value.toFixed(2)}${unit}}`;
             const yoyStr = yoy >= 0 ? `+${yoy.toFixed(1)}%` : `${yoy.toFixed(1)}%`;
-            const col = yoy >= 25 ? '#16a34a' : yoy <= -25 ? '#dc2626' : '#374151';
-            return `{v|${p.value.toFixed(2)}${unit}}  {y|${yoyStr}}`;
+            const ycol = yoy >= 25 ? '#16a34a' : yoy <= -25 ? '#dc2626' : '#6b7280';
+            const ybg  = yoy >= 25 ? '#dcfce7' : yoy <= -25 ? '#fee2e2' : 'transparent';
+            return `{v|${p.value.toFixed(2)}${unit}} {yoy_${ycol.replace('#','')}|${yoyStr}}`;
           },
-          rich:{
-            v:{color:'#1e293b',fontSize:9,width:50,align:'right'},
-            y:{fontSize:9,width:55,align:'right',
-               color:'inherit'  // 颜色通过每行独立计算
-            }
-          }
+          rich:(()=>{
+            const r={v:{color:'#1e293b',fontSize:9,width:55,align:'right'}};
+            [['16a34a','#16a34a','#dcfce7'],['dc2626','#dc2626','#fee2e2'],['6b7280','#6b7280','transparent']].forEach(([k,c,bg])=>{
+              r[`yoy_${k}`]={fontSize:9,width:58,align:'right',color:c,backgroundColor:bg,borderRadius:4,padding:[1,4,1,4]};
+            });
+            return r;
+          })()
         },
         markLine:{silent:true,symbol:'none',
           lineStyle:{color:'#7c3aed',type:'dashed',width:1.5},
@@ -1463,36 +1413,9 @@ GPM: ¥${d.gpm} ${ystr(d.gpm_y)}<br>
     tbody.appendChild(tr);
   });
 
-  // ── 汇总警示更新（动态写入已有容器）──
-  const attn = document.getElementById('n-attn-bar');
-  if(attn){
-    // 6个指标 × 2维度卡片
-    const metricDefs = [
-      {label:'店均发布数', base:100,  unit:'条', lowThr:70,  yoyThr:-20, vFn:d=>d.pub_avg,    yFn:d=>d.pub_avg_y},
-      {label:'篇均曝光',   base:62,   unit:'次', lowThr:43,  yoyThr:-20, vFn:d=>d.pavg,       yFn:d=>d.imp_avg_y},
-      {label:'CTR1',       base:15.06,unit:'%',  lowThr:10.5,yoyThr:-15, vFn:d=>d.ctr1*100,  yFn:d=>d.ctr1_y},
-      {label:'CTR2',       base:9.13, unit:'%',  lowThr:6.4, yoyThr:-15, vFn:d=>d.ctr2*100,  yFn:d=>d.ctr2_y},
-      {label:'CVR',        base:6.53, unit:'%',  lowThr:4.6, yoyThr:-15, vFn:d=>d.cvr*100,   yFn:d=>d.cvr_y},
-      {label:'客单价',     base:50.9, unit:'元', lowThr:35,  yoyThr:-15, vFn:d=>d.aov,        yFn:d=>d.aov_y},
-    ];
-    function sn(n){return n.replace(/.*?（/,'').replace('）','');}
-    function pill(n,bg,tc){return `<span style="background:${bg};color:${tc};padding:1px 6px;border-radius:8px;margin:1px;display:inline-block;font-size:10px">${n}</span>`;}
-    const cardHtml = metricDefs.map(m=>{
-      const lowBad = noteData.filter(d=>m.vFn(d)<m.lowThr).map(d=>sn(d.n));
-      const yoyBad = noteData.filter(d=>m.yFn(d)<=m.yoyThr).map(d=>sn(d.n));
-      const hasAny = lowBad.length||yoyBad.length;
-      return `<div style="background:#fff;border:1px solid ${hasAny?'#fbbf24':'#e2e8f0'};border-radius:8px;padding:8px 10px;${hasAny?'border-left:3px solid #f59e0b':''}">
-        <div style="font-size:11px;font-weight:700;color:#1e293b;margin-bottom:5px">${m.label} <span style="font-weight:400;color:#64748b;font-size:9px">基准${m.base}${m.unit}</span></div>
-        ${lowBad.length?`<div style="display:flex;align-items:center;gap:4px;margin-bottom:3px"><span style="font-size:9px;color:#92400e;white-space:nowrap">🔶 绝对值偏低</span><span style="display:flex;flex-wrap:wrap">${lowBad.map(n=>pill(n,'#fde68a','#78350f')).join('')}</span></div>`:''}
-        ${yoyBad.length?`<div style="display:flex;align-items:center;gap:4px"><span style="font-size:9px;color:#991b1b;white-space:nowrap">📉 YoY下滑</span><span style="display:flex;flex-wrap:wrap">${yoyBad.map(n=>pill(n,'#fee2e2','#7f1d1d')).join('')}</span></div>`:''}
-        ${!hasAny?'<span style="font-size:9px;color:#6b7280">暂无异常 ✅</span>':''}
-      </div>`;
-    }).join('');
-    attn.innerHTML = `<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">${cardHtml}</div>`;
-  }
-}
 
 function initLiveCharts(){
+  ['l-bubble','l-bar-exp','l-bar-gpm','l-bar-gmv'].forEach(id=>{const el=document.getElementById(id);if(el&&echarts.getInstanceByDom(el))echarts.dispose(el);});
   mkBubble('l-bubble',liveData,'exp','gpm','gmv',8.35,44.1,'亿','元');
   mkBarChart('l-bar-exp',liveData.map(d=>[d.n,d.exp]),8.35,'亿','live');
   mkBarChart('l-bar-gpm',liveData.map(d=>[d.n,d.gpm]),44.1,'元','live');
