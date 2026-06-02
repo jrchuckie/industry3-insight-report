@@ -25,14 +25,16 @@ function switchDiag(layerId, btn) {
   document.getElementById('s-live').style.display='none';
 }
 
-// 覆盖switchTab，保证diag tab取消高亮
-const _origSwitchTab = switchTab;
-switchTab = function(which) {
-  document.querySelectorAll('.tab-btn').forEach(b => {
-    b.classList.remove('active-diag');
-  });
-  _origSwitchTab(which);
-};
+// 覆盖switchTab，保证diag tab取消高亮（延迟到所有script加载完后）
+window.addEventListener('load', function(){
+  const _origSwitchTab = switchTab;
+  switchTab = function(which) {
+    document.querySelectorAll('.tab-btn').forEach(b => {
+      b.classList.remove('active-diag');
+    });
+    _origSwitchTab(which);
+  };
+});
 </script>
 <script>
 // ===== UTILITIES =====
