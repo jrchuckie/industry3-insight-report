@@ -1352,10 +1352,10 @@ function makeBar(id, data, baseVal, baseLabel, unit, yoyField, valField){
           return r;
         })()
       },
-      markLine:{silent:true,symbol:'none',
+      ...(baseVal!=null?{markLine:{silent:true,symbol:'none',
         lineStyle:{color:'#7c3aed',type:'dashed',width:1.5},
         data:[{xAxis:baseVal,label:{show:true,formatter:baseLabel,
-          position:'insideEndTop',fontSize:8,color:'#7c3aed'}}]},
+          position:'insideEndTop',fontSize:8,color:'#7c3aed'}}]}}:{markLine:{data:[]}}),
       data: sorted.map(d=>d[valField])
     }]
   });
