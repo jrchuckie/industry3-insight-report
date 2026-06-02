@@ -1315,19 +1315,15 @@ GPM: ¥${d.gpm} ${ystr(d.gpm_y)}<br>
         label:{show:true,
           formatter: p => Array.isArray(p.data)&&p.data[3] ? p.data[3].replace(/.*?（/,'').replace('）','') : '',
           fontSize:9,color:'#374151',position:'top'},
-        data: noteData.map(d=>[d.expo, d.gpm, d.gmv, d.n, d])
-      }],
-      // 象限分割线
-      markLine:{silent:true,symbol:'none',lineStyle:{type:'dashed',width:1.5},
-        data:[
-          [{xAxis:BASE.expo,yAxis:0,label:{show:true,formatter:'曝光中位数 '+BASE.expo+'亿',
-            position:'insideTopRight',fontSize:9,color:'#7c3aed'}},
-           {xAxis:BASE.expo,yAxis:110}],
-          [{xAxis:0,yAxis:BASE.gpm,label:{show:true,formatter:'GPM基准 ¥'+BASE.gpm,
-            position:'insideTopRight',fontSize:9,color:'#d97706'}},
-           {xAxis:37,yAxis:BASE.gpm}]
-        ]
-      }
+        data: noteData.map(d=>[d.expo, d.gpm, d.gmv, d.n, d]),
+        markLine:{silent:true,symbol:'none',lineStyle:{type:'dashed',width:1.5},animation:false,
+          data:[
+            {xAxis:BASE.expo,lineStyle:{color:'#7c3aed'},
+             label:{show:true,formatter:'曝光中位 '+BASE.expo+'亿',position:'insideEndTop',fontSize:9,color:'#7c3aed'}},
+            {yAxis:BASE.gpm, lineStyle:{color:'#d97706'},
+             label:{show:true,formatter:'GPM基准 ¥'+BASE.gpm,position:'insideEndTop',fontSize:9,color:'#d97706'}}
+          ]}
+      }]
     });
   })();
 
@@ -1470,28 +1466,29 @@ GPM: ¥${d.gpm} ${ystr(d.gpm_y)}<br>
   // ── 汇总警示更新（动态写入已有容器）──
   const attn = document.getElementById('n-attn');
   if(attn){
-    const lowItems = [
-      {label:'店均发布数<70条', list: noteData.filter(d=>d.pub_avg<70).map(d=>d.n.replace(/.*?（/,'').replace('）',''))},
-      {label:'篇均曝光<43次',   list: noteData.filter(d=>d.pavg<43).map(d=>d.n.replace(/.*?（/,'').replace('）',''))},
-      {label:'GPM<30元',        list: noteData.filter(d=>d.gpm<30).map(d=>d.n.replace(/.*?（/,'').replace('）',''))},
-    ].filter(x=>x.list.length>0);
-    const dropItems = [
-      {label:'曝光YoY≤-30%',    list: noteData.filter(d=>d.expo_y<=-30).map(d=>d.n.replace(/.*?（/,'').replace('）',''))},
-      {label:'GMV YoY≤-20%',   list: noteData.filter(d=>d.gmv_y<=-20).map(d=>d.n.replace(/.*?（/,'').replace('）',''))},
-      {label:'店均发布YoY≤-30%',list: noteData.filter(d=>d.pub_avg_y<=-30).map(d=>d.n.replace(/.*?（/,'').replace('）',''))},
-    ].filter(x=>x.list.length>0);
-
-    attn.innerHTML = `
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-      <div style="background:#fffbeb;border:1px solid #fcd34d;border-radius:8px;padding:10px">
-        <div style="font-size:12px;font-weight:700;color:#92400e;margin-bottom:6px">🟡 绝对值偏低行业</div>
-        ${lowItems.map(x=>`<div style="margin-bottom:4px;font-size:11px"><span style="color:#92400e;font-weight:600">${x.label}</span>　${x.list.map(n=>`<span style="background:#fef3c7;color:#92400e;padding:1px 6px;border-radius:8px;margin:1px;display:inline-block">${n}</span>`).join('')}</div>`).join('')}
-      </div>
-      <div style="background:#fef2f2;border:1px solid #fca5a5;border-radius:8px;padding:10px">
-        <div style="font-size:12px;font-weight:700;color:#991b1b;margin-bottom:6px">📉 YoY下滑严重行业</div>
-        ${dropItems.map(x=>`<div style="margin-bottom:4px;font-size:11px"><span style="color:#991b1b;font-weight:600">${x.label}</span>　${x.list.map(n=>`<span style="background:#fee2e2;color:#991b1b;padding:1px 6px;border-radius:8px;margin:1px;display:inline-block">${n}</span>`).join('')}</div>`).join('')}
-      </div>
-    </div>`;
+    // 6个指标 × 2维度卡片
+    const metricDefs = [
+      {label:'店均发布数', base:100,  unit:'条', lowThr:70,  yoyThr:-20, vFn:d=>d.pub_avg,    yFn:d=>d.pub_avg_y},
+      {label:'篇均曝光',   base:62,   unit:'次', lowThr:43,  yoyThr:-20, vFn:d=>d.pavg,       yFn:d=>d.imp_avg_y},
+      {label:'CTR1',       base:15.06,unit:'%',  lowThr:10.5,yoyThr:-15, vFn:d=>d.ctr1*100,  yFn:d=>d.ctr1_y},
+      {label:'CTR2',       base:9.13, unit:'%',  lowThr:6.4, yoyThr:-15, vFn:d=>d.ctr2*100,  yFn:d=>d.ctr2_y},
+      {label:'CVR',        base:6.53, unit:'%',  lowThr:4.6, yoyThr:-15, vFn:d=>d.cvr*100,   yFn:d=>d.cvr_y},
+      {label:'客单价',     base:50.9, unit:'元', lowThr:35,  yoyThr:-15, vFn:d=>d.aov,        yFn:d=>d.aov_y},
+    ];
+    function sn(n){return n.replace(/.*?（/,'').replace('）','');}
+    function pill(n,bg,tc){return `<span style="background:${bg};color:${tc};padding:1px 6px;border-radius:8px;margin:1px;display:inline-block;font-size:10px">${n}</span>`;}
+    const cardHtml = metricDefs.map(m=>{
+      const lowBad = noteData.filter(d=>m.vFn(d)<m.lowThr).map(d=>sn(d.n));
+      const yoyBad = noteData.filter(d=>m.yFn(d)<=m.yoyThr).map(d=>sn(d.n));
+      const hasAny = lowBad.length||yoyBad.length;
+      return `<div style="background:#fff;border:1px solid ${hasAny?'#fbbf24':'#e2e8f0'};border-radius:8px;padding:8px 10px;${hasAny?'border-left:3px solid #f59e0b':''}">
+        <div style="font-size:11px;font-weight:700;color:#1e293b;margin-bottom:5px">${m.label} <span style="font-weight:400;color:#64748b;font-size:9px">基准${m.base}${m.unit}</span></div>
+        ${lowBad.length?`<div style="display:flex;align-items:center;gap:4px;margin-bottom:3px"><span style="font-size:9px;color:#92400e;white-space:nowrap">🔶 绝对值偏低</span><span style="display:flex;flex-wrap:wrap">${lowBad.map(n=>pill(n,'#fde68a','#78350f')).join('')}</span></div>`:''}
+        ${yoyBad.length?`<div style="display:flex;align-items:center;gap:4px"><span style="font-size:9px;color:#991b1b;white-space:nowrap">📉 YoY下滑</span><span style="display:flex;flex-wrap:wrap">${yoyBad.map(n=>pill(n,'#fee2e2','#7f1d1d')).join('')}</span></div>`:''}
+        ${!hasAny?'<span style="font-size:9px;color:#6b7280">暂无异常 ✅</span>':''}
+      </div>`;
+    }).join('');
+    attn.innerHTML = `<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">${cardHtml}</div>`;
   }
 }
 
