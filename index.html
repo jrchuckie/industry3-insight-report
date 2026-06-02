@@ -753,10 +753,7 @@ document.addEventListener('DOMContentLoaded', function() {
         <div id="n-bar-gmv" style="height:500px"></div>
       </div>
       <div class="bar-card">
-        <div class="chart-title">店均笔记发布数 · YoY标注</div>
-        <div class="chart-sub">基准线 = 100条/店</div>
-        <div id="n-bar-pub" style="height:500px"></div>
-      </div>
+        
     </div>
   </div>
   <div class="funnel-ref">
@@ -770,7 +767,8 @@ document.addEventListener('DOMContentLoaded', function() {
     <span class="fdot" style="background:#16a34a"></span>GPM
     <span style="margin-left:auto;font-size:10px;color:#6b7280">客单价基准=¥50.9中位数 · ▌基准线=60%处</span>
   </div>
-  <div class="cards-container" id="n-cards"></div>
+  <div class="cards-container" id="n-attn-bar" style="background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:10px 14px;margin-bottom:12px"><div style="font-size:12px;font-weight:700;color:#92400e;margin-bottom:6px">📌 需关注行业（绝对值偏低 / YoY下滑）</div></div>
+<div id="n-cards"></div>
 </div>
 
 <!-- ── 店播 ── -->
@@ -1191,6 +1189,29 @@ function renderNote(sort){
   else if(sort==='sev')sorted.sort((a,b)=>nSev(b)-nSev(a)||b.gmv-a.gmv);
   else if(sort==='pv')sorted.sort((a,b)=>a.pavg-b.pavg);
   document.getElementById('n-cards').innerHTML=sorted.map((d,i)=>buildNCard(d,i+1)).join('');
+  // 更新汇总摘要
+  renderNoteAttn(noteData);
+}
+
+function renderNoteAttn(data){
+  const el=document.getElementById('n-attn-bar');
+  if(!el) return;
+  // 各指标有问题的行业
+  const NB2={pub_avg:100,pavg:62,gpm:38.2,ctr1:0.15,ctr2:0.09,cvr:0.065};
+  const issues={
+    '店均发布数<70条': data.filter(d=>d.pub_avg<70).map(d=>d.n.replace(/.*?（/,'').replace('）','')),
+    '篇均曝光<40次':  data.filter(d=>d.pavg<40).map(d=>d.n.replace(/.*?（/,'').replace('）','')),
+    'GPM<30元':       data.filter(d=>d.gpm<30).map(d=>d.n.replace(/.*?（/,'').replace('）','')),
+    '曝光YoY<-30%':   data.filter(d=>d.expo_y<=-30).map(d=>d.n.replace(/.*?（/,'').replace('）','')),
+    'GMV YoY<-20%':   data.filter(d=>d.gmv_y<=-20).map(d=>d.n.replace(/.*?（/,'').replace('）','')),
+    '店均发布YoY<-30%':data.filter(d=>d.pub_avg_y<=-30).map(d=>d.n.replace(/.*?（/,'').replace('）','')),
+  };
+  el.innerHTML=Object.entries(issues).filter(([k,v])=>v.length>0).map(([k,v])=>
+    `<div style="display:flex;align-items:baseline;gap:6px;padding:5px 0;border-bottom:1px solid #fde68a">
+      <span style="font-size:11px;color:#92400e;font-weight:600;white-space:nowrap;min-width:120px">⚠️ ${k}</span>
+      <span style="font-size:11px;color:#374151">${v.join('、')}</span>
+    </div>`
+  ).join('') || '<div style="color:#16a34a;font-size:11px;padding:4px 0">✅ 无明显异常行业</div>';
 }
 function renderLive(sort){
   const sorted=[...liveData];
@@ -1312,7 +1333,15 @@ function initNoteCharts(){
     });
   })();
 
-  // ── Bar: 总曝光（含YoY标注）──
+  
+
+  
+
+  
+
+}
+
+  // ── Bar: n-bar-exp（高→低排序，rich text YoY）──
   (function(){
     const el=document.getElementById('n-bar-exp'); if(!el) return;
     const ch=echarts.init(el);
@@ -1320,26 +1349,36 @@ function initNoteCharts(){
     const sorted=[...noteData].sort((a,b)=>b.expo-a.expo);
     ch.setOption({
       backgroundColor:'#fff',
-      grid:{left:100,right:80,top:10,bottom:20},
+      grid:{left:80,right:10,top:10,bottom:20},
       xAxis:{type:'value',splitLine:{lineStyle:{color:'#f1f5f9'}},axisLabel:{color:'#1e293b',fontSize:9}},
       yAxis:{type:'category',data:sorted.map(d=>d.n.replace(/.*?（/,'').replace('）','')),axisLabel:{color:'#1e293b',fontSize:9}},
-      series:[{type:'bar',barMaxWidth:14,
-        data:sorted.map(d=>({value:d.expo,
-          itemStyle:{color:d.expo>=med*1.5?'#16a34a':d.expo>=med?'#3b82f6':d.expo>=med*0.5?'#f59e0b':'#e05c5c'}})),
-        label:{show:true,position:'right',fontSize:9,color:'#1e293b',
-          formatter:p=>{
-            const d=sorted[p.dataIndex];
-            const yoy=d.expo_y;
-            const sign=yoy>=0?'+':'';
-            const mark=Math.abs(yoy)>=25?'★':'';
-            return p.value.toFixed(2)+'亿  '+mark+sign+yoy+'%'+mark;
-          }}
-      },{type:'line',markLine:{silent:true,symbol:'none',lineStyle:{color:'#6366f1',type:'dashed'},
-        data:[{xAxis:med}],label:{formatter:'中位数',fontSize:9,color:'#6366f1'}}}]
+      series:[
+        {type:'bar',barMaxWidth:14,
+          data:sorted.map(d=>({value:d.expo,itemStyle:{color:'#3b82f6'}})),
+          label:{show:true,position:'right',fontSize:10,
+            rich:{
+              v:{color:'#1e293b',fontSize:10,padding:[0,6,0,0]},
+              yp:{color:'#16a34a',fontSize:10,fontWeight:'bold',backgroundColor:'#f0fdf4',padding:[1,4,1,4],borderRadius:3},
+              yn:{color:'#dc2626',fontSize:10,fontWeight:'bold',backgroundColor:'#fef2f2',padding:[1,4,1,4],borderRadius:3},
+              yz:{color:'#374151',fontSize:10,padding:[1,4,1,4]}
+            },
+            formatter:p=>{
+              const d=sorted[p.dataIndex];
+              const yoy=d.expo_y;
+              const sign=yoy>=0?'+':'';
+              const tag=yoy>=20?'yp':yoy<=-20?'yn':'yz';
+              const valStr='亿'==='亿'?d.expo.toFixed(2)+'亿':'亿'==='元'?d.expo.toFixed(1)+'亿':d.expo.toFixed(2)+'亿';
+              return '{v|'+valStr+'} {'+tag+'|YoY'+sign+yoy+'%}';
+            }
+          }
+        },
+        {type:'line',markLine:{silent:true,symbol:'none',lineStyle:{color:'#6366f1',type:'dashed'},
+          data:[{xAxis:med}],label:{formatter:'中位数6.31亿',fontSize:9,color:'#6366f1'}}}
+      ]
     });
   })();
 
-  // ── Bar: GPM（含YoY标注）──
+  // ── Bar: n-bar-gpm（高→低排序，rich text YoY）──
   (function(){
     const el=document.getElementById('n-bar-gpm'); if(!el) return;
     const ch=echarts.init(el);
@@ -1347,26 +1386,36 @@ function initNoteCharts(){
     const sorted=[...noteData].sort((a,b)=>b.gpm-a.gpm);
     ch.setOption({
       backgroundColor:'#fff',
-      grid:{left:100,right:80,top:10,bottom:20},
+      grid:{left:80,right:10,top:10,bottom:20},
       xAxis:{type:'value',splitLine:{lineStyle:{color:'#f1f5f9'}},axisLabel:{color:'#1e293b',fontSize:9}},
       yAxis:{type:'category',data:sorted.map(d=>d.n.replace(/.*?（/,'').replace('）','')),axisLabel:{color:'#1e293b',fontSize:9}},
-      series:[{type:'bar',barMaxWidth:14,
-        data:sorted.map(d=>({value:d.gpm,
-          itemStyle:{color:d.gpm>=med*1.5?'#16a34a':d.gpm>=med?'#3b82f6':d.gpm>=med*0.5?'#f59e0b':'#e05c5c'}})),
-        label:{show:true,position:'right',fontSize:9,color:'#1e293b',
-          formatter:p=>{
-            const d=sorted[p.dataIndex];
-            const yoy=d.gpm_y;
-            const sign=yoy>=0?'+':'';
-            const mark=Math.abs(yoy)>=25?'★':'';
-            return p.value.toFixed(1)+'元  '+mark+sign+yoy+'%'+mark;
-          }}
-      },{type:'line',markLine:{silent:true,symbol:'none',lineStyle:{color:'#6366f1',type:'dashed'},
-        data:[{xAxis:med}],label:{formatter:'中位数',fontSize:9,color:'#6366f1'}}}]
+      series:[
+        {type:'bar',barMaxWidth:14,
+          data:sorted.map(d=>({value:d.gpm,itemStyle:{color:'#8b5cf6'}})),
+          label:{show:true,position:'right',fontSize:10,
+            rich:{
+              v:{color:'#1e293b',fontSize:10,padding:[0,6,0,0]},
+              yp:{color:'#16a34a',fontSize:10,fontWeight:'bold',backgroundColor:'#f0fdf4',padding:[1,4,1,4],borderRadius:3},
+              yn:{color:'#dc2626',fontSize:10,fontWeight:'bold',backgroundColor:'#fef2f2',padding:[1,4,1,4],borderRadius:3},
+              yz:{color:'#374151',fontSize:10,padding:[1,4,1,4]}
+            },
+            formatter:p=>{
+              const d=sorted[p.dataIndex];
+              const yoy=d.gpm_y;
+              const sign=yoy>=0?'+':'';
+              const tag=yoy>=20?'yp':yoy<=-20?'yn':'yz';
+              const valStr='元'==='亿'?d.gpm.toFixed(2)+'元':'元'==='元'?d.gpm.toFixed(1)+'元':d.gpm.toFixed(2)+'元';
+              return '{v|'+valStr+'} {'+tag+'|YoY'+sign+yoy+'%}';
+            }
+          }
+        },
+        {type:'line',markLine:{silent:true,symbol:'none',lineStyle:{color:'#f59e0b',type:'dashed'},
+          data:[{xAxis:med}],label:{formatter:'GPM中位数38.2元',fontSize:9,color:'#f59e0b'}}}
+      ]
     });
   })();
 
-  // ── Bar: 笔记GMV（含YoY）──
+  // ── Bar: n-bar-gmv（高→低排序，rich text YoY）──
   (function(){
     const el=document.getElementById('n-bar-gmv'); if(!el) return;
     const ch=echarts.init(el);
@@ -1374,50 +1423,34 @@ function initNoteCharts(){
     const sorted=[...noteData].sort((a,b)=>b.gmv-a.gmv);
     ch.setOption({
       backgroundColor:'#fff',
-      grid:{left:100,right:90,top:10,bottom:20},
+      grid:{left:80,right:10,top:10,bottom:20},
       xAxis:{type:'value',splitLine:{lineStyle:{color:'#f1f5f9'}},axisLabel:{color:'#1e293b',fontSize:9}},
       yAxis:{type:'category',data:sorted.map(d=>d.n.replace(/.*?（/,'').replace('）','')),axisLabel:{color:'#1e293b',fontSize:9}},
-      series:[{type:'bar',barMaxWidth:14,
-        data:sorted.map(d=>({value:d.gmv,
-          itemStyle:{color:d.gmv_y>=10?'#16a34a':d.gmv_y>=-10?'#3b82f6':'#e05c5c'}})),
-        label:{show:true,position:'right',fontSize:9,color:'#1e293b',
-          formatter:p=>{
-            const d=sorted[p.dataIndex];
-            const yoy=d.gmv_y;
-            const sign=yoy>=0?'+':'';
-            const mark=Math.abs(yoy)>=25?'★':'';
-            return p.value.toFixed(2)+'亿  '+mark+sign+yoy+'%'+mark;
-          }}
-      },{type:'line',markLine:{silent:true,symbol:'none',lineStyle:{color:'#6366f1',type:'dashed'},
-        data:[{xAxis:med}],label:{formatter:'中位数',fontSize:9,color:'#6366f1'}}}]
+      series:[
+        {type:'bar',barMaxWidth:14,
+          data:sorted.map(d=>({value:d.gmv,itemStyle:{color:'#10b981'}})),
+          label:{show:true,position:'right',fontSize:10,
+            rich:{
+              v:{color:'#1e293b',fontSize:10,padding:[0,6,0,0]},
+              yp:{color:'#16a34a',fontSize:10,fontWeight:'bold',backgroundColor:'#f0fdf4',padding:[1,4,1,4],borderRadius:3},
+              yn:{color:'#dc2626',fontSize:10,fontWeight:'bold',backgroundColor:'#fef2f2',padding:[1,4,1,4],borderRadius:3},
+              yz:{color:'#374151',fontSize:10,padding:[1,4,1,4]}
+            },
+            formatter:p=>{
+              const d=sorted[p.dataIndex];
+              const yoy=d.gmv_y;
+              const sign=yoy>=0?'+':'';
+              const tag=yoy>=20?'yp':yoy<=-20?'yn':'yz';
+              const valStr='亿'==='亿'?d.gmv.toFixed(2)+'亿':'亿'==='元'?d.gmv.toFixed(1)+'亿':d.gmv.toFixed(2)+'亿';
+              return '{v|'+valStr+'} {'+tag+'|YoY'+sign+yoy+'%}';
+            }
+          }
+        },
+        {type:'line',markLine:{silent:true,symbol:'none',lineStyle:{color:'#6366f1',type:'dashed'},
+          data:[{xAxis:med}],label:{formatter:'中位数0.27亿',fontSize:9,color:'#6366f1'}}}
+      ]
     });
   })();
-
-  // ── 新增 Bar: 店均笔记发布数（含YoY）──
-  (function(){
-    const el=document.getElementById('n-bar-pub'); if(!el) return;
-    const ch=echarts.init(el);
-    const med=100;
-    const sorted=[...noteData].sort((a,b)=>b.pub_avg-a.pub_avg);
-    ch.setOption({
-      backgroundColor:'#fff',
-      grid:{left:100,right:90,top:10,bottom:20},
-      xAxis:{type:'value',splitLine:{lineStyle:{color:'#f1f5f9'}},axisLabel:{color:'#1e293b',fontSize:9}},
-      yAxis:{type:'category',data:sorted.map(d=>d.n.replace(/.*?（/,'').replace('）','')),axisLabel:{color:'#1e293b',fontSize:9}},
-      series:[{type:'bar',barMaxWidth:14,
-        data:sorted.map(d=>({value:d.pub_avg,
-          itemStyle:{color:d.pub_avg_y>=10?'#16a34a':d.pub_avg_y>=-10?'#3b82f6':'#e05c5c'}})),
-        label:{show:true,position:'right',fontSize:9,color:'#374151',
-          formatter:p=>{
-            const d=sorted[p.dataIndex];
-            const sign=d.pub_avg_y>=0?'+':'';
-            return `${p.value}条  YoY${sign}${d.pub_avg_y}%`;
-          }}
-      },{type:'line',markLine:{silent:true,symbol:'none',lineStyle:{color:'#6366f1',type:'dashed'},
-        data:[{xAxis:med}],label:{formatter:'基准100条',fontSize:9,color:'#6366f1'}}}]
-    });
-  })();
-}
 function initLiveCharts(){
   mkBubble('l-bubble',liveData,'exp','gpm','gmv',8.35,44.1,'亿','元');
   mkBarChart('l-bar-exp',liveData.map(d=>[d.n,d.exp]),8.35,'亿','live');
