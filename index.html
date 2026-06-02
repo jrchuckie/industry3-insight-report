@@ -1561,7 +1561,7 @@ const wfOverall = {prev:6640, fall:1444, stay:5196, rise:1213, cur:6409};
 
 const wfDepts = [
   {n:'十一组（潮玩）',  prev:931, fall:329, stay:602, rise:284, cur:886, sev:0},
-  {n:'一组（文玩玉翠）',prev:817, fall:102, stay:715, rise:132, cur:847, sev:0},
+  {n:'一组（文玩玉翠）',prev:817, fall:102, stay:715, rise:132, cur:847, sev:-2},
   {n:'十二组（手工）',  prev:595, fall:132, stay:463, rise:99,  cur:562, sev:0},
   {n:'九组（家用）',    prev:550, fall:118, stay:432, rise:102, cur:534, sev:0},
   {n:'二组（亲子生活）',prev:576, fall:110, stay:466, rise:66,  cur:532, sev:1},
@@ -1578,7 +1578,7 @@ const wfDepts = [
   {n:'三组（宠物）',    prev:125, fall:24,  stay:101, rise:19,  cur:120, sev:0},
   {n:'十三组（图书）',  prev:123, fall:29,  stay:94,  rise:23,  cur:117, sev:0},
   {n:'八组（家电）',    prev:112, fall:22,  stay:90,  rise:22,  cur:112, sev:0},
-  {n:'十一组（虚拟）',  prev:69,  fall:11,  stay:58,  rise:31,  cur:89,  sev:0},
+  {n:'十一组（虚拟）',  prev:69,  fall:11,  stay:58,  rise:31,  cur:89,  sev:-1},
 ];
 
 function makeWfOption(d, compact){
@@ -1635,10 +1635,14 @@ function initWaterfallCharts(){
   const grid = document.getElementById('wf-dept-grid');
   if(grid){
     wfDepts.forEach((d,i)=>{
-      const bg = d.sev===2 ? '#fef3c7' : d.sev===1 ? '#fffbeb' : '#fff';
-      const border = d.sev===2 ? '2px solid #f59e0b' : d.sev===1 ? '1px solid #fcd34d' : '1px solid #f1f5f9';
+      const bg = d.sev===2 ? '#fef3c7' : d.sev===1 ? '#fffbeb'
+               : d.sev===-2 ? '#f0fdf4' : d.sev===-1 ? '#f7fef9' : '#fff';
+      const border = d.sev===2 ? '2px solid #f59e0b' : d.sev===1 ? '1px solid #fcd34d'
+               : d.sev===-2 ? '2px solid #16a34a' : d.sev===-1 ? '1px solid #86efac' : '1px solid #f1f5f9';
       const warn = d.sev===2 ? '<span style="font-size:9px;color:#b45309;background:#fde68a;padding:1px 5px;border-radius:8px;margin-left:4px">⚠️严重</span>'
                  : d.sev===1 ? '<span style="font-size:9px;color:#92400e;background:#fef3c7;padding:1px 5px;border-radius:8px;margin-left:4px">⚠️偏弱</span>'
+                 : d.sev===-2 ? '<span style="font-size:9px;color:#166534;background:#bbf7d0;padding:1px 5px;border-radius:8px;margin-left:4px">✅强势</span>'
+                 : d.sev===-1 ? '<span style="font-size:9px;color:#166534;background:#dcfce7;padding:1px 5px;border-radius:8px;margin-left:4px">✅增长</span>'
                  : '';
       const card = document.createElement('div');
       card.style.cssText = `border:${border};border-radius:6px;padding:4px;background:${bg}`;
