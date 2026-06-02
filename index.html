@@ -675,27 +675,7 @@ document.addEventListener('DOMContentLoaded', function() {
     <div id="wf-overall" style="height:220px;margin-bottom:16px"></div>
     <!-- 分行业（每行4个） -->
     <div style="font-size:11px;color:#475569;margin-bottom:8px;font-weight:600">各行业组（19组）</div>
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
-      <div style="border:1px solid #f1f5f9;border-radius:6px;padding:4px"><div id="wf-dept-0" style="height:160px"></div></div>
-      <div style="border:1px solid #f1f5f9;border-radius:6px;padding:4px"><div id="wf-dept-1" style="height:160px"></div></div>
-      <div style="border:1px solid #f1f5f9;border-radius:6px;padding:4px"><div id="wf-dept-2" style="height:160px"></div></div>
-      <div style="border:1px solid #f1f5f9;border-radius:6px;padding:4px"><div id="wf-dept-3" style="height:160px"></div></div>
-      <div style="border:1px solid #f1f5f9;border-radius:6px;padding:4px"><div id="wf-dept-4" style="height:160px"></div></div>
-      <div style="border:1px solid #f1f5f9;border-radius:6px;padding:4px"><div id="wf-dept-5" style="height:160px"></div></div>
-      <div style="border:1px solid #f1f5f9;border-radius:6px;padding:4px"><div id="wf-dept-6" style="height:160px"></div></div>
-      <div style="border:1px solid #f1f5f9;border-radius:6px;padding:4px"><div id="wf-dept-7" style="height:160px"></div></div>
-      <div style="border:1px solid #f1f5f9;border-radius:6px;padding:4px"><div id="wf-dept-8" style="height:160px"></div></div>
-      <div style="border:1px solid #f1f5f9;border-radius:6px;padding:4px"><div id="wf-dept-9" style="height:160px"></div></div>
-      <div style="border:1px solid #f1f5f9;border-radius:6px;padding:4px"><div id="wf-dept-10" style="height:160px"></div></div>
-      <div style="border:1px solid #f1f5f9;border-radius:6px;padding:4px"><div id="wf-dept-11" style="height:160px"></div></div>
-      <div style="border:1px solid #f1f5f9;border-radius:6px;padding:4px"><div id="wf-dept-12" style="height:160px"></div></div>
-      <div style="border:1px solid #f1f5f9;border-radius:6px;padding:4px"><div id="wf-dept-13" style="height:160px"></div></div>
-      <div style="border:1px solid #f1f5f9;border-radius:6px;padding:4px"><div id="wf-dept-14" style="height:160px"></div></div>
-      <div style="border:1px solid #f1f5f9;border-radius:6px;padding:4px"><div id="wf-dept-15" style="height:160px"></div></div>
-      <div style="border:1px solid #f1f5f9;border-radius:6px;padding:4px"><div id="wf-dept-16" style="height:160px"></div></div>
-      <div style="border:1px solid #f1f5f9;border-radius:6px;padding:4px"><div id="wf-dept-17" style="height:160px"></div></div>
-      <div style="border:1px solid #f1f5f9;border-radius:6px;padding:4px"><div id="wf-dept-18" style="height:160px"></div></div>
-    </div>
+    <div id="wf-dept-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px"></div>
   </div>
 
 
@@ -1580,25 +1560,25 @@ function initMerchantCharts(){
 const wfOverall = {prev:6640, fall:1444, stay:5196, rise:1213, cur:6409};
 
 const wfDepts = [
-  {n:'十一组（潮玩）',  prev:931, fall:329, stay:602, rise:284, cur:886},
-  {n:'一组（文玩玉翠）',prev:817, fall:102, stay:715, rise:132, cur:847},
-  {n:'十二组（手工）',  prev:595, fall:132, stay:463, rise:99,  cur:562},
-  {n:'九组（家用）',    prev:550, fall:118, stay:432, rise:102, cur:534},
-  {n:'二组（亲子生活）',prev:576, fall:110, stay:466, rise:66,  cur:532},
-  {n:'五组（休食）',    prev:542, fall:78,  stay:464, rise:52,  cur:516},
-  {n:'十组（家纺）',    prev:306, fall:69,  stay:237, rise:58,  cur:295},
-  {n:'四组（大健康）',  prev:295, fall:42,  stay:253, rise:35,  cur:288},
-  {n:'六组（生鲜）',    prev:288, fall:64,  stay:224, rise:60,  cur:284},
-  {n:'八组（消费电子）',prev:296, fall:58,  stay:238, rise:30,  cur:268},
-  {n:'十组（家饰）',    prev:235, fall:52,  stay:183, rise:48,  cur:231},
-  {n:'十四组（二奢）',  prev:238, fall:50,  stay:188, rise:39,  cur:227},
-  {n:'七组（家具）',    prev:196, fall:46,  stay:150, rise:42,  cur:192},
-  {n:'十三组（教育）',  prev:188, fall:56,  stay:132, rise:55,  cur:187},
-  {n:'十五组（酒旅）',  prev:158, fall:52,  stay:106, rise:16,  cur:122},
-  {n:'三组（宠物）',    prev:125, fall:24,  stay:101, rise:19,  cur:120},
-  {n:'十三组（图书）',  prev:123, fall:29,  stay:94,  rise:23,  cur:117},
-  {n:'八组（家电）',    prev:112, fall:22,  stay:90,  rise:22,  cur:112},
-  {n:'十一组（虚拟）',  prev:69,  fall:11,  stay:58,  rise:31,  cur:89},
+  {n:'十一组（潮玩）',  prev:931, fall:329, stay:602, rise:284, cur:886, sev:0},
+  {n:'一组（文玩玉翠）',prev:817, fall:102, stay:715, rise:132, cur:847, sev:0},
+  {n:'十二组（手工）',  prev:595, fall:132, stay:463, rise:99,  cur:562, sev:0},
+  {n:'九组（家用）',    prev:550, fall:118, stay:432, rise:102, cur:534, sev:0},
+  {n:'二组（亲子生活）',prev:576, fall:110, stay:466, rise:66,  cur:532, sev:1},
+  {n:'五组（休食）',    prev:542, fall:78,  stay:464, rise:52,  cur:516, sev:1},
+  {n:'十组（家纺）',    prev:306, fall:69,  stay:237, rise:58,  cur:295, sev:0},
+  {n:'四组（大健康）',  prev:295, fall:42,  stay:253, rise:35,  cur:288, sev:0},
+  {n:'六组（生鲜）',    prev:288, fall:64,  stay:224, rise:60,  cur:284, sev:0},
+  {n:'八组（消费电子）',prev:296, fall:58,  stay:238, rise:30,  cur:268, sev:1},
+  {n:'十组（家饰）',    prev:235, fall:52,  stay:183, rise:48,  cur:231, sev:0},
+  {n:'十四组（二奢）',  prev:238, fall:50,  stay:188, rise:39,  cur:227, sev:0},
+  {n:'七组（家具）',    prev:196, fall:46,  stay:150, rise:42,  cur:192, sev:0},
+  {n:'十三组（教育）',  prev:188, fall:56,  stay:132, rise:55,  cur:187, sev:0},
+  {n:'十五组（酒旅）',  prev:158, fall:52,  stay:106, rise:16,  cur:122, sev:2},
+  {n:'三组（宠物）',    prev:125, fall:24,  stay:101, rise:19,  cur:120, sev:0},
+  {n:'十三组（图书）',  prev:123, fall:29,  stay:94,  rise:23,  cur:117, sev:0},
+  {n:'八组（家电）',    prev:112, fall:22,  stay:90,  rise:22,  cur:112, sev:0},
+  {n:'十一组（虚拟）',  prev:69,  fall:11,  stay:58,  rise:31,  cur:89,  sev:0},
 ];
 
 function makeWfOption(d, compact){
@@ -1651,14 +1631,29 @@ function initWaterfallCharts(){
     ch.setOption(makeWfOption(wfOverall, false));
   }
 
-  // 各行业分组（每行4个）
-  wfDepts.forEach((d,i)=>{
-    const el = document.getElementById('wf-dept-'+i);
-    if(el){
-      const ch = echarts.init(el);
+  // 各行业分组（动态生成，根据 sev 设背景色）
+  const grid = document.getElementById('wf-dept-grid');
+  if(grid){
+    wfDepts.forEach((d,i)=>{
+      const bg = d.sev===2 ? '#fef3c7' : d.sev===1 ? '#fffbeb' : '#fff';
+      const border = d.sev===2 ? '2px solid #f59e0b' : d.sev===1 ? '1px solid #fcd34d' : '1px solid #f1f5f9';
+      const warn = d.sev===2 ? '<span style="font-size:9px;color:#b45309;background:#fde68a;padding:1px 5px;border-radius:8px;margin-left:4px">⚠️严重</span>'
+                 : d.sev===1 ? '<span style="font-size:9px;color:#92400e;background:#fef3c7;padding:1px 5px;border-radius:8px;margin-left:4px">⚠️偏弱</span>'
+                 : '';
+      const card = document.createElement('div');
+      card.style.cssText = `border:${border};border-radius:6px;padding:4px;background:${bg}`;
+      const ratio = d.rise>0?(d.fall/d.rise).toFixed(1)+'x':'∞';
+      const net = d.cur-d.prev;
+      card.innerHTML = `<div style="font-size:9px;color:#374151;font-weight:600;text-align:center;padding:2px 0;display:flex;align-items:center;justify-content:center">
+        ${d.n.replace(/.*?（/,'').replace('）','')}${warn}
+        <span style="margin-left:4px;color:${net>=0?'#16a34a':'#dc2626'};font-size:9px">(净${net>=0?'+':''}${net})</span>
+      </div>
+      <div id="wf-dept-${i}" style="height:150px"></div>`;
+      grid.appendChild(card);
+      const ch = echarts.init(card.querySelector('#wf-dept-'+i));
       ch.setOption(makeWfOption(d, true));
-    }
-  });
+    });
+  }
 }
 
 function initKolCharts(){
