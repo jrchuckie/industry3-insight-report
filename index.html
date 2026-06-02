@@ -1231,6 +1231,15 @@ function renderNote(sort){
 
 
 
+
+function renderLive(sort){
+  const sorted=[...liveData];
+  if(sort==='gmv')sorted.sort((a,b)=>b.gmv-a.gmv);
+  else if(sort==='sev')sorted.sort((a,b)=>lSev(b)-lSev(a)||b.gmv-a.gmv);
+  else if(sort==='hexp')sorted.sort((a,b)=>a.hexp-b.hexp);
+  document.getElementById('l-cards').innerHTML=sorted.map((d,i)=>buildLCard(d,i+1)).join('');
+}
+
 function initLiveCharts(){
   ['l-bubble','l-bar-exp','l-bar-gpm','l-bar-gmv'].forEach(id=>{const el=document.getElementById(id);if(el&&echarts.getInstanceByDom(el))echarts.dispose(el);});
   mkBubble('l-bubble',liveData,'exp','gpm','gmv',8.35,44.1,'亿','元');
