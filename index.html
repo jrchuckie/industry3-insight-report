@@ -1253,204 +1253,315 @@ function switchTab(tab){
 }
 
 function initNoteCharts(){
-  // ── 气泡图：总曝光×GPM，气泡=log(GMV)，jitter分散，统一蓝色，加分区线 ──
+  if(window._nInited) return; window._nInited=true;
+
+  const NB={pv:62,pub_avg:100,ctr1:0.1506,ctr2:0.0913,cvr:0.0653,aov:50.9,gpm:38.2};
+  const expoMed=6.31, gpmMed=38.2;
+
+  // ── 气泡图 ──
   (function(){
     const el=document.getElementById('n-bubble'); if(!el) return;
     const ch=echarts.init(el);
-    const expoMed=6.31, gpmMed=38.2;
-
-    // 对数缩放：min size=10, max size=44
     const gmvMax=Math.max(...noteData.map(d=>d.gmv));
-    const logScale=d=>Math.max(10, Math.log(d.gmv+0.1)/Math.log(gmvMax+0.1)*34+10);
-
-    // jitter：对同一X区间密集的点做随机微小偏移（seed固定，可复现）
-    function jitter(val, idx, spread){
-      const offsets=[-1.1,-0.5,0.3,0.8,-0.9,0.2,-0.4,0.7,-0.2,0.9,
-                     -0.7,0.4,-0.6,0.1,-0.3,0.6,-0.8,0.5,-0.1,0.0];
-      return val + offsets[idx % offsets.length] * spread;
-    }
-
-    const fmt=(v,y)=>{
-      if(v==null) return '—';
+    const logSz=d=>Math.max(10,Math.log(d.gmv+0.1)/Math.log(gmvMax+0.1)*34+10);
+    const offs=[-1.1,-0.5,0.3,0.8,-0.9,0.2,-0.4,0.7,-0.2,0.9,-0.7,0.4,-0.6,0.1,-0.3,0.6,-0.8,0.5,-0.1,0.0];
+    const fmt=(v,u,y)=>{
+      if(v==null||y==null) return v!=null?v+u:'—';
       const col=y>=0?'#16a34a':'#dc2626';
-      const sign=y>=0?'+':'';
-      return `${v} <span style="color:${col}">(YoY${sign}${y}%)</span>`;
+      return `${v}${u} <span style="color:${col}">(YoY${y>=0?'+':''}${y}%)</span>`;
     };
-
-    const pts=noteData.map((d,i)=>{
-      // 左侧拥挤区（expo<10）做jitter，右侧大值不jitter
-      const jx=d.expo<10?jitter(d.expo,i,0.25):d.expo;
-      const jy=d.gpm<50?jitter(d.gpm,i,1.5):d.gpm;
-      return {
-        name:d.n,
-        value:[jx,jy,d.gmv,d.n,i],
-        symbolSize:logScale(d)
-      };
-    });
-
+    const pts=noteData.map((d,i)=>({
+      name:d.n,
+      value:[d.expo<10?d.expo+offs[i%offs.length]*0.25:d.expo,
+             d.gpm<50?d.gpm+offs[i%offs.length]*1.5:d.gpm, d.gmv, d.n],
+      symbolSize:logSz(d)
+    }));
     ch.setOption({
       backgroundColor:'#fff',
       tooltip:{trigger:'item',formatter:p=>{
         const d=noteData.find(x=>x.n===p.data[3])||{};
         const merStr=d.mer>9999?(d.mer/10000).toFixed(2)+'万':d.mer;
         return `<b>${d.n||''}</b><br>`+
-          `笔记发布数: ${fmt(d.pub!=null?d.pub+'万':null,d.pub_y)}<br>`+
-          `总曝光: ${fmt(d.expo!=null?d.expo+'亿':null,d.expo_y)}<br>`+
-          `动销商家数: ${fmt(d.mer!=null?merStr+'家':null,d.mer_y)}<br>`+
-          `笔记GMV: ${fmt(d.gmv!=null?d.gmv+'亿':null,d.gmv_y)}<br>`+
-          `GPM: ${fmt(d.gpm!=null?d.gpm+'元':null,d.gpm_y)}<br>`+
-          `篇均曝光: ${fmt(d.pavg!=null?d.pavg+'次':null,d.pavg_y)}`;
+          `笔记发布数: ${fmt(d.pub,'万条',d.pub_y)}<br>`+
+          `总曝光: ${fmt(d.expo,'亿次',d.expo_y)}<br>`+
+          `动销商家数: ${fmt(merStr,'家',d.mer_y)}<br>`+
+          `笔记GMV: ${fmt(d.gmv,'亿元',d.gmv_y)}<br>`+
+          `GPM: ${fmt(d.gpm,'元',d.gpm_y)}<br>`+
+          `篇均曝光: ${fmt(d.pavg,'次',d.pavg_y)}`;
       }},
       xAxis:{type:'value',name:'总曝光（亿次）',nameLocation:'middle',nameGap:28,
-        min:0,
-        splitLine:{lineStyle:{color:'#f1f5f9'}},
-        axisLabel:{color:'#1e293b',fontSize:10},
-        axisLine:{lineStyle:{color:'#cbd5e1'}}},
+        min:0,splitLine:{lineStyle:{color:'#f1f5f9'}},
+        axisLabel:{color:'#1e293b',fontSize:10},axisLine:{lineStyle:{color:'#cbd5e1'}}},
       yAxis:{type:'value',name:'GPM（元）',nameLocation:'middle',nameGap:40,
-        min:0,max:110,
-        splitLine:{lineStyle:{color:'#f1f5f9'}},
-        axisLabel:{color:'#1e293b',fontSize:10},
-        axisLine:{lineStyle:{color:'#cbd5e1'}}},
+        min:0,max:110,splitLine:{lineStyle:{color:'#f1f5f9'}},
+        axisLabel:{color:'#1e293b',fontSize:10},axisLine:{lineStyle:{color:'#cbd5e1'}}},
       series:[
-        {type:'scatter',
-          data:pts,
+        {type:'scatter',data:pts,
           itemStyle:{color:'rgba(59,130,246,0.60)',borderColor:'#2563eb',borderWidth:1},
           label:{show:true,position:'right',
             formatter:p=>p.data[3].replace(/.*?（/,'').replace('）',''),
-            fontSize:9,color:'#374151'}
-        },
-        // X轴分区线（总曝光中位数）
+            fontSize:9,color:'#374151'}},
         {type:'line',markLine:{silent:true,symbol:'none',
           lineStyle:{color:'#6366f1',type:'dashed',width:1.5},
-          label:{formatter:'中位数 '+expoMed+'亿',color:'#6366f1',fontSize:9,position:'insideEndTop'},
+          label:{formatter:'中位数 '+expoMed+'亿',color:'#6366f1',fontSize:9,position:'insideStartTop'},
           data:[{xAxis:expoMed}]}},
-        // Y轴分区线（GPM中位数）
         {type:'line',markLine:{silent:true,symbol:'none',
           lineStyle:{color:'#f59e0b',type:'dashed',width:1.5},
-          label:{formatter:'GPM中位数 '+gpmMed+'元',color:'#b45309',fontSize:9,position:'insideEndTop'},
+          label:{formatter:'GPM中位数 '+gpmMed+'元',color:'#f59e0b',fontSize:9,position:'insideEndTop'},
           data:[{yAxis:gpmMed}]}}
       ]
     });
   })();
 
-  
-
-  
-
-  
-
-}
-
-  // ── Bar: n-bar-exp（高→低排序，rich text YoY）──
-  (function(){
-    const el=document.getElementById('n-bar-exp'); if(!el) return;
-    const ch=echarts.init(el);
-    const med=6.31;
-    const sorted=[...noteData].sort((a,b)=>b.expo-a.expo);
-    ch.setOption({
+  // ── Bar chart 通用函数：高→低排序，rich text YoY，右侧对齐 ──
+  function makeBarOpt(data, valFn, yoyFn, labelFn, med, medLabel, color){
+    const sorted=[...data].sort((a,b)=>valFn(b)-valFn(a));
+    return {
       backgroundColor:'#fff',
-      grid:{left:80,right:10,top:10,bottom:20},
+      grid:{left:72,right:10,top:10,bottom:20},
       xAxis:{type:'value',splitLine:{lineStyle:{color:'#f1f5f9'}},axisLabel:{color:'#1e293b',fontSize:9}},
       yAxis:{type:'category',data:sorted.map(d=>d.n.replace(/.*?（/,'').replace('）','')),axisLabel:{color:'#1e293b',fontSize:9}},
       series:[
         {type:'bar',barMaxWidth:14,
-          data:sorted.map(d=>({value:d.expo,itemStyle:{color:'#3b82f6'}})),
+          data:sorted.map(d=>({value:valFn(d),itemStyle:{color}})),
           label:{show:true,position:'right',fontSize:10,
-            rich:{
-              v:{color:'#1e293b',fontSize:10,padding:[0,6,0,0]},
-              yp:{color:'#16a34a',fontSize:10,fontWeight:'bold',backgroundColor:'#f0fdf4',padding:[1,4,1,4],borderRadius:3},
-              yn:{color:'#dc2626',fontSize:10,fontWeight:'bold',backgroundColor:'#fef2f2',padding:[1,4,1,4],borderRadius:3},
-              yz:{color:'#374151',fontSize:10,padding:[1,4,1,4]}
-            },
             formatter:p=>{
-              const d=sorted[p.dataIndex];
-              const yoy=d.expo_y;
-              const sign=yoy>=0?'+':'';
-              const tag=yoy>=20?'yp':yoy<=-20?'yn':'yz';
-              const valStr='亿'==='亿'?d.expo.toFixed(2)+'亿':'亿'==='元'?d.expo.toFixed(1)+'亿':d.expo.toFixed(2)+'亿';
-              return '{v|'+valStr+'} {'+tag+'|YoY'+sign+yoy+'%}';
-            }
+              const d=sorted[sorted.findIndex((_,i)=>sorted[i].n===sorted[sorted.length-1-p.dataIndex+sorted.findIndex(x=>valFn(x)===p.value)].n)||p.dataIndex];
+              const row=sorted.find(x=>valFn(x)===p.value)||sorted[0];
+              const y=yoyFn(row);
+              const yCol=y>=25?'#16a34a':y<=-20?'#dc2626':'#374151';
+              const yBg=y>=25?'#f0fdf4':y<=-20?'#fef2f2':'transparent';
+              return labelFn(p.value)+'  YoY'+`{y|${y>=0?'+':''}${y}%}`;
+            },
+            rich:{y:{fontSize:9,padding:[0,3],borderRadius:3}}
           }
         },
-        {type:'line',markLine:{silent:true,symbol:'none',lineStyle:{color:'#6366f1',type:'dashed'},
-          data:[{xAxis:med}],label:{formatter:'中位数6.31亿',fontSize:9,color:'#6366f1'}}}
+        {type:'bar',markLine:{silent:true,symbol:'none',
+          lineStyle:{color:'#6366f1',type:'dashed',width:1},
+          data:[{xAxis:med}],
+          label:{formatter:medLabel,fontSize:9,color:'#6366f1',position:'insideEndTop'}}}
+      ]
+    };
+  }
+
+  // ── Bar: 总曝光 ──
+  (function(){
+    const el=document.getElementById('n-bar-exp'); if(!el) return;
+    const ch=echarts.init(el);
+    const sorted=[...noteData].sort((a,b)=>b.expo-a.expo);
+    ch.setOption({
+      backgroundColor:'#fff',
+      grid:{left:72,right:120,top:10,bottom:20},
+      xAxis:{type:'value',splitLine:{lineStyle:{color:'#f1f5f9'}},axisLabel:{color:'#1e293b',fontSize:9}},
+      yAxis:{type:'category',data:sorted.map(d=>d.n.replace(/.*?（/,'').replace('）','')),axisLabel:{color:'#1e293b',fontSize:9}},
+      series:[
+        {type:'bar',barMaxWidth:14,
+          data:sorted.map(d=>({value:d.expo,itemStyle:{color:d.expo_y>=-20?'#3b82f6':'#94a3b8'}})),
+          label:{show:true,position:'right',fontSize:10,
+            formatter:p=>{
+              const row=sorted.find(d=>d.expo===p.value)||sorted[0];
+              const y=row.expo_y;
+              const yCol=y>=20?'#16a34a':y<=-20?'#dc2626':'#64748b';
+              return `${p.value}亿  {yoy|YoY${y>=0?'+':''}${y}%}`;
+            },
+            rich:{yoy:{fontSize:9,padding:[1,4],borderRadius:3,
+              color:'inherit'/* will be overridden below */}}}
+        },
+        {type:'bar',markLine:{silent:true,symbol:'none',
+          lineStyle:{color:'#6366f1',type:'dashed',width:1},
+          data:[{xAxis:6.31}],
+          label:{formatter:'中位数 6.31亿',fontSize:9,color:'#6366f1'}}}
       ]
     });
+    // 用 setOption params.color 重写颜色
+    ch.setOption({series:[{label:{
+      formatter:p=>{
+        const row=sorted.find(d=>d.expo===p.value)||sorted[0];
+        const y=row.expo_y;
+        const yCol=y>=20?'#16a34a':y<=-20?'#dc2626':'#64748b';
+        const yBg=y>=20?'#f0fdf4':y<=-20?'#fef2f2':'#f8fafc';
+        return `${p.value}亿  {yoy|YoY${y>=0?'+':''}${y}%}`;
+      },
+      rich:{yoy:{fontSize:9,padding:[1,4],borderRadius:3,color:'#374151'}}
+    }}]});
   })();
 
-  // ── Bar: n-bar-gpm（高→低排序，rich text YoY）──
+  // ── Bar: GPM ──
   (function(){
     const el=document.getElementById('n-bar-gpm'); if(!el) return;
     const ch=echarts.init(el);
-    const med=38.2;
     const sorted=[...noteData].sort((a,b)=>b.gpm-a.gpm);
     ch.setOption({
       backgroundColor:'#fff',
-      grid:{left:80,right:10,top:10,bottom:20},
+      grid:{left:72,right:120,top:10,bottom:20},
       xAxis:{type:'value',splitLine:{lineStyle:{color:'#f1f5f9'}},axisLabel:{color:'#1e293b',fontSize:9}},
       yAxis:{type:'category',data:sorted.map(d=>d.n.replace(/.*?（/,'').replace('）','')),axisLabel:{color:'#1e293b',fontSize:9}},
       series:[
         {type:'bar',barMaxWidth:14,
           data:sorted.map(d=>({value:d.gpm,itemStyle:{color:'#8b5cf6'}})),
           label:{show:true,position:'right',fontSize:10,
-            rich:{
-              v:{color:'#1e293b',fontSize:10,padding:[0,6,0,0]},
-              yp:{color:'#16a34a',fontSize:10,fontWeight:'bold',backgroundColor:'#f0fdf4',padding:[1,4,1,4],borderRadius:3},
-              yn:{color:'#dc2626',fontSize:10,fontWeight:'bold',backgroundColor:'#fef2f2',padding:[1,4,1,4],borderRadius:3},
-              yz:{color:'#374151',fontSize:10,padding:[1,4,1,4]}
-            },
             formatter:p=>{
-              const d=sorted[p.dataIndex];
-              const yoy=d.gpm_y;
-              const sign=yoy>=0?'+':'';
-              const tag=yoy>=20?'yp':yoy<=-20?'yn':'yz';
-              const valStr='元'==='亿'?d.gpm.toFixed(2)+'元':'元'==='元'?d.gpm.toFixed(1)+'元':d.gpm.toFixed(2)+'元';
-              return '{v|'+valStr+'} {'+tag+'|YoY'+sign+yoy+'%}';
-            }
-          }
+              const row=sorted.find(d=>d.gpm===p.value)||sorted[0];
+              const y=row.gpm_y;
+              const yCol=y>=20?'#16a34a':y<=-20?'#dc2626':'#64748b';
+              return `${p.value}元  {yoy|YoY${y>=0?'+':''}${y}%}`;
+            },
+            rich:{yoy:{fontSize:9,padding:[1,4],borderRadius:3,color:'#374151'}}}
         },
-        {type:'line',markLine:{silent:true,symbol:'none',lineStyle:{color:'#f59e0b',type:'dashed'},
-          data:[{xAxis:med}],label:{formatter:'GPM中位数38.2元',fontSize:9,color:'#f59e0b'}}}
+        {type:'bar',markLine:{silent:true,symbol:'none',
+          lineStyle:{color:'#f59e0b',type:'dashed',width:1},
+          data:[{xAxis:38.2}],
+          label:{formatter:'中位数 38.2元',fontSize:9,color:'#f59e0b'}}}
       ]
     });
   })();
 
-  // ── Bar: n-bar-gmv（高→低排序，rich text YoY）──
+  // ── Bar: 笔记GMV ──
   (function(){
     const el=document.getElementById('n-bar-gmv'); if(!el) return;
     const ch=echarts.init(el);
-    const med=0.27;
     const sorted=[...noteData].sort((a,b)=>b.gmv-a.gmv);
     ch.setOption({
       backgroundColor:'#fff',
-      grid:{left:80,right:10,top:10,bottom:20},
+      grid:{left:72,right:120,top:10,bottom:20},
       xAxis:{type:'value',splitLine:{lineStyle:{color:'#f1f5f9'}},axisLabel:{color:'#1e293b',fontSize:9}},
       yAxis:{type:'category',data:sorted.map(d=>d.n.replace(/.*?（/,'').replace('）','')),axisLabel:{color:'#1e293b',fontSize:9}},
       series:[
         {type:'bar',barMaxWidth:14,
-          data:sorted.map(d=>({value:d.gmv,itemStyle:{color:'#10b981'}})),
+          data:sorted.map(d=>({value:d.gmv,itemStyle:{color:d.gmv_y>=-20?'#10b981':'#94a3b8'}})),
           label:{show:true,position:'right',fontSize:10,
-            rich:{
-              v:{color:'#1e293b',fontSize:10,padding:[0,6,0,0]},
-              yp:{color:'#16a34a',fontSize:10,fontWeight:'bold',backgroundColor:'#f0fdf4',padding:[1,4,1,4],borderRadius:3},
-              yn:{color:'#dc2626',fontSize:10,fontWeight:'bold',backgroundColor:'#fef2f2',padding:[1,4,1,4],borderRadius:3},
-              yz:{color:'#374151',fontSize:10,padding:[1,4,1,4]}
-            },
             formatter:p=>{
-              const d=sorted[p.dataIndex];
-              const yoy=d.gmv_y;
-              const sign=yoy>=0?'+':'';
-              const tag=yoy>=20?'yp':yoy<=-20?'yn':'yz';
-              const valStr='亿'==='亿'?d.gmv.toFixed(2)+'亿':'亿'==='元'?d.gmv.toFixed(1)+'亿':d.gmv.toFixed(2)+'亿';
-              return '{v|'+valStr+'} {'+tag+'|YoY'+sign+yoy+'%}';
-            }
-          }
+              const row=sorted.find(d=>d.gmv===p.value)||sorted[0];
+              const y=row.gmv_y;
+              return `${p.value}亿  {yoy|YoY${y>=0?'+':''}${y}%}`;
+            },
+            rich:{yoy:{fontSize:9,padding:[1,4],borderRadius:3,color:'#374151'}}}
         },
-        {type:'line',markLine:{silent:true,symbol:'none',lineStyle:{color:'#6366f1',type:'dashed'},
-          data:[{xAxis:med}],label:{formatter:'中位数0.27亿',fontSize:9,color:'#6366f1'}}}
+        {type:'bar',markLine:{silent:true,symbol:'none',
+          lineStyle:{color:'#f59e0b',type:'dashed',width:1},
+          data:[{xAxis:0.27}],
+          label:{formatter:'中位数 0.27亿',fontSize:9,color:'#f59e0b'}}}
       ]
     });
   })();
+
+  // ── 汇总警示：n-attn-bar（2行卡点格式）──
+  (function(){
+    const el=document.getElementById('n-attn-bar'); if(!el) return;
+    // 绝对值偏低行业
+    const lowPub   = noteData.filter(d=>d.pub_avg<70).map(d=>d.n.replace(/.*?（/,'').replace('）',''));
+    const lowPavg  = noteData.filter(d=>d.pavg<NB.pv*0.7).map(d=>d.n.replace(/.*?（/,'').replace('）',''));
+    const lowGpm   = noteData.filter(d=>d.gpm<NB.gpm*0.8).map(d=>d.n.replace(/.*?（/,'').replace('）',''));
+    // YoY跌幅严重
+    const yoyExpo  = noteData.filter(d=>d.expo_y<=-30).map(d=>d.n.replace(/.*?（/,'').replace('）',''));
+    const yoyGmv   = noteData.filter(d=>d.gmv_y<=-20).map(d=>d.n.replace(/.*?（/,'').replace('）',''));
+    const yoyPub   = noteData.filter(d=>d.pub_avg_y<=-30).map(d=>d.n.replace(/.*?（/,'').replace('）',''));
+
+    const makeRow=(label,items,color)=>items.length?
+      `<div style="display:flex;align-items:flex-start;gap:8px;padding:4px 0;border-bottom:1px solid #fef3c7">
+        <span style="min-width:140px;font-size:11px;color:#92400e;font-weight:600">${label}</span>
+        <span style="font-size:11px;color:#78350f">${items.map(x=>`<span style="background:#fef9c3;padding:1px 7px;border-radius:10px;margin:1px">${x}</span>`).join(' ')}</span>
+      </div>`:'' ;
+
+    const lowRows=[
+      makeRow('店均发布数 &lt;70条', lowPub,'#f59e0b'),
+      makeRow('篇均曝光 &lt;43次',   lowPavg,'#f59e0b'),
+      makeRow('GPM &lt;30元',        lowGpm,'#f59e0b'),
+    ].filter(Boolean).join('');
+
+    const yoyRows=[
+      makeRow('曝光 YoY &lt;-30%',   yoyExpo,'#dc2626'),
+      makeRow('GMV YoY &lt;-20%',    yoyGmv,'#dc2626'),
+      makeRow('店均发布 YoY &lt;-30%',yoyPub,'#dc2626'),
+    ].filter(Boolean).join('');
+
+    el.innerHTML=`
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:10px 12px">
+          <div style="font-size:12px;font-weight:700;color:#92400e;margin-bottom:6px">🟡 绝对值偏低行业</div>
+          ${lowRows||'<span style="font-size:11px;color:#64748b">暂无</span>'}
+        </div>
+        <div style="background:#fff5f5;border:1px solid #fecaca;border-radius:8px;padding:10px 12px">
+          <div style="font-size:12px;font-weight:700;color:#991b1b;margin-bottom:6px">📉 YoY跌幅严重行业</div>
+          ${yoyRows||'<span style="font-size:11px;color:#64748b">暂无</span>'}
+        </div>
+      </div>`;
+  })();
+
+  // ── 诊断卡片 ──
+  const nCards=document.getElementById('n-cards'); if(!nCards) return;
+
+  function nSev(d){
+    let s=0;
+    if(d.expo_y<=-30)s++;if(d.gmv_y<=-20)s++;if(d.pavg<NB.pv*0.7)s++;
+    if(d.gpm<NB.gpm*0.8)s++;if(d.pub_avg<NB.pub_avg*0.7)s++;
+    return Math.min(s,3);
+  }
+  function bw(v,base,scale){return Math.min(100,Math.round(v/base*scale/scale*100));}
+
+  function frow(label,val,unit,yoy,base){
+    const vStr=val!=null?val+unit:'—';
+    const absCls=base&&val!=null&&val<base*0.8?'bad':base&&val!=null&&val>=base?'ok':'';
+    const yoyStr=yoy!=null?(yoy>=0?'+':'')+yoy+'%':'—';
+    const yoyCol=yoy!=null&&yoy<=-20?'#dc2626':yoy!=null&&yoy>=20?'#16a34a':'#64748b';
+    const yoyBg=yoy!=null&&yoy<=-20?'#fef2f2':yoy!=null&&yoy>=20?'#f0fdf4':'#f8fafc';
+    return `<div style="display:flex;align-items:center;gap:4px;padding:2px 0;font-size:11px;border-bottom:1px solid #f1f5f9">
+      <span style="min-width:70px;color:#64748b">${label}</span>
+      <span style="flex:1;font-weight:600;color:${absCls==='bad'?'#dc2626':absCls==='ok'?'#16a34a':'#1e293b'}">${vStr}</span>
+      <span style="background:${yoyBg};color:${yoyCol};padding:1px 6px;border-radius:8px;font-size:10px;font-weight:600">${yoyStr}</span>
+    </div>`;
+  }
+
+  function buildNCard(d,rank){
+    const sev=nSev(d);
+    const lowList=[],yoyList=[];
+    if(d.pavg<NB.pv*0.7)lowList.push('篇均曝光');
+    if(d.pub_avg<NB.pub_avg*0.7)lowList.push('店均发布数');
+    if(d.ctr1<NB.ctr1*0.8)lowList.push('CTR1');
+    if(d.ctr2<NB.ctr2*0.8)lowList.push('CTR2');
+    if(d.cvr<NB.cvr*0.7)lowList.push('CVR');
+    if(d.gpm<NB.gpm*0.8)lowList.push('GPM');
+    if(d.expo_y<=-30)yoyList.push(`曝光${d.expo_y}%`);
+    if(d.pavg_y<=-30)yoyList.push(`篇均曝光${d.pavg_y}%`);
+    if(d.gmv_y<=-20)yoyList.push(`笔记GMV${d.gmv_y}%`);
+    if(d.gpm_y<=-20)yoyList.push(`GPM${d.gpm_y}%`);
+    if(d.pub_avg_y<=-30)yoyList.push(`店均发布${d.pub_avg_y}%`);
+    if(d.ctr2_y<=-20)yoyList.push(`CTR2${d.ctr2_y}%`);
+    if(d.cvr_y<=-20)yoyList.push(`CVR${d.cvr_y}%`);
+    const sevColors=['#16a34a','#ca8a04','#ea580c','#dc2626'];
+    const sevBg=['#f0fdf4','#fefce8','#fff7ed','#fef2f2'];
+    const sevLabel=['✅ 健康','🟡 轻微','🟠 中等','🔴 严重'];
+    const lowPills=lowList.map(x=>`<span style="background:#fef3c7;color:#92400e;font-size:9px;padding:1px 6px;border-radius:8px;margin:1px">${x}</span>`).join('');
+    const yoyPills=yoyList.map(x=>`<span style="background:#fef2f2;color:#dc2626;font-size:9px;padding:1px 6px;border-radius:8px;margin:1px">${x}</span>`).join('');
+    const merStr=d.mer!=null?(d.mer>9999?(d.mer/10000).toFixed(1)+'万':d.mer)+'家':'—';
+    return `<div style="background:${sevBg[sev]};border:1px solid ${sevColors[sev]}33;border-radius:10px;padding:10px 12px;break-inside:avoid">
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px">
+        <span style="font-weight:700;font-size:12px;color:#1e293b">${d.n}</span>
+        <span style="background:${sevColors[sev]};color:#fff;font-size:9px;padding:1px 7px;border-radius:8px">${sevLabel[sev]}</span>
+        <span style="margin-left:auto;font-size:10px;color:#64748b">#${rank}</span>
+      </div>
+      ${frow('笔记GMV',d.gmv,'亿',d.gmv_y,null)}
+      ${frow('总曝光',d.expo,'亿次',d.expo_y,6.31)}
+      ${frow('GPM',d.gpm,'元',d.gpm_y,NB.gpm)}
+      ${frow('篇均曝光',d.pavg,'次',d.pavg_y,NB.pv)}
+      ${frow('动销商家数',merStr,'',d.mer_y,null)}
+      ${frow('店均发布',d.pub_avg,'条',d.pub_avg_y,NB.pub_avg)}
+      ${frow('CTR1',d.ctr1!=null?(d.ctr1*100).toFixed(1):'—','%',d.ctr1_y,null)}
+      ${frow('CTR2',d.ctr2!=null?(d.ctr2*100).toFixed(1):'—','%',d.ctr2_y,null)}
+      ${frow('CVR',d.cvr!=null?(d.cvr*100).toFixed(1):'—','%',d.cvr_y,null)}
+      ${frow('客单价',d.aov,'元',d.aov_y,NB.aov)}
+      ${lowPills||yoyPills?`<div style="margin-top:6px;border-top:1px solid ${sevColors[sev]}22;padding-top:5px">
+        ${lowList.length?'<div style="margin-bottom:2px"><span style="font-size:9px;color:#92400e">绝对值偏低: </span>'+lowPills+'</div>':''}
+        ${yoyList.length?'<div><span style="font-size:9px;color:#dc2626">YoY下滑: </span>'+yoyPills+'</div>':''}
+      </div>`:''}
+    </div>`;
+  }
+
+  const sorted=[...noteData].sort((a,b)=>b.gmv-a.gmv);
+  nCards.innerHTML='<div style="columns:3;column-gap:10px">'+
+    sorted.map((d,i)=>buildNCard(d,i+1)).join('')+'</div>';
+}
+
 function initLiveCharts(){
   mkBubble('l-bubble',liveData,'exp','gpm','gmv',8.35,44.1,'亿','元');
   mkBarChart('l-bar-exp',liveData.map(d=>[d.n,d.exp]),8.35,'亿','live');
