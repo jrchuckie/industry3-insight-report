@@ -1315,7 +1315,7 @@ function initNoteCharts(){
         {type:'scatter', data:pts,
           itemStyle:{color:'rgba(59,130,246,0.55)',borderColor:'#2563eb',borderWidth:1},
           label:{show:true,position:'right',
-            formatter:p=>p.data[3].replace(/.*?（/,'').replace('）',''),
+            formatter:p=>Array.isArray(p.data)&&p.data[3]?p.data[3].replace(/.*?（/,'').replace('）',''):'',
             fontSize:9,color:'#374151'}},
         {type:'scatter',data:[],markLine:{silent:true,symbol:'none',
           lineStyle:{color:'#6366f1',type:'dashed',width:1.5},
