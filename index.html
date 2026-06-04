@@ -1423,10 +1423,10 @@ function initLiveCharts2() {
           {type:'rect',left:'5%',top:'5%',right:'45%',bottom:'52%',style:{fill:'rgba(99,102,241,0.09)',stroke:'rgba(99,102,241,0.2)',lineWidth:1},z:0},
           {type:'rect',left:'55%',top:'48%',right:'5%',bottom:'5%',style:{fill:'rgba(249,115,22,0.09)',stroke:'rgba(249,115,22,0.2)',lineWidth:1},z:0},
           {type:'rect',left:'5%',top:'48%',right:'45%',bottom:'5%',style:{fill:'rgba(148,163,184,0.09)',stroke:'rgba(148,163,184,0.25)',lineWidth:1},z:0},
-          {type:'text',style:{text:'🏆 核心资产',x:'58%',y:'8%',fill:'rgba(22,163,74,0.95)',fontSize:11,fontWeight:'bold'},z:1},
-          {type:'text',style:{text:'💎 高潜赛道',x:'7%',y:'8%',fill:'rgba(99,102,241,0.95)',fontSize:11,fontWeight:'bold'},z:1},
-          {type:'text',style:{text:'⚡ 流量内耗',x:'58%',y:'55%',fill:'rgba(234,88,12,0.95)',fontSize:11,fontWeight:'bold'},z:1},
-          {type:'text',style:{text:'🔭 有待观察',x:'7%',y:'55%',fill:'rgba(71,85,105,0.95)',fontSize:11,fontWeight:'bold'},z:1},
+          {type:'text',left:'57%',top:'7%',style:{text:'🏆 核心资产',fill:'rgba(22,163,74,0.95)',fontSize:11,fontWeight:'bold'},z:2},
+          {type:'text',left:'9%',top:'7%',style:{text:'💎 高潜赛道',fill:'rgba(99,102,241,0.95)',fontSize:11,fontWeight:'bold'},z:2},
+          {type:'text',left:'57%',top:'52%',style:{text:'⚡ 流量内耗',fill:'rgba(234,88,12,0.95)',fontSize:11,fontWeight:'bold'},z:2},
+          {type:'text',left:'9%',top:'52%',style:{text:'🔭 有待观察',fill:'rgba(71,85,105,0.95)',fontSize:11,fontWeight:'bold'},z:2},
         ]
       });
     }
@@ -1599,10 +1599,10 @@ function initNoteCharts(){
         {type:'rect',left:'5%',top:'5%',right:'45%',bottom:'52%',style:{fill:'rgba(99,102,241,0.09)',stroke:'rgba(99,102,241,0.2)',lineWidth:1},z:0},
         {type:'rect',left:'55%',top:'48%',right:'5%',bottom:'5%',style:{fill:'rgba(249,115,22,0.09)',stroke:'rgba(249,115,22,0.2)',lineWidth:1},z:0},
         {type:'rect',left:'5%',top:'48%',right:'45%',bottom:'5%',style:{fill:'rgba(148,163,184,0.09)',stroke:'rgba(148,163,184,0.25)',lineWidth:1},z:0},
-        {type:'text',style:{text:'🏆 核心资产',x:'58%',y:'8%',fill:'rgba(22,163,74,0.95)',fontSize:11,fontWeight:'bold'},z:1},
-        {type:'text',style:{text:'💎 高潜赛道',x:'7%',y:'8%',fill:'rgba(99,102,241,0.95)',fontSize:11,fontWeight:'bold'},z:1},
-        {type:'text',style:{text:'⚡ 流量内耗',x:'58%',y:'55%',fill:'rgba(234,88,12,0.95)',fontSize:11,fontWeight:'bold'},z:1},
-        {type:'text',style:{text:'🔭 有待观察',x:'7%',y:'55%',fill:'rgba(71,85,105,0.95)',fontSize:11,fontWeight:'bold'},z:1},
+        {type:'text',left:'57%',top:'7%',style:{text:'🏆 核心资产',fill:'rgba(22,163,74,0.95)',fontSize:11,fontWeight:'bold'},z:2},
+        {type:'text',left:'9%',top:'7%',style:{text:'💎 高潜赛道',fill:'rgba(99,102,241,0.95)',fontSize:11,fontWeight:'bold'},z:2},
+        {type:'text',left:'57%',top:'52%',style:{text:'⚡ 流量内耗',fill:'rgba(234,88,12,0.95)',fontSize:11,fontWeight:'bold'},z:2},
+        {type:'text',left:'9%',top:'52%',style:{text:'🔭 有待观察',fill:'rgba(71,85,105,0.95)',fontSize:11,fontWeight:'bold'},z:2},
       ]
     });
     function d3ex(v){return v<10?v.toFixed(2):v.toFixed(1);}
@@ -1637,7 +1637,7 @@ window.addEventListener('DOMContentLoaded', function(){
 });
 
 // ═══ K播数据 ═══
-const kolData = [{"n": "十三组（教育）", "gmv_cur": 1.19, "gmv_ly": 0.1, "gmv_y": 45.1, "sess_cur": 33802, "sess_ly": 34804, "sess_y": -2.9, "prod_cur": 97821, "prod_ly": 79066, "prod_y": 23.7, "avgd_cur": 0.35, "avgd_ly": 0.29, "avgd_y": 20.7, "pit_cur": 0.012, "pit_ly": 0.013, "pit_y": -7.7, "head_gmv_y": -38.5, "head_avgd_y": -37.4, "tail_gmv_y": 86.0, "tail_sess_y": -3.0, "diag": "头K效率崩盘但腰尾强势反弹", "actions": ["①头K修复：核查头部主播池是否流失", "②保持腰尾K发力（腰尾DGMV+86%）", "③坑产-36%：优化选品和坑位质量"], "sev": 1}, {"n": "十三组（虚拟）", "gmv_cur": 0.576, "gmv_ly": 0.014, "gmv_y": 3947.0, "sess_cur": 7200, "sess_ly": 5200, "sess_y": 38.5, "prod_cur": 18500, "prod_ly": 11200, "prod_y": 65.2, "avgd_cur": 0.8, "avgd_ly": 0.027, "avgd_y": 2863.0, "pit_cur": 0.031, "pit_ly": 0.013, "pit_y": 138.5, "head_gmv_y": null, "head_avgd_y": null, "tail_gmv_y": null, "tail_sess_y": null, "diag": "全线爆发性增长（低基数）", "actions": ["①沉淀方法论：虚拟品类K播如何快速起量", "②注意基数效应：明年增速必然收窄"], "sev": 0}, {"n": "一组（文玩玉翠）", "gmv_cur": 2.29, "gmv_ly": 0.117, "gmv_y": 1862.0, "sess_cur": 9800, "sess_ly": 6200, "sess_y": 58.1, "prod_cur": 24300, "prod_ly": 14800, "prod_y": 64.2, "avgd_cur": 2.34, "avgd_ly": 0.189, "avgd_y": 1138.0, "pit_cur": 0.094, "pit_ly": 0.079, "pit_y": 19.0, "head_gmv_y": null, "head_avgd_y": null, "tail_gmv_y": null, "tail_sess_y": null, "diag": "高基数低但全线爆发，非标品K播突破", "actions": ["①沉淀鉴定类内容+K播组合方法论", "②关注场均大幅提升的核心主播"], "sev": 0}, {"n": "十五组（酒旅）", "gmv_cur": 0.21, "gmv_ly": 0.0073, "gmv_y": 2729.0, "sess_cur": 4200, "sess_ly": 2800, "sess_y": 50.0, "prod_cur": 9800, "prod_ly": 6200, "prod_y": 58.1, "avgd_cur": 0.5, "avgd_ly": 0.026, "avgd_y": 1823.0, "pit_cur": 0.021, "pit_ly": 0.012, "pit_y": 75.0, "head_gmv_y": null, "head_avgd_y": null, "tail_gmv_y": null, "tail_sess_y": null, "diag": "低基数爆发，K播渠道首次打开", "actions": ["①趁势建立K播供给池", "②沉淀酒旅类主播合作SOP"], "sev": 0}, {"n": "九组（家用）", "gmv_cur": 5.12, "gmv_ly": 3.8, "gmv_y": 34.7, "sess_cur": 28500, "sess_ly": 22000, "sess_y": 29.5, "prod_cur": 85000, "prod_ly": 68000, "prod_y": 25.0, "avgd_cur": 1.8, "avgd_ly": 1.73, "avgd_y": 4.0, "pit_cur": 0.06, "pit_ly": 0.056, "pit_y": 7.1, "head_gmv_y": 12.3, "head_avgd_y": 8.5, "tail_gmv_y": 28.4, "tail_sess_y": 22.1, "diag": "健康增长，头腰双引擎", "actions": ["①保持头K优质主播池", "②腰尾K场次+22%是好信号，继续扩量"], "sev": 0}, {"n": "十一组（潮玩）", "gmv_cur": 2.73, "gmv_ly": 2.33, "gmv_y": 17.2, "sess_cur": 13500, "sess_ly": 13700, "sess_y": -1.5, "prod_cur": 38200, "prod_ly": 32800, "prod_y": 16.5, "avgd_cur": 2.02, "avgd_ly": 1.7, "avgd_y": 18.8, "pit_cur": 0.072, "pit_ly": 0.071, "pit_y": 1.4, "head_gmv_y": 22.4, "head_avgd_y": 16.8, "tail_gmv_y": 8.1, "tail_sess_y": -5.2, "diag": "效率提升驱动，场次微降", "actions": ["①场均提升是核心亮点，梳理头K选品方法论", "②腰尾K场次微降：适当补充腰部主播"], "sev": 0}, {"n": "十组（家纺）", "gmv_cur": 1.38, "gmv_ly": 1.14, "gmv_y": 20.8, "sess_cur": 18800, "sess_ly": 15200, "sess_y": 26.3, "prod_cur": 52000, "prod_ly": 44000, "prod_y": 18.2, "avgd_cur": 0.73, "avgd_ly": 0.75, "avgd_y": -2.7, "pit_cur": 0.027, "pit_ly": 0.026, "pit_y": 3.8, "head_gmv_y": 18.9, "head_avgd_y": -4.1, "tail_gmv_y": 24.8, "tail_sess_y": 31.2, "diag": "场次驱动增长，场均轻微承压", "actions": ["①头K场均微降-4%：核查头部主播选品", "②腰尾K场次+31%是主要增量来源"], "sev": 1}, {"n": "二组（亲子生活）", "gmv_cur": 3.06, "gmv_ly": 2.58, "gmv_y": 18.6, "sess_cur": 22400, "sess_ly": 19800, "sess_y": 13.1, "prod_cur": 68000, "prod_ly": 58000, "prod_y": 17.2, "avgd_cur": 1.36, "avgd_ly": 1.3, "avgd_y": 4.6, "pit_cur": 0.045, "pit_ly": 0.044, "pit_y": 2.3, "head_gmv_y": 15.2, "head_avgd_y": 8.3, "tail_gmv_y": 22.4, "tail_sess_y": 18.0, "diag": "健康稳健增长", "actions": ["①保持当前增长节奏", "②腰尾K是增量来源，适当扩大主播池"], "sev": 0}, {"n": "十二组（手工）", "gmv_cur": 2.01, "gmv_ly": 1.75, "gmv_y": 14.9, "sess_cur": 17200, "sess_ly": 16100, "sess_y": 6.8, "prod_cur": 49000, "prod_ly": 43000, "prod_y": 14.0, "avgd_cur": 1.17, "avgd_ly": 1.09, "avgd_y": 7.3, "pit_cur": 0.041, "pit_ly": 0.041, "pit_y": 0.0, "head_gmv_y": 12.1, "head_avgd_y": 5.6, "tail_gmv_y": 18.9, "tail_sess_y": 8.1, "diag": "稳健增长，效率轻微提升", "actions": ["①保持头K主播稳定", "②手工品K播：视频展示精度是关键"], "sev": 0}, {"n": "六组（生鲜）", "gmv_cur": 2.18, "gmv_ly": 2.23, "gmv_y": -2.3, "sess_cur": 7800, "sess_ly": 3000, "sess_y": 160.8, "prod_cur": 22400, "prod_ly": 9800, "prod_y": 128.1, "avgd_cur": 0.28, "avgd_ly": 0.74, "avgd_y": -62.5, "pit_cur": 0.0097, "pit_ly": 0.023, "pit_y": -57.2, "head_gmv_y": -7.1, "head_avgd_y": -13.8, "tail_gmv_y": 4.0, "tail_sess_y": 186.1, "diag": "暴力铺量无效果（场均跌-62.5%）", "actions": ["①立即评估铺量ROI：场次+161%但DGMV-2.3%", "②腰尾K选品和SOP亟需优化", "③控制腰尾无效场次，聚焦有产出主播"], "sev": 2}, {"n": "四组（大健康）", "gmv_cur": 1.47, "gmv_ly": 2.05, "gmv_y": -28.1, "sess_cur": 43200, "sess_ly": 39400, "sess_y": 9.7, "prod_cur": 138000, "prod_ly": 121000, "prod_y": 13.9, "avgd_cur": 0.34, "avgd_ly": 0.52, "avgd_y": -34.5, "pit_cur": 0.011, "pit_ly": 0.017, "pit_y": -36.9, "head_gmv_y": -32.7, "head_avgd_y": -8.3, "tail_gmv_y": 16.1, "tail_sess_y": 20.5, "diag": "头K效率崩盘（-32.7%），场均暴跌", "actions": ["①专项复盘大健康头K主播和选品", "②头K场均-8%已是红线，优化品-人匹配", "③腰尾K +16%是唯一亮点，保持扩量"], "sev": 2}, {"n": "五组（休食）", "gmv_cur": 2.35, "gmv_ly": 3.55, "gmv_y": -33.8, "sess_cur": 7340, "sess_ly": 4999, "sess_y": 46.8, "prod_cur": 21700, "prod_ly": 15600, "prod_y": 39.0, "avgd_cur": 0.32, "avgd_ly": 0.71, "avgd_y": -54.9, "pit_cur": 0.011, "pit_ly": 0.023, "pit_y": -52.4, "head_gmv_y": -33.5, "head_avgd_y": -27.9, "tail_gmv_y": -34.8, "tail_sess_y": 55.5, "diag": "全线塌方：供给扩张但效率崩盘", "actions": ["①场均-55%是最严重卡点：核查头K选品和坑位质量", "②腰尾场次+56%但DGMV-35%：无效扩量", "③结合店播数据综合复盘休食整体策略"], "sev": 3}, {"n": "三组（宠物）", "gmv_cur": 0.96, "gmv_ly": 1.46, "gmv_y": -34.4, "sess_cur": 5580, "sess_ly": 3000, "sess_y": 86.5, "prod_cur": 15400, "prod_ly": 8870, "prod_y": 73.8, "avgd_cur": 0.172, "avgd_ly": 0.486, "avgd_y": -64.8, "pit_cur": 0.0062, "pit_ly": 0.016, "pit_y": -62.2, "head_gmv_y": -15.5, "head_avgd_y": -65.7, "tail_gmv_y": -37.3, "tail_sess_y": 86.2, "diag": "供给扩张但场均崩盘（-65%），头K效率严重下滑", "actions": ["①头K场均-66%最严重：核查头部主播是否换人", "②腰尾场次+86%但DGMV-37%：无效铺量", "③宠物K播需要精细化选品SOP"], "sev": 3}, {"n": "十组（家饰）", "gmv_cur": 1.73, "gmv_ly": 3.12, "gmv_y": -44.5, "sess_cur": 7910, "sess_ly": 7000, "sess_y": 12.9, "prod_cur": 26600, "prod_ly": 14060, "prod_y": 89.5, "avgd_cur": 0.219, "avgd_ly": 0.446, "avgd_y": -50.8, "pit_cur": 0.0065, "pit_ly": 0.022, "pit_y": -70.7, "head_gmv_y": -46.9, "head_avgd_y": -49.5, "tail_gmv_y": -34.3, "tail_sess_y": 13.5, "diag": "头腰双崩（头K场均-50%，腰尾DGMV-34%）", "actions": ["①复盘头部主播带的家饰品和定价策略", "②坑产-71%是最严重效率问题：检查商品匹配度", "③场次小幅增加但效率全线下滑：控量提质"], "sev": 3}, {"n": "十三组（图书）", "gmv_cur": 0.21, "gmv_ly": 0.38, "gmv_y": -45.1, "sess_cur": 10600, "sess_ly": 11700, "sess_y": -9.3, "prod_cur": 35000, "prod_ly": 35800, "prod_y": -2.2, "avgd_cur": 0.02, "avgd_ly": 0.033, "avgd_y": -39.5, "pit_cur": 0.0006, "pit_ly": 0.00106, "pit_y": -43.9, "head_gmv_y": -82.7, "head_avgd_y": -47.0, "tail_gmv_y": 87.8, "tail_sess_y": -5.0, "diag": "头K DGMV暴跌-83%，头部主播全面失效", "actions": ["①立即排查：头部主播是否流失？品类是否被K播边缘化？", "②腰尾K+88%是唯一亮点，暂时以腰尾补量", "③评估图书K播整体策略是否需要调整"], "sev": 3}];
+const kolData = [{"n":"二组（亲子生活）","gmv_cur":0.47,"gmv_y":11.2,"store_sess":42.5,"store_sess_y":-11.2,"prod_cur":46.4,"prod_y":23.6,"pit_cur":2363,"pit_y":14.2,"head_pit":726,"head_pit_y":-8.0,"head_sess":11800,"head_sess_y":12.1,"head_gmv":2984.4,"head_gmv_y":10.3,"head_avgd":0.4,"tail_sess":6.0,"tail_sess_y":0.9,"tail_gmv":0.17,"tail_gmv_y":12.7,"diag":"头腰双轮均衡增长","actions":["①保持头K主播稳定性","②腰尾K场次略增，继续扩大主播池"],"sev":0},{"n":"三组（宠物）","gmv_cur":0.03,"gmv_y":19.1,"store_sess":21.7,"store_sess_y":35.3,"prod_cur":9.2,"prod_y":68.2,"pit_cur":891,"pit_y":4.7,"head_pit":383,"head_pit_y":-3.9,"head_sess":127,"head_sess_y":-9.3,"head_gmv":188.9,"head_gmv_y":90.0,"head_avgd":0.33,"tail_sess":2.93,"tail_sess_y":82.3,"tail_gmv":0.01,"tail_gmv_y":-32.9,"diag":"头K效率爆发+242%，腰尾DGMV-33%（铺量无效）","actions":["①腰尾场次+82%但DGMV-33%：立即停止无效铺量","②头K场次-9%，维持稳定","③研究腰尾K选品SOP"],"sev":2},{"n":"四组（大健康）","gmv_cur":0.63,"gmv_y":-35.1,"store_sess":44.8,"store_sess_y":-8.4,"prod_cur":10.9,"prod_y":-1.9,"pit_cur":891,"pit_y":-42.5,"head_pit":891,"head_pit_y":-42.5,"head_sess":6253,"head_sess_y":-42.5,"head_gmv":5142,"head_gmv_y":-38.8,"head_avgd":0.89,"tail_sess":4.45,"tail_sess_y":6.2,"tail_gmv":0.11,"tail_gmv_y":-10.1,"diag":"坑产腰斩-43%，头腰双崩","actions":["①坑产-42%是核心卡点：重审商品力","②头K场次-42%+DGMV-39%：核查头K流失","③腰尾场次+6%但DGMV-10%：效率也在下滑"],"sev":3},{"n":"五组（休食）","gmv_cur":0.37,"gmv_y":-16.1,"store_sess":94.5,"store_sess_y":-4.7,"prod_cur":21.7,"prod_y":39.0,"pit_cur":885,"pit_y":3.3,"head_pit":885,"head_pit_y":-13.2,"head_sess":15100,"head_sess_y":-13.6,"head_gmv":2925,"head_gmv_y":-13.2,"head_avgd":0.29,"tail_sess":15.97,"tail_sess_y":29.2,"tail_gmv":0.08,"tail_gmv_y":-25.7,"diag":"铺量内耗：腰尾场次+29%但DGMV-26%","actions":["①腰尾场次+29%但DGMV-26%：立即停止无效扩量","②集中资源到坑产最高的头K","③结合笔记/店播协同复盘休食全链路"],"sev":3},{"n":"六组（生鲜）","gmv_cur":0.14,"gmv_y":29.3,"store_sess":42.4,"store_sess_y":40.2,"prod_cur":6.5,"prod_y":93.4,"pit_cur":2418,"pit_y":6.6,"head_pit":1252,"head_pit_y":-6.2,"head_sess":2668,"head_sess_y":-5.0,"head_gmv":858.7,"head_gmv_y":42.5,"head_avgd":0.5,"tail_sess":3.8,"tail_sess_y":126.8,"tail_gmv":0.05,"tail_gmv_y":12.4,"diag":"整体增长+29%，头K效率-6%需关注","actions":["①腰尾场次+127%：评估铺量ROI","②头K坑产-6%轻微下滑","③整体尚健康，控制腰尾质量"],"sev":1},{"n":"七组（家具）","gmv_cur":1.01,"gmv_y":65.9,"store_sess":17.6,"store_sess_y":-21.4,"prod_cur":4.8,"prod_y":-5.9,"pit_cur":32600,"pit_y":36.8,"head_pit":17900,"head_pit_y":87.8,"head_sess":2180,"head_sess_y":-0.7,"head_gmv":9350.6,"head_gmv_y":79.6,"head_avgd":9.8,"tail_sess":1.11,"tail_sess_y":-8.6,"tail_gmv":0.08,"tail_gmv_y":-13.5,"diag":"头K坑产¥1.79万+88%，场次减少但效率爆发","actions":["①店均场次-21%：场次在减少，检查是否因商家主动优化","②腰尾DGMV-14%：需补充腰尾主播","③坑产整体+37%是核心亮点，沉淀方法论"],"sev":0},{"n":"八组（家电）","gmv_cur":0.4,"gmv_y":64.0,"store_sess":68.0,"store_sess_y":8.3,"prod_cur":5.7,"prod_y":14.6,"pit_cur":6703,"pit_y":45.5,"head_pit":5065,"head_pit_y":42.2,"head_sess":6598,"head_sess_y":3.1,"head_gmv":3118.5,"head_gmv_y":72.0,"head_avgd":1.4,"tail_sess":2.23,"tail_sess_y":20.8,"tail_gmv":0.09,"tail_gmv_y":40.8,"diag":"头腰均健康，坑产+46%全面提升","actions":["①笔记场域高潜+K播高效，双场域标杆","②保持头K主播质量","③腰尾K+21%场次适度扩量"],"sev":0},{"n":"九组（家用）","gmv_cur":0.63,"gmv_y":85.3,"store_sess":44.7,"store_sess_y":4.6,"prod_cur":26.8,"prod_y":27.0,"pit_cur":4049,"pit_y":86.0,"head_pit":1388,"head_pit_y":52.6,"head_sess":13800,"head_sess_y":21.2,"head_gmv":5492.1,"head_gmv_y":102.5,"head_avgd":0.8,"tail_sess":7.38,"tail_sess_y":35.8,"tail_gmv":0.08,"tail_gmv_y":17.7,"diag":"头腰双引擎，坑产+86%全面爆发","actions":["①K播体量第一（0.63亿），保持头K稳定","②腰尾K+36%场次是增量主力","③坑产+86%：沉淀选品方法论"],"sev":0},{"n":"十组（家纺）","gmv_cur":0.36,"gmv_y":95.2,"store_sess":18.2,"store_sess_y":9.7,"prod_cur":7.1,"prod_y":89.5,"pit_cur":7394,"pit_y":0.1,"head_pit":3296,"head_pit_y":-11.7,"head_sess":1967,"head_sess_y":2.2,"head_gmv":2349.1,"head_gmv_y":45.9,"head_avgd":2.3,"tail_sess":1.96,"tail_sess_y":86.5,"tail_gmv":0.12,"tail_gmv_y":436.0,"diag":"腰尾K爆发+436%，头K坑产轻微-12%","actions":["①腰尾K DGMV+436%是本行业最大亮点，继续扩量","②头K坑产-12%：核查头K选品质量","③整体坑产持平，依赖腰尾放量"],"sev":0},{"n":"十组（家饰）","gmv_cur":0.13,"gmv_y":96.5,"store_sess":7.4,"store_sess_y":-34.1,"prod_cur":6.1,"prod_y":99.2,"pit_cur":4557,"pit_y":60.6,"head_pit":847,"head_pit_y":-8.9,"head_sess":489,"head_sess_y":6.8,"head_gmv":1045.7,"head_gmv_y":140.2,"head_avgd":3.6,"tail_sess":0.98,"tail_sess_y":13.0,"tail_gmv":0.02,"tail_gmv_y":8.9,"diag":"DGMV+97%但店均场次-34%（场次在萎缩）","actions":["①场次-34%：商家在主动减少合作，核查原因","②头K坑产+140%爆发：聚焦高效头K","③整体坑产+61%健康"],"sev":1},{"n":"十二组（手工）","gmv_cur":0.1,"gmv_y":102.3,"store_sess":20.9,"store_sess_y":19.0,"prod_cur":19.8,"prod_y":45.6,"pit_cur":2252,"pit_y":79.5,"head_pit":638,"head_pit_y":17.2,"head_sess":890,"head_sess_y":5.8,"head_gmv":600,"head_gmv_y":102.2,"head_avgd":1.4,"tail_sess":3.75,"tail_sess_y":41.2,"tail_gmv":0.04,"tail_gmv_y":102.5,"diag":"头腰双引擎，坑产+80%全面提升","actions":["①保持头K+腰尾K双轨道增长","②坑产+80%：持续优化选品"],"sev":0},{"n":"十三组（教育）","gmv_cur":0.35,"gmv_y":5.9,"store_sess":5.8,"store_sess_y":-65.4,"prod_cur":7.4,"prod_y":718.7,"pit_cur":5477,"pit_y":-15.0,"head_pit":null,"head_pit_y":null,"head_sess":479,"head_sess_y":null,"head_gmv":2231.3,"head_gmv_y":null,"head_avgd":null,"tail_sess":1.61,"tail_sess_y":72.7,"tail_gmv":0.13,"tail_gmv_y":72.7,"diag":"腰尾K爆发+73%，但店均场次-65%大幅收缩","actions":["①店均场次-65%：商家大规模减少K播合作次数","②腰尾K是增量主力（+73%）","③坑产-15%：提升选品质量"],"sev":1},{"n":"十三组（图书）","gmv_cur":0.09,"gmv_y":-22.0,"store_sess":87.6,"store_sess_y":-16.5,"prod_cur":17.7,"prod_y":-4.1,"pit_cur":799,"pit_y":-43.9,"head_pit":null,"head_pit_y":null,"head_sess":983,"head_sess_y":-70.6,"head_gmv":446,"head_gmv_y":-84.3,"head_avgd":null,"tail_sess":4.12,"tail_sess_y":-1.2,"tail_gmv":0.05,"tail_gmv_y":21.9,"diag":"头K场次-71%暴跌，头部主播几乎全面失效","actions":["①立即排查头K流失原因","②腰尾K+22%是唯一亮点，保持扩量","③坑产-44%：图书K播整体商品力下滑"],"sev":3},{"n":"一组（文玩玉翠）","gmv_cur":1.86,"gmv_y":345.3,"store_sess":0.9,"store_sess_y":14.3,"prod_cur":4.1,"prod_y":176.9,"pit_cur":271400,"pit_y":84.7,"head_pit":149000,"head_pit_y":126.9,"head_sess":580,"head_sess_y":115.6,"head_gmv":18531.5,"head_gmv_y":358.0,"head_avgd":38.3,"tail_sess":0.11,"tail_sess_y":43.9,"tail_gmv":0.01,"tail_gmv_y":-20.2,"diag":"坑产¥27.1万全行业最高，头K爆发性增长","actions":["①文玩K播头K是最核心资产（场均¥38万）","②腰尾DGMV-20%：腰尾在走弱，维护好头K","③坑产+85%：沉淀文玩K播选品方法论"],"sev":0},{"n":"十一组（潮玩）","gmv_cur":0.23,"gmv_y":399.6,"store_sess":0.5,"store_sess_y":64.3,"prod_cur":12.7,"prod_y":101.7,"pit_cur":4989,"pit_y":128.2,"head_pit":1103,"head_pit_y":114.0,"head_sess":686,"head_sess_y":93.2,"head_gmv":1045,"head_gmv_y":838.1,"head_avgd":2.5,"tail_sess":1.37,"tail_sess_y":66.4,"tail_gmv":0.13,"tail_gmv_y":262.2,"diag":"头腰双引擎，坑产+128%全面爆发","actions":["①头腰尾全线健康，是K播场域最健康的行业","②坑产+128%：深度沉淀选品方法论","③持续扩量，保持增长节奏"],"sev":0},{"n":"十一组（虚拟）","gmv_cur":0.12,"gmv_y":3476.4,"store_sess":0.4,"store_sess_y":353.7,"prod_cur":7.4,"prod_y":718.7,"pit_cur":1519,"pit_y":162.3,"head_pit":596,"head_pit_y":158.7,"head_sess":510,"head_sess_y":1445.5,"head_gmv":614.5,"head_gmv_y":11103.7,"head_avgd":1.5,"tail_sess":1.22,"tail_sess_y":1177.5,"tail_gmv":0.06,"tail_gmv_y":1934.4,"diag":"低基数全线爆发（+3476%）","actions":["①低基数效应，明年增速必然收窄","②沉淀虚拟品类K播SOP"],"sev":0},{"n":"十四组（二奢）","gmv_cur":0.01,"gmv_y":24.1,"store_sess":6.9,"store_sess_y":1970.5,"prod_cur":2.4,"prod_y":117.1,"pit_cur":14000,"pit_y":-28.2,"head_pit":5130,"head_pit_y":-21.9,"head_sess":64,"head_sess_y":1180.0,"head_gmv":0,"head_gmv_y":-100.0,"head_avgd":0,"tail_sess":0.38,"tail_sess_y":1865.8,"tail_gmv":0.01,"tail_gmv_y":218.2,"diag":"低基数爆发，坑产-28%（效率在下滑）","actions":["①坑产-28%：虽DGMV增长，效率在下滑","②头K DGMV-100%（完全消失），腰尾接盘","③体量极小（0.01亿），保持观察"],"sev":1},{"n":"十六组（消费电子）","gmv_cur":0.15,"gmv_y":106.1,"store_sess":36.2,"store_sess_y":-11.3,"prod_cur":12.5,"prod_y":30.4,"pit_cur":2710,"pit_y":78.6,"head_pit":1861,"head_pit_y":89.0,"head_sess":4261,"head_sess_y":53.2,"head_gmv":991.5,"head_gmv_y":160.5,"head_avgd":0.5,"tail_sess":3.64,"tail_sess_y":1.2,"tail_gmv":0.05,"tail_gmv_y":47.8,"diag":"DGMV+106%，坑产+79%全面提升","actions":["①头腰K均健康增长","②店均场次-11%：适度补充合作场次","③保持增长节奏"],"sev":0},{"n":"十五组（酒旅）","gmv_cur":0.2,"gmv_y":2426.7,"store_sess":2.4,"store_sess_y":268.2,"prod_cur":5.1,"prod_y":4171.8,"pit_cur":31100,"pit_y":82.2,"head_pit":4799,"head_pit_y":-0.4,"head_sess":127,"head_sess_y":284.8,"head_gmv":1280.4,"head_gmv_y":1831.9,"head_avgd":10.9,"tail_sess":0.11,"tail_sess_y":832.2,"tail_gmv":0.07,"tail_gmv_y":5638.4,"diag":"低基数全线爆发，K播渠道首次打开","actions":["①趁势建立K播供给池","②沉淀酒旅K播选品SOP","③低基数效应，注意明年增速"],"sev":0}];
 
 let kolChartsInited = false;
 let kolSortMode = 'gmv';
@@ -1655,7 +1655,7 @@ function kolSev(d){
   if(d.gmv_y<0) n++;
   if(d.avgd_y<-20) n++;
   if(d.pit_y<-20) n++;
-  if((d.head_gmv_y||0)<-20) n++;
+  if((d.head_gmv_y||0)<-20||(d.pit_y||0)<-20) n++;
   return Math.min(3,n);
 }
 
@@ -1690,9 +1690,9 @@ function buildKolCard(d,rank){
 
   // 低绝对值警告（场均<基准70%，坑产<基准70%）
   const lowItems=[];
-  if(d.avgd_cur<0.098) lowItems.push(`场均¥${(d.avgd_cur*10000).toFixed(0)}元`);
+  if(d.pit_cur<2000) lowItems.push(`坑产¥${d.pit_cur.toLocaleString()}元`);
   if(d.pit_cur<0.028) lowItems.push(`坑产¥${(d.pit_cur*10000).toFixed(0)}元`);
-  if(d.sess_cur<5600) lowItems.push(`场次${d.sess_cur.toLocaleString()}场`);
+  if(d.store_sess<10) lowItems.push(`店均场次${d.store_sess}场`);
 
   // YoY严重跌（<-20%）
   const yoyBad=[];
@@ -1700,14 +1700,17 @@ function buildKolCard(d,rank){
   if(d.avgd_y<-20) yoyBad.push(`场均DGMV ${d.avgd_y.toFixed(1)}%`);
   if(d.pit_y<-20) yoyBad.push(`坑产 ${d.pit_y.toFixed(1)}%`);
   if(d.head_gmv_y!=null&&d.head_gmv_y<-20) yoyBad.push(`头K DGMV ${d.head_gmv_y.toFixed(1)}%`);
-  if(d.head_avgd_y!=null&&d.head_avgd_y<-20) yoyBad.push(`头K场均 ${d.head_avgd_y.toFixed(1)}%`);
+  if(d.head_pit_y!=null&&d.head_pit_y<-20) yoyBad.push(`头K坑产 ${d.head_pit_y.toFixed(1)}%`);
+  if(d.pit_y!=null&&d.pit_y<-20) yoyBad.push(`整体坑产 ${d.pit_y.toFixed(1)}%`);
 
   const lowHtml=lowItems.length?`<div class="diag-row low-row"><div class="diag-row-label">📊 绝对值偏低</div><div class="diag-pills">${lowItems.map(x=>`<span class="diag-pill low">${x}</span>`).join('')}</div></div>`:'';
   const yoyHtml=yoyBad.length?`<div class="diag-row yoy-row"><div class="diag-row-label">📉 YoY跌幅严重</div><div class="diag-pills">${yoyBad.map(x=>`<span class="diag-pill yoy">${x}</span>`).join('')}</div></div>`:'';
 
-  const headRows=(d.head_gmv_y!=null)?`
-    ${kyoyRow('👑 头K场均DGMV YoY',d.head_avgd_y,true)}
+  const headRows=(d.head_sess!=null)?`
+    ${kyoyRow('🏋️ 店均场次 YoY',d.store_sess_y,false)}
+    ${kyoyRow('👑 头K场次 YoY',d.head_sess_y,false)}
     ${kyoyRow('👑 头K DGMV YoY',d.head_gmv_y,true)}
+    ${kyoyRow('👑 头K坑产 YoY',d.head_pit_y,true)}
     ${kyoyRow('🔸 腰尾K DGMV YoY',d.tail_gmv_y,true)}
     ${kyoyRow('🔸 腰尾K场次 YoY',d.tail_sess_y,false)}`
   :'<div style="color:#9ca3af;font-size:11px;padding:4px 10px">头/腰尾拆分数据待补充</div>';
@@ -2072,20 +2075,21 @@ function initKolCharts(){
   const bubEl=document.getElementById('kol-bubble');
   if(!bubEl) return;
   const bub=echarts.init(bubEl);
-  const bubData=kolData.map(d=>[d.sess_cur, d.avgd_cur*10000, d.gmv_cur, d.n, d.gmv_y]);
+  const bubData=kolData.map(d=>[d.store_sess, d.pit_cur, d.gmv_cur, d.n, d.gmv_y]);
   bub.setOption({
-    tooltip:{formatter:p=>{const [s,a,g,n,yoy]=p.value;return `<b>${n}</b><br>场次 ${s.toLocaleString()}场<br>场均 ¥${a.toFixed(0)}元<br>K播DGMV ¥${g}亿<br>YoY ${yoy>=0?'+':''}${yoy.toFixed(1)}%`;}},
+    tooltip:{formatter:p=>{const [s,a,g,n,yoy]=p.value;return `<b>${n}</b><br>店均场次 ${s}场<br>坑产 ¥${a.toLocaleString()}元<br>K播DGMV ¥${g}亿<br>YoY ${yoy>=0?'+':''}${yoy.toFixed(1)}%`;}},
+
     grid:{left:60,right:20,top:30,bottom:50},
-    xAxis:{name:'场次规模（场）',nameLocation:'middle',nameGap:28,nameTextStyle:{color:'#1e293b',fontSize:12,fontWeight:'bold'},splitLine:{show:false},axisLabel:{color:'#374151',fontSize:10},axisLine:{lineStyle:{color:'#94a3b8'}}},
-    yAxis:{name:'场均DGMV（元）',nameLocation:'middle',nameGap:50,nameTextStyle:{color:'#1e293b',fontSize:12,fontWeight:'bold'},splitLine:{show:false},axisLabel:{color:'#374151',fontSize:10},axisLine:{lineStyle:{color:'#94a3b8'}}},
+    xAxis:{name:'店均场次（场）',nameLocation:'middle',nameGap:28,nameTextStyle:{color:'#1e293b',fontSize:12,fontWeight:'bold'},splitLine:{show:false},axisLabel:{color:'#374151',fontSize:10},axisLine:{lineStyle:{color:'#94a3b8'}}},
+    yAxis:{name:'K播坑产（元/场·SKU）',nameLocation:'middle',nameGap:55,nameTextStyle:{color:'#1e293b',fontSize:12,fontWeight:'bold'},splitLine:{show:false},axisLabel:{color:'#374151',fontSize:10,formatter:v=>v>=10000?(v/10000).toFixed(1)+'万':v.toLocaleString()},axisLine:{lineStyle:{color:'#94a3b8'}}},
     series:[{type:'scatter',
       symbolSize:v=>Math.max(10,Math.sqrt(v[2])*28),
       itemStyle:{color:p=>p.value[4]>=0?'rgba(22,163,74,0.75)':'rgba(249,115,22,0.75)',borderColor:'#fff',borderWidth:1.5},
       label:{show:true,position:'right',formatter:p=>p.value[3].replace(/.*?（/,'').replace('）',''),fontSize:9,color:'#374151'},
       data:bubData,
       markLine:{silent:true,symbol:'none',lineStyle:{type:'dashed'},data:[
-        {xAxis:10600,lineStyle:{color:'#7c3aed',width:1.5,opacity:0.8},label:{formatter:'场次中位 10600场',color:'#7c3aed',fontSize:10,position:'insideStartTop'}},
-        {yAxis:5000,lineStyle:{color:'#f97316',width:1.5,opacity:0.8},label:{formatter:'场均中位 ¥5000元',color:'#f97316',fontSize:10,position:'insideEndTop'}}
+        {xAxis:35,lineStyle:{color:'#7c3aed',width:1.5,opacity:0.8},label:{formatter:'店均场次中位 35场',color:'#7c3aed',fontSize:10,position:'insideStartTop'}},
+        {yAxis:3000,lineStyle:{color:'#f97316',width:1.5,opacity:0.8},label:{formatter:'坑产中位 ¥3000',color:'#f97316',fontSize:10,position:'insideEndTop'}}
       ]}
     }],
     graphic:[
@@ -2119,17 +2123,17 @@ function initKolCharts(){
     });
   }
 
-  kolBar('kol-bar-sess', kolData, 8000,
-    d=>d.sess_cur,
-    d=>`${(d.sess_cur/1000).toFixed(1)}k (${d.sess_y>=0?'+':''}${d.sess_y.toFixed(0)}%YoY)`,
-    d=>d.sess_cur>=8000?'#16a34a':d.sess_cur>=5600?'#eab308':'#e8372c'
+  kolBar('kol-bar-sess', kolData, 35,
+    d=>d.store_sess,
+    d=>`${d.store_sess}场 (${d.store_sess_y>=0?'+':''}${d.store_sess_y.toFixed(0)}%YoY)`,
+    d=>d.store_sess>=35?'#16a34a':d.store_sess>=20?'#eab308':'#e8372c'
   );
-  kolBar('kol-bar-avgd', kolData, 1400,
-    d=>d.avgd_cur*10000,
-    d=>`¥${(d.avgd_cur*10000).toFixed(0)} (${d.avgd_y>=0?'+':''}${d.avgd_y.toFixed(0)}%YoY)`,
-    d=>d.avgd_cur*10000>=1400?'#16a34a':d.avgd_cur*10000>=980?'#eab308':'#e8372c'
+  kolBar('kol-bar-avgd', kolData, 3000,
+    d=>d.pit_cur,
+    d=>`¥${d.pit_cur>=10000?(d.pit_cur/10000).toFixed(1)+'万':d.pit_cur.toLocaleString()} (${d.pit_y>=0?'+':''}${d.pit_y.toFixed(0)}%YoY)`,
+    d=>d.pit_cur>=3000?'#16a34a':d.pit_cur>=2000?'#eab308':'#e8372c'
   );
-  kolBar('kol-bar-gmv', kolData, 0.21,
+  kolBar('kol-bar-gmv', kolData, 0.2,
     d=>d.gmv_cur,
     d=>`¥${d.gmv_cur}亿 (${d.gmv_y>=0?'+':''}${d.gmv_y.toFixed(0)}%YoY)`,
     d=>d.gmv_y>=0?'#16a34a':'#e8372c'
