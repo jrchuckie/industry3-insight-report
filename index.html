@@ -1653,7 +1653,7 @@ function kolSev(d){
   if(d.sev!==undefined) return d.sev;
   let n=0;
   if(d.gmv_y<0) n++;
-  if(d.avgd_y<-20) n++;
+  if((d.tail_gmv_y||0)<-20) n++;
   if(d.pit_y<-20) n++;
   if((d.head_gmv_y||0)<-20||(d.pit_y||0)<-20) n++;
   return Math.min(3,n);
@@ -1688,20 +1688,18 @@ function buildKolCard(d,rank){
     </div>`;
   }
 
-  // 低绝对值警告（场均<基准70%，坑产<基准70%）
+  // 低绝对值警告（坑产<2000元，店均场次<10场）
   const lowItems=[];
   if(d.pit_cur<2000) lowItems.push(`坑产¥${d.pit_cur.toLocaleString()}元`);
-  if(d.pit_cur<0.028) lowItems.push(`坑产¥${(d.pit_cur*10000).toFixed(0)}元`);
   if(d.store_sess<10) lowItems.push(`店均场次${d.store_sess}场`);
 
   // YoY严重跌（<-20%）
   const yoyBad=[];
   if(d.gmv_y<-10) yoyBad.push(`K播DGMV ${d.gmv_y.toFixed(1)}%`);
-  if(d.avgd_y<-20) yoyBad.push(`场均DGMV ${d.avgd_y.toFixed(1)}%`);
-  if(d.pit_y<-20) yoyBad.push(`坑产 ${d.pit_y.toFixed(1)}%`);
+  if(d.pit_y<-20) yoyBad.push(`整体坑产 ${d.pit_y.toFixed(1)}%`);
   if(d.head_gmv_y!=null&&d.head_gmv_y<-20) yoyBad.push(`头K DGMV ${d.head_gmv_y.toFixed(1)}%`);
   if(d.head_pit_y!=null&&d.head_pit_y<-20) yoyBad.push(`头K坑产 ${d.head_pit_y.toFixed(1)}%`);
-  if(d.pit_y!=null&&d.pit_y<-20) yoyBad.push(`整体坑产 ${d.pit_y.toFixed(1)}%`);
+  if(d.tail_gmv_y!=null&&d.tail_gmv_y<-20) yoyBad.push(`腰尾K DGMV ${d.tail_gmv_y.toFixed(1)}%`);
 
   const lowHtml=lowItems.length?`<div class="diag-row low-row"><div class="diag-row-label">📊 绝对值偏低</div><div class="diag-pills">${lowItems.map(x=>`<span class="diag-pill low">${x}</span>`).join('')}</div></div>`:'';
   const yoyHtml=yoyBad.length?`<div class="diag-row yoy-row"><div class="diag-row-label">📉 YoY跌幅严重</div><div class="diag-pills">${yoyBad.map(x=>`<span class="diag-pill yoy">${x}</span>`).join('')}</div></div>`:'';
@@ -1723,8 +1721,8 @@ function buildKolCard(d,rank){
         <div class="card-meta">
           <span>K播DGMV <b style="color:${gmvColor}">¥${d.gmv_cur}亿</b></span>
           <span>YoY <b style="color:${gmvColor}">${gmvStr}</b></span>
-          <span>场均 ¥${(d.avgd_cur*10000).toFixed(0)}元/场</span>
-          <span>坑产 ¥${(d.pit_cur*10000).toFixed(0)}元/品</span>
+          <span>坑产 ¥${d.pit_cur>=10000?(d.pit_cur/10000).toFixed(1)+'万':d.pit_cur.toLocaleString()}元</span>
+          <span>头K场次 ${d.head_sess!=null?d.head_sess.toLocaleString():'—'}场</span>
         </div>
       </div>
       <div class="card-severity"><span class="severity-label ${scls}">${stxt}</span></div>
@@ -1732,24 +1730,24 @@ function buildKolCard(d,rank){
     <div class="card-body">
       <div class="funnel-visual">
         <div class="sec-lbl">漏斗层 YoY（进度条=vs基准，右侧=YoY）</div>
-        <!-- 场次 -->
+        <!-- 店均场次 -->
         <div class="funnel-row">
-          <div class="fl">场次规模</div>
+          <div class="fl">🏋️ 店均场次</div>
           <div class="fc"><div class="fb">
-            <div class="ff ${d.sess_y>=0?'ok':'bad'}" style="width:${Math.min(95,50+(d.sess_y||0)/2)}%"></div>
-            <span class="fvo">${d.sess_cur.toLocaleString()}场</span>
+            <div class="ff ${d.store_sess>=35?'ok':d.store_sess>=20?'warn':'bad'}" style="width:${Math.min(95,Math.max(4,(d.store_sess/35)*60))}%"></div>
+            <span class="fvo">${d.store_sess}场</span>
           </div></div>
-          <div class="fr"><div class="fr-base">去年 ${d.sess_ly.toLocaleString()}场</div>
-            <div class="fr-val ${d.sess_y>=0?'up':'dn'}">${d.sess_y>=0?'+':''}${d.sess_y.toFixed(1)}% YoY</div></div>
+          <div class="fr"><div class="fr-base">基准 35场</div>
+            <div class="fr-val ${d.store_sess_y>=0?'up':'dn'}">${d.store_sess_y>=0?'+':''}${d.store_sess_y.toFixed(1)}% YoY</div></div>
         </div>
-        <!-- 商品次 -->
+        <!-- 带货商品次 -->
         <div class="funnel-row">
           <div class="fl">带货商品次</div>
           <div class="fc"><div class="fb">
             <div class="ff ${d.prod_y>=0?'ok':'bad'}" style="width:${Math.min(95,50+(d.prod_y||0)/2)}%"></div>
-            <span class="fvo">${(d.prod_cur/10000).toFixed(1)}万次</span>
+            <span class="fvo">${d.prod_cur}万次</span>
           </div></div>
-          <div class="fr"><div class="fr-base">去年 ${(d.prod_ly/10000).toFixed(1)}万次</div>
+          <div class="fr"><div class="fr-base">YoY变化</div>
             <div class="fr-val ${d.prod_y>=0?'up':'dn'}">${d.prod_y>=0?'+':''}${d.prod_y.toFixed(1)}% YoY</div></div>
         </div>
         <!-- K播DGMV -->
@@ -1759,28 +1757,28 @@ function buildKolCard(d,rank){
             <div class="ff ${d.gmv_y>=0?'ok':'bad'}" style="width:${Math.min(95,50+(d.gmv_y||0)/3)}%"></div>
             <span class="fvo" style="font-weight:700">¥${d.gmv_cur}亿</span>
           </div></div>
-          <div class="fr"><div class="fr-base">去年 ¥${d.gmv_ly}亿</div>
+          <div class="fr"><div class="fr-base">YoY变化</div>
             <div class="fr-val ${d.gmv_y>=0?'up':'dn'}">${d.gmv_y>=0?'+':''}${d.gmv_y.toFixed(1)}% YoY</div></div>
         </div>
-        <!-- 场均DGMV -->
+        <!-- 整体坑产 -->
         <div class="funnel-row">
-          <div class="fl">场均DGMV</div>
+          <div class="fl">🛍️ 整体坑产</div>
           <div class="fc"><div class="fb">
-            <div class="ff ${d.avgd_y>=0?'ok':d.avgd_y>=-20?'warn':'bad'}" style="width:${Math.min(95,Math.max(4,50+(d.avgd_y||0)/2))}%"></div>
-            <span class="fvo">¥${(d.avgd_cur*10000).toFixed(0)}元</span>
+            <div class="ff ${d.pit_cur>=3000?'ok':d.pit_cur>=2000?'warn':'bad'}" style="width:${Math.min(95,Math.max(4,(d.pit_cur/3000)*60))}%"></div>
+            <span class="fvo">¥${d.pit_cur>=10000?(d.pit_cur/10000).toFixed(1)+'万':d.pit_cur.toLocaleString()}</span>
           </div></div>
-          <div class="fr"><div class="fr-base">基准 ¥1,400元</div>
-            <div class="fr-val ${d.avgd_y>=0?'up':'dn'}">${d.avgd_y>=0?'+':''}${d.avgd_y.toFixed(1)}% YoY</div></div>
-        </div>
-        <!-- 坑产 -->
-        <div class="funnel-row">
-          <div class="fl">坑产</div>
-          <div class="fc"><div class="fb">
-            <div class="ff ${d.pit_y>=0?'ok':d.pit_y>=-20?'warn':'bad'}" style="width:${Math.min(95,Math.max(4,50+(d.pit_y||0)/2))}%"></div>
-            <span class="fvo">¥${(d.pit_cur*10000).toFixed(0)}元</span>
-          </div></div>
-          <div class="fr"><div class="fr-base">基准 ¥400元</div>
+          <div class="fr"><div class="fr-base">基准 ¥3000元</div>
             <div class="fr-val ${d.pit_y>=0?'up':'dn'}">${d.pit_y>=0?'+':''}${d.pit_y.toFixed(1)}% YoY</div></div>
+        </div>
+        <!-- 头K坑产 -->
+        <div class="funnel-row">
+          <div class="fl">👑 头K坑产</div>
+          <div class="fc"><div class="fb">
+            <div class="ff ${d.head_pit!=null&&d.head_pit>=2000?'ok':d.head_pit!=null&&d.head_pit>=1000?'warn':'bad'}" style="width:${d.head_pit!=null?Math.min(95,Math.max(4,(d.head_pit/3000)*60))+'%':'20%'}"></div>
+            <span class="fvo">${d.head_pit!=null?'¥'+(d.head_pit>=10000?(d.head_pit/10000).toFixed(1)+'万':d.head_pit.toLocaleString()):'—'}</span>
+          </div></div>
+          <div class="fr"><div class="fr-base">基准 ¥3000元</div>
+            <div class="fr-val ${d.head_pit_y!=null?(d.head_pit_y>=0?'up':'dn'):''}">${d.head_pit_y!=null?(d.head_pit_y>=0?'+':'')+d.head_pit_y.toFixed(1)+'% YoY':'— YoY'}</div></div>
         </div>
         <!-- 头/腰尾拆分 -->
         <div class="sec-lbl" style="margin-top:6px">头K / 腰尾K 拆分 YoY</div>
@@ -1818,9 +1816,8 @@ function renderKol(mode){
     const sn=n=>n.replace(/.*?（/,'').replace('）','');
     const pill=(n,bg,tc)=>`<span style="background:${bg};color:${tc};padding:1px 6px;border-radius:8px;margin:1px;display:inline-block;font-size:10px">${n}</span>`;
     const KMLIST=[
-      {label:'场均DGMV',base:'¥1400元',lowThr:0.14,yoyThr:-30,vFn:d=>d.avgd_cur,yFn:d=>d.avgd_y},
-      {label:'坑产',base:'¥400元',lowThr:0.04,yoyThr:-30,vFn:d=>d.pit_cur,yFn:d=>d.pit_y},
-      {label:'头K场均',base:'—',lowThr:null,yoyThr:-20,vFn:d=>null,yFn:d=>d.head_avgd_y},
+      {label:'整体坑产',base:'¥3000元',lowThr:2000,yoyThr:-20,vFn:d=>d.pit_cur,yFn:d=>d.pit_y},
+      {label:'头K坑产',base:'¥3000元',lowThr:1000,yoyThr:-20,vFn:d=>d.head_pit,yFn:d=>d.head_pit_y},
       {label:'头K DGMV',base:'—',lowThr:null,yoyThr:-20,vFn:d=>null,yFn:d=>d.head_gmv_y},
       {label:'腰尾K DGMV',base:'—',lowThr:null,yoyThr:-20,vFn:d=>null,yFn:d=>d.tail_gmv_y},
       {label:'K播DGMV',base:'—',lowThr:null,yoyThr:-20,vFn:d=>d.gmv_cur,yFn:d=>d.gmv_y},
