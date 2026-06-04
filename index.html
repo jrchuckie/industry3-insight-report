@@ -1717,24 +1717,36 @@ function buildKolCard(d,rank){
     </div>`;
   }
 
-  // 低绝对值警告（跟漏斗对齐：店均场次/店均主播/场均商品/坑产）
+  // ── 核心诊断pills：4个漏斗指标（店均场次/店均主播/场均商品/坑产），分头K&腰尾K ──
   const totalSessCalc = d.head_sess + (d.tail_sess||0)*10000;
-  const avgProdCalc = totalSessCalc>0 ? (d.prod_cur*10000/totalSessCalc) : 0;
+  const avgProdCalc = totalSessCalc>0 ? ((d.prod_cur*10000)/totalSessCalc) : 0;
   const avgMerCalc = d.mer>0 ? (d.head_mer+d.tail_mer)/d.mer : 0;
+  const headAvgProd = d.head_sess>0 ? d.head_prod/d.head_sess : 0;
+  const tailAvgProd = (d.tail_sess||0)>0 ? (d.tail_prod*10000)/(d.tail_sess*10000) : 0;
+  const headMerAvg = d.mer>0 ? d.head_mer/d.mer : 0;
+  const tailMerAvg = d.mer>0 ? (d.tail_mer||0)/d.mer : 0;
+
   const lowItems=[];
   if(d.store_sess<10) lowItems.push(`店均场次${d.store_sess}场`);
   if(avgMerCalc<1) lowItems.push(`店均主播${avgMerCalc.toFixed(1)}位`);
-  if(avgProdCalc<1) lowItems.push(`场均商品${avgProdCalc.toFixed(1)}次`);
+  if(avgProdCalc<1) lowItems.push(`场均商品${avgProdCalc.toFixed(2)}次`);
   if(d.pit_cur<2000) lowItems.push(`整体坑产¥${d.pit_cur.toLocaleString()}`);
-  if(d.head_pit!=null&&d.head_pit<1500) lowItems.push(`头K坑产¥${d.head_pit.toLocaleString()}`);
 
-  // YoY严重跌（跟漏斗对齐）
+  // YoY跌：4个指标 + 分头K/腰尾K子项
   const yoyBad=[];
+  // 店均场次
   if(d.store_sess_y!=null&&d.store_sess_y<=-15) yoyBad.push(`店均场次 ${d.store_sess_y.toFixed(1)}%`);
+  if(d.head_sess_y!=null&&d.head_sess_y<=-20) yoyBad.push(`头K场次 ${d.head_sess_y.toFixed(1)}%`);
+  if(d.tail_sess_y!=null&&d.tail_sess_y<=-20) yoyBad.push(`腰尾K场次 ${d.tail_sess_y.toFixed(1)}%`);
+  // 店均合作主播数
+  if(d.head_mer_y!=null&&d.head_mer_y<=-20) yoyBad.push(`头K主播数 ${d.head_mer_y.toFixed(1)}%`);
+  if(d.tail_mer_y!=null&&d.tail_mer_y<=-20) yoyBad.push(`腰尾K主播数 ${d.tail_mer_y.toFixed(1)}%`);
+  // 场均带货商品数
+  if(d.head_prod_y!=null&&d.head_prod_y<=-20) yoyBad.push(`头K场均商品 ${d.head_prod_y.toFixed(1)}%`);
+  if(d.tail_prod_y!=null&&d.tail_prod_y<=-20) yoyBad.push(`腰尾K场均商品 ${d.tail_prod_y.toFixed(1)}%`);
+  // 坑产
   if(d.pit_y<=-20) yoyBad.push(`整体坑产 ${d.pit_y.toFixed(1)}%`);
   if(d.head_pit_y!=null&&d.head_pit_y<=-20) yoyBad.push(`头K坑产 ${d.head_pit_y.toFixed(1)}%`);
-  if(d.tail_gmv_y!=null&&d.tail_gmv_y<=-20) yoyBad.push(`腰尾K DGMV ${d.tail_gmv_y.toFixed(1)}%`);
-  if(d.gmv_y<=-20) yoyBad.push(`K播DGMV ${d.gmv_y.toFixed(1)}%`);
 
   const lowHtml=lowItems.length?`<div class="diag-row low-row"><div class="diag-row-label">📊 绝对值偏低</div><div class="diag-pills">${lowItems.map(x=>`<span class="diag-pill low">${x}</span>`).join('')}</div></div>`:'';
   const yoyHtml=yoyBad.length?`<div class="diag-row yoy-row"><div class="diag-row-label">📉 YoY跌幅严重</div><div class="diag-pills">${yoyBad.map(x=>`<span class="diag-pill yoy">${x}</span>`).join('')}</div></div>`:'';
@@ -1803,25 +1815,53 @@ function renderKol(mode){
   if(attnKol){
     const sn=n=>n.replace(/.*?（/,'').replace('）','');
     const pill=(n,bg,tc)=>`<span style="background:${bg};color:${tc};padding:1px 6px;border-radius:8px;margin:1px;display:inline-block;font-size:10px">${n}</span>`;
+    // 黄色卡片：4个漏斗指标，各含头K/腰尾K子项
+    const totalSess2=d=>d.head_sess+(d.tail_sess||0)*10000;
+    const avgProd2=d=>totalSess2(d)>0?((d.prod_cur||0)*10000/totalSess2(d)):0;
+    const avgMer2=d=>d.mer>0?((d.head_mer||0)+(d.tail_mer||0))/d.mer:0;
     const KMLIST=[
-      {label:'店均场次',base:'基准35场',lowThr:10,yoyThr:-15,vFn:d=>d.store_sess,yFn:d=>d.store_sess_y},
-      {label:'整体坑产',base:'基准¥3000',lowThr:2000,yoyThr:-20,vFn:d=>d.pit_cur,yFn:d=>d.pit_y},
-      {label:'头K坑产',base:'基准¥3000',lowThr:1500,yoyThr:-20,vFn:d=>d.head_pit,yFn:d=>d.head_pit_y},
-      {label:'腰尾K DGMV',base:'—',lowThr:null,yoyThr:-20,vFn:d=>null,yFn:d=>d.tail_gmv_y},
-      {label:'K播DGMV',base:'—',lowThr:null,yoyThr:-20,vFn:d=>d.gmv_cur,yFn:d=>d.gmv_y},
+      {label:'店均场次',base:'基准35场',
+        lowThr:10,yoyThr:-15,vFn:d=>d.store_sess,yFn:d=>d.store_sess_y,
+        subs:[
+          {label:'头K场次',yoyThr:-20,yFn:d=>d.head_sess_y},
+          {label:'腰尾K场次',yoyThr:-20,yFn:d=>d.tail_sess_y},
+        ]},
+      {label:'店均合作主播数',base:'基准5位',
+        lowThr:1,yoyThr:null,vFn:d=>avgMer2(d),yFn:d=>null,
+        subs:[
+          {label:'头K主播',yoyThr:-20,yFn:d=>d.head_mer_y},
+          {label:'腰尾K主播',yoyThr:-20,yFn:d=>d.tail_mer_y},
+        ]},
+      {label:'场均带货商品数',base:'基准2次/场',
+        lowThr:1,yoyThr:null,vFn:d=>avgProd2(d),yFn:d=>null,
+        subs:[
+          {label:'头K场均商品',yoyThr:-20,yFn:d=>d.head_prod_y},
+          {label:'腰尾K场均商品',yoyThr:-20,yFn:d=>d.tail_prod_y},
+        ]},
+      {label:'整体坑产',base:'基准¥3000',
+        lowThr:2000,yoyThr:-20,vFn:d=>d.pit_cur,yFn:d=>d.pit_y,
+        subs:[
+          {label:'头K坑产',yoyThr:-20,yFn:d=>d.head_pit_y},
+        ]},
     ];
     const kcards=KMLIST.map(m=>{
-      const lowBad=kolData.filter(d=>m.lowThr!=null&&m.vFn(d)!=null&&m.vFn(d)<m.lowThr).map(d=>sn(d.n));
-      const yoyBad=kolData.filter(d=>m.yFn(d)!=null&&m.yFn(d)<=m.yoyThr).map(d=>sn(d.n));
-      const hasAny=lowBad.length||yoyBad.length;
+      const lowBad=m.lowThr!=null?kolData.filter(d=>{const v=m.vFn(d);return v!=null&&v<m.lowThr;}).map(d=>sn(d.n)):[];
+      const yoyBad=m.yoyThr!=null?kolData.filter(d=>{const y=m.yFn(d);return y!=null&&y<=m.yoyThr;}).map(d=>sn(d.n)):[];
+      // sub行：头K/腰尾K YoY异常
+      const subHtml=(m.subs||[]).map(s=>{
+        const bad=kolData.filter(d=>{const y=s.yFn(d);return y!=null&&y<=s.yoyThr;}).map(d=>sn(d.n));
+        return bad.length?`<div style="display:flex;align-items:center;gap:4px;margin-left:8px"><span style="font-size:9px;color:#991b1b;white-space:nowrap">↳ ${s.label} 📉</span><span style="display:flex;flex-wrap:wrap;gap:2px">${bad.map(n=>pill(n,'#fee2e2','#7f1d1d')).join('')}</span></div>`:'';
+      }).join('');
+      const hasAny=lowBad.length||yoyBad.length||subHtml.length>0;
       return `<div style="background:#fff;border:1px solid ${hasAny?'#fbbf24':'#e2e8f0'};border-radius:8px;padding:8px 10px;${hasAny?'border-left:3px solid #f59e0b':''}">
-        <div style="font-size:11px;font-weight:700;color:#1e293b;margin-bottom:2px">${m.label}<span style="font-weight:400;color:#64748b;font-size:9px;margin-left:4px">基准${m.base}</span></div>
+        <div style="font-size:11px;font-weight:700;color:#1e293b;margin-bottom:4px">${m.label}<span style="font-weight:400;color:#64748b;font-size:9px;margin-left:4px">${m.base}</span></div>
         ${lowBad.length?`<div style="display:flex;align-items:center;gap:4px;margin-bottom:3px"><span style="font-size:9px;color:#92400e;white-space:nowrap">🔶 绝对值偏低</span><span style="display:flex;flex-wrap:wrap;gap:2px">${lowBad.map(n=>pill(n,'#fde68a','#78350f')).join('')}</span></div>`:''}
-        ${yoyBad.length?`<div style="display:flex;align-items:center;gap:4px"><span style="font-size:9px;color:#991b1b;white-space:nowrap">📉 YoY下滑</span><span style="display:flex;flex-wrap:wrap;gap:2px">${yoyBad.map(n=>pill(n,'#fee2e2','#7f1d1d')).join('')}</span></div>`:''}
+        ${yoyBad.length?`<div style="display:flex;align-items:center;gap:4px;margin-bottom:2px"><span style="font-size:9px;color:#991b1b;white-space:nowrap">📉 YoY下滑</span><span style="display:flex;flex-wrap:wrap;gap:2px">${yoyBad.map(n=>pill(n,'#fee2e2','#7f1d1d')).join('')}</span></div>`:''}
+        ${subHtml}
         ${!hasAny?'<span style="font-size:9px;color:#16a34a">✓ 无异常</span>':''}
       </div>`;
     }).join('');
-    attnKol.innerHTML=`<div style="background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:10px 14px"><div style="font-size:12px;font-weight:700;color:#92400e;margin-bottom:8px">📌 需关注行业（按指标）</div><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">${kcards}</div></div>`;
+    attnKol.innerHTML=`<div style="background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:10px 14px"><div style="font-size:12px;font-weight:700;color:#92400e;margin-bottom:8px">📌 需关注行业（按指标）</div><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">${kcards}</div></div>`;
   }
 }
 
