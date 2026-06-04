@@ -1395,18 +1395,30 @@ function initLiveCharts2() {
       var gpmMed = liveData2.map(function(d){return d.gpm;}).slice().sort(function(a,b){return a-b;})[Math.floor(liveData2.length/2)];
       lc.setOption({
         tooltip:{trigger:'item',formatter:function(p){return Array.isArray(p.data)?'<b>'+p.data[3]+'</b><br>总曝光：'+p.data[0].toFixed(2)+'亿<br>GPM：'+p.data[1].toFixed(1)+'元<br>店播GMV：'+p.data[2].toFixed(2)+'亿<br>DGMV YoY：'+(p.data[4]>0?'+':'')+p.data[4].toFixed(1)+'%':''}},
-        grid:{left:60,right:20,top:20,bottom:50},
-        xAxis:{name:'总曝光（亿）',nameLocation:'end',type:'value',axisLabel:{color:'#1e293b'}},
-        yAxis:{name:'GPM（元）',nameLocation:'end',type:'value',axisLabel:{color:'#1e293b'}},
+        grid:{left:60,right:20,top:30,bottom:50},
+        xAxis:{name:'总曝光（亿）',nameLocation:'middle',nameGap:28,type:'value',axisLabel:{color:'#64748b',fontSize:10},axisLine:{lineStyle:{color:'#e2e8f0'}},splitLine:{show:false}},
+        yAxis:{name:'GPM（元）',nameLocation:'middle',nameGap:42,type:'value',axisLabel:{color:'#64748b',fontSize:10},axisLine:{lineStyle:{color:'#e2e8f0'}},splitLine:{show:false}},
         series:[{
-          type:'scatter', symbolSize:function(d){return sz(d[2]);}, data:bdata,
-          itemStyle:{color:'#3b82f6',opacity:0.75},
+          type:'scatter',
+          symbolSize:function(d){return sz(d[2]);},
+          data:bdata,
+          itemStyle:{color:function(p){return p.data[4]>=0?'rgba(22,163,74,0.75)':'rgba(249,115,22,0.75)';},borderColor:'#fff',borderWidth:1.5},
           label:{show:true, formatter:function(p){return Array.isArray(p.data)&&p.data[3]?p.data[3].replace(/[一二三四五六七八九十]+组（/,'').replace('）',''):'';}, position:'top', fontSize:10, color:'#1e293b'},
-          markLine:{silent:true,symbol:'none',lineStyle:{type:'dashed'},data:[
-            {xAxis:expMed,lineStyle:{color:'#7c3aed',width:1.5},label:{formatter:'曝光中位 '+expMed.toFixed(1)+'亿',color:'#7c3aed',fontSize:10}},
-            {yAxis:gpmMed,lineStyle:{color:'#f97316',width:1.5},label:{formatter:'GPM中位 '+gpmMed.toFixed(0)+'元',color:'#f97316',fontSize:10}}
+          markLine:{silent:true,symbol:'none',data:[
+            {xAxis:expMed,lineStyle:{color:'#7c3aed',type:'dashed',width:1.5},label:{formatter:'曝光中位 '+expMed.toFixed(1)+'亿',color:'#7c3aed',fontSize:9,position:'insideEndTop'}},
+            {yAxis:gpmMed,lineStyle:{color:'#f97316',type:'dashed',width:1.5},label:{formatter:'GPM中位 '+gpmMed.toFixed(0)+'元',color:'#f97316',fontSize:9,position:'insideEndTop'}}
           ]}
-        }]
+        }],
+        graphic:[
+          {type:'rect',left:'55%',top:'5%',right:'5%',bottom:'52%',style:{fill:'rgba(22,163,74,0.04)',stroke:'none'},z:0},
+          {type:'rect',left:'5%',top:'5%',right:'45%',bottom:'52%',style:{fill:'rgba(99,102,241,0.04)',stroke:'none'},z:0},
+          {type:'rect',left:'55%',top:'48%',right:'5%',bottom:'5%',style:{fill:'rgba(249,115,22,0.04)',stroke:'none'},z:0},
+          {type:'rect',left:'5%',top:'48%',right:'45%',bottom:'5%',style:{fill:'rgba(148,163,184,0.06)',stroke:'none'},z:0},
+          {type:'text',style:{text:'🏆 核心资产',x:'58%',y:'8%',fill:'rgba(22,163,74,0.7)',fontSize:11,fontWeight:'bold'},z:1},
+          {type:'text',style:{text:'💎 高潜赛道',x:'7%',y:'8%',fill:'rgba(99,102,241,0.7)',fontSize:11,fontWeight:'bold'},z:1},
+          {type:'text',style:{text:'⚡ 流量内耗',x:'58%',y:'55%',fill:'rgba(249,115,22,0.7)',fontSize:11,fontWeight:'bold'},z:1},
+          {type:'text',style:{text:'🔭 有待观察',x:'7%',y:'55%',fill:'rgba(148,163,184,0.9)',fontSize:11,fontWeight:'bold'},z:1},
+        ]
       });
     }
   } catch(e){console.error('[live bubble]',e);}
@@ -1556,24 +1568,33 @@ function initNoteCharts(){
         const yf=v=>v!=null?(v>0?'+':'')+v.toFixed(1)+'%':'—';
         return `<b>${n}</b><br>总曝光: ${d3ex(x)}亿 (${yf(ey)})<br>GPM: ¥${y.toFixed(1)} (${yf(gy)})<br>笔记GMV: ¥${g.toFixed(2)}亿 (${yf(gmy)})<br>店均发布: ${pub}条 (${yf(py)})<br>动销商家: ${mer?mer.toLocaleString():'—'}家`;
       }},
-      grid:{left:50,right:30,top:20,bottom:40,containLabel:true},
-      xAxis:{name:'总曝光（亿次）',nameLocation:'middle',nameGap:25,
-        axisLabel:{fontSize:10,color:'#1e293b'},axisLine:{lineStyle:{color:'#e2e8f0'}},
+      grid:{left:50,right:30,top:30,bottom:50,containLabel:true},
+      xAxis:{name:'总曝光（亿次）',nameLocation:'middle',nameGap:28,
+        axisLabel:{fontSize:10,color:'#64748b'},axisLine:{lineStyle:{color:'#e2e8f0'}},
         splitLine:{show:false}},
-      yAxis:{name:'GPM（元）',nameLocation:'middle',nameGap:35,min:0,max:110,
-        axisLabel:{fontSize:10,color:'#1e293b'},axisLine:{lineStyle:{color:'#e2e8f0'}},
-        splitLine:{lineStyle:{color:'#f1f5f9'}}},
+      yAxis:{name:'GPM（元）',nameLocation:'middle',nameGap:42,min:0,max:110,
+        axisLabel:{fontSize:10,color:'#64748b'},axisLine:{lineStyle:{color:'#e2e8f0'}},
+        splitLine:{show:false}},
       series:[{type:'scatter',
         symbolSize:p=>p[2],
-        itemStyle:{color:'rgba(59,130,246,0.65)',borderColor:'rgba(59,130,246,0.9)',borderWidth:1},
+        itemStyle:{color:p=>p.data[6]>=0?'rgba(22,163,74,0.75)':'rgba(249,115,22,0.75)',borderColor:'#fff',borderWidth:1.5},
         label:{show:true,formatter:p=>{if(!Array.isArray(p.data))return'';return p.data[3].replace(/.*?（/,'').replace('）','');},fontSize:9,color:'#374151',position:'top'},
         data:pts,
-        markLine:{silent:true,symbol:'none',lineStyle:{type:'dashed',width:1},
-          data:[
-            {xAxis:6.31,lineStyle:{color:'#7c3aed'},label:{formatter:'曝光中位数 6.31亿',color:'#7c3aed',fontSize:9}},
-            {yAxis:38.2,lineStyle:{color:'#f97316'},label:{formatter:'GPM基准 ¥38.2',color:'#f97316',fontSize:9}}
+        markLine:{silent:true,symbol:'none',data:[
+            {xAxis:6.31,lineStyle:{color:'#7c3aed',type:'dashed',width:1.5},label:{formatter:'曝光中位 6.31亿',color:'#7c3aed',fontSize:9,position:'insideEndTop'}},
+            {yAxis:38.2,lineStyle:{color:'#f97316',type:'dashed',width:1.5},label:{formatter:'GPM基准 ¥38.2',color:'#f97316',fontSize:9,position:'insideEndTop'}}
           ]}
-      }]
+      }],
+      graphic:[
+        {type:'rect',left:'55%',top:'5%',right:'5%',bottom:'52%',style:{fill:'rgba(22,163,74,0.04)',stroke:'none'},z:0},
+        {type:'rect',left:'5%',top:'5%',right:'45%',bottom:'52%',style:{fill:'rgba(99,102,241,0.04)',stroke:'none'},z:0},
+        {type:'rect',left:'55%',top:'48%',right:'5%',bottom:'5%',style:{fill:'rgba(249,115,22,0.04)',stroke:'none'},z:0},
+        {type:'rect',left:'5%',top:'48%',right:'45%',bottom:'5%',style:{fill:'rgba(148,163,184,0.06)',stroke:'none'},z:0},
+        {type:'text',style:{text:'🏆 核心资产',x:'58%',y:'8%',fill:'rgba(22,163,74,0.7)',fontSize:11,fontWeight:'bold'},z:1},
+        {type:'text',style:{text:'💎 高潜赛道',x:'7%',y:'8%',fill:'rgba(99,102,241,0.7)',fontSize:11,fontWeight:'bold'},z:1},
+        {type:'text',style:{text:'⚡ 流量内耗',x:'58%',y:'55%',fill:'rgba(249,115,22,0.7)',fontSize:11,fontWeight:'bold'},z:1},
+        {type:'text',style:{text:'🔭 有待观察',x:'7%',y:'55%',fill:'rgba(148,163,184,0.9)',fontSize:11,fontWeight:'bold'},z:1},
+      ]
     });
     function d3ex(v){return v<10?v.toFixed(2):v.toFixed(1);}
   })();
@@ -2045,20 +2066,23 @@ function initKolCharts(){
   const bubData=kolData.map(d=>[d.sess_cur, d.avgd_cur*10000, d.gmv_cur, d.n, d.gmv_y]);
   bub.setOption({
     tooltip:{formatter:p=>{const [s,a,g,n,yoy]=p.value;return `${n}<br>场次 ${s.toLocaleString()}场<br>场均 ¥${a.toFixed(0)}元<br>K播DGMV ¥${g}亿<br>YoY ${yoy>=0?'+':''}${yoy.toFixed(1)}%`;}},
-    xAxis:{name:'场次规模（场）',nameLocation:'middle',nameGap:25,splitLine:{show:false}},
-    yAxis:{name:'场均DGMV（元）',nameLocation:'middle',nameGap:50,splitLine:{show:false}},
+    grid:{left:60,right:20,top:30,bottom:50},
+    xAxis:{name:'场次规模（场）',nameLocation:'middle',nameGap:28,splitLine:{show:false},axisLabel:{color:'#64748b',fontSize:10},axisLine:{lineStyle:{color:'#e2e8f0'}}},
+    yAxis:{name:'场均DGMV（元）',nameLocation:'middle',nameGap:50,splitLine:{show:false},axisLabel:{color:'#64748b',fontSize:10},axisLine:{lineStyle:{color:'#e2e8f0'}}},
     series:[{type:'scatter',
       symbolSize:v=>Math.max(10,Math.sqrt(v[2])*28),
-      itemStyle:{color:p=>p.value[4]>=0?'rgba(22,163,74,0.75)':'rgba(232,55,44,0.75)',borderColor:'#fff',borderWidth:1},
+      itemStyle:{color:p=>p.value[4]>=0?'rgba(22,163,74,0.75)':'rgba(249,115,22,0.75)',borderColor:'#fff',borderWidth:1.5},
       label:{show:true,position:'right',formatter:p=>p.value[3].replace(/.*?（/,'').replace('）',''),fontSize:9,color:'#374151'},
       data:bubData}],
     graphic:[
-      {type:'line',shape:{x1:'60%',y1:'5%',x2:'60%',y2:'90%'},style:{stroke:'rgba(0,0,0,.15)',lineDash:[4,4]}},
-      {type:'line',shape:{x1:'5%',y1:'40%',x2:'95%',y2:'40%'},style:{stroke:'rgba(0,0,0,.15)',lineDash:[4,4]}},
-      {type:'text',style:{text:'高效放量',x:'70%',y:'10%',fill:'rgba(22,163,74,.5)',fontSize:11,fontWeight:'bold'}},
-      {type:'text',style:{text:'高效精品',x:'15%',y:'10%',fill:'rgba(99,102,241,.5)',fontSize:11,fontWeight:'bold'}},
-      {type:'text',style:{text:'低效大盘',x:'70%',y:'60%',fill:'rgba(249,115,22,.5)',fontSize:11,fontWeight:'bold'}},
-      {type:'text',style:{text:'双弱待援',x:'15%',y:'60%',fill:'rgba(232,55,44,.5)',fontSize:11,fontWeight:'bold'}},
+      {type:'rect',left:'55%',top:'5%',right:'5%',bottom:'52%',style:{fill:'rgba(22,163,74,0.04)',stroke:'none'},z:0},
+      {type:'rect',left:'5%',top:'5%',right:'45%',bottom:'52%',style:{fill:'rgba(99,102,241,0.04)',stroke:'none'},z:0},
+      {type:'rect',left:'55%',top:'48%',right:'5%',bottom:'5%',style:{fill:'rgba(249,115,22,0.04)',stroke:'none'},z:0},
+      {type:'rect',left:'5%',top:'48%',right:'45%',bottom:'5%',style:{fill:'rgba(148,163,184,0.06)',stroke:'none'},z:0},
+      {type:'text',style:{text:'🏆 核心资产',x:'58%',y:'8%',fill:'rgba(22,163,74,0.7)',fontSize:11,fontWeight:'bold'},z:1},
+      {type:'text',style:{text:'💎 高潜赛道',x:'7%',y:'8%',fill:'rgba(99,102,241,0.7)',fontSize:11,fontWeight:'bold'},z:1},
+      {type:'text',style:{text:'⚡ 流量内耗',x:'58%',y:'55%',fill:'rgba(249,115,22,0.7)',fontSize:11,fontWeight:'bold'},z:1},
+      {type:'text',style:{text:'🔭 有待观察',x:'7%',y:'55%',fill:'rgba(148,163,184,0.9)',fontSize:11,fontWeight:'bold'},z:1},
     ]
   });
 
