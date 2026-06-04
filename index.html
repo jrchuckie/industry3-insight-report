@@ -1219,7 +1219,7 @@ function buildLCard(d,rank){
       </div>
       ${frow('CVR商品转化',d.cvr,LB.cvr_base,d.cvr.toFixed(2)+'%',LB.cvr_base+'%',(parseFloat(d.cvr_pts||0)>=0?'+':'')+d.cvr_pts+' pts',bc(d.cvr,LB.cvr_base),bw(d.cvr,LB.cvr_base,10),false,d.cvr_pts?(parseFloat(d.cvr_pts)>=0?'+':'')+parseFloat(d.cvr_pts).toFixed(2)+'pts':null)}
       <div class="conn"><div class="cl"></div><div class="cn">→ 客单价</div><div class="cl"></div></div>
-      ${frow('客单价',d.aov,LB.aov_base,'¥'+d.aov.toFixed(0),'¥'+LB.aov_base,(d.aov-LB.aov_base>=0?'▲':'-')+'¥'+Math.round(Math.abs(d.aov-LB.aov_base)),bc(d.aov,LB.aov_base),bw(d.aov,LB.aov_base,2000),false,d.aov_y)}
+      ${frow('客单价',d.aov,LB.aov_base,'¥'+d.aov.toFixed(0),'¥'+LB.aov_base,(d.aov-LB.aov_base>=0?'▲':'-')+'¥'+Math.round(Math.abs(d.aov-LB.aov_base)),bc(d.aov,LB.aov_base),bw(d.aov,LB.aov_base,2000),false,d.aov_y!=null?(d.aov_y>0?'+':'')+d.aov_y+'%':null)}
       <div class="gbar">
         <span style="font-size:11px;color:#6b7280">GPM：</span>
         <span style="font-size:15px;font-weight:700;color:${d.gpm>=LB.gpm_med?'#16a34a':'#e8372c'}">${d.gpm.toFixed(1)}</span>
