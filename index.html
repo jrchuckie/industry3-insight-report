@@ -1171,8 +1171,6 @@ function buildLCard(d,rank){
         <span>总GMV <b>${d.gmv}亿</b> <span class="${d.gmv_y>=0?'up':'dn'}">YoY${d.gmv_y>=0?'+':''}${d.gmv_y}%</span></span>
         <span>总曝光 <b>${d.exp}亿</b> <span class="${d.exp_y>=0?'up':'dn'}">YoY${d.exp_y>=0?'+':''}${d.exp_y}%</span></span>
         <span>开播间数 <b>${d.sess>=10000?(d.sess/10000).toFixed(1)+'万':d.sess}</b> <span class="${d.sess_y>=0?'up':'dn'}">YoY${d.sess_y>=0?'+':''}${d.sess_y}%</span></span>
-        <span>单店场次 <b>${d.avgsess}</b>次 <span class="${d.avgsess_y>=0?'up':'dn'}">YoY${d.avgsess_y>=0?'+':''}${d.avgsess_y}%</span></span>
-        <span>单间时长 <b>${d.avg_dur?Math.round(d.avg_dur)+'h':'—'}</b></span>
       </div>
     </div>
     <div class="card-severity"><span class="severity-label ${scls}">${stxt}</span></div>
@@ -1180,6 +1178,9 @@ function buildLCard(d,rank){
   <div class="card-body">
     <div class="funnel-visual">
       <div style="font-size:10px;color:#94a3b8;margin-bottom:2px;padding-left:108px">← 不足 ｜ ▌基准60% ｜ 达标 →</div>
+      ${frow('单店场次',d.avgsess,20,d.avgsess+'次','20次',(d.avgsess-20>=0?'+':'')+((d.avgsess-20).toFixed(1))+'次',bc(d.avgsess,20),bw(d.avgsess||0,20,50),false,d.avgsess_y)}
+      ${frow('单间时长',d.avg_dur,18000,d.avg_dur?Math.round(d.avg_dur)+'h':'—','18000h',d.avg_dur?(d.avg_dur-18000>=0?'+':'')+Math.round(d.avg_dur-18000)+'h':'—',bc(d.avg_dur,18000),bw(d.avg_dur||0,18000,40000),false,null)}
+      <div class="conn"><div class="cl"></div><div class="cn">→ 曝光量</div><div class="cl"></div></div>
       ${frow('单间曝光',d.avg_exp,LB.exp_per_room,d.avg_exp?d.avg_exp.toFixed(1)+'万':'—',(LB.exp_per_room||5)+'万',d.avg_exp&&LB.exp_per_room?(d.avg_exp-LB.exp_per_room>=0?'+':'')+((d.avg_exp-LB.exp_per_room).toFixed(1))+'万':'—',bc(d.avg_exp,LB.exp_per_room||5),bw(d.avg_exp||0,LB.exp_per_room||5,30),true,d.exp_y)}
       <div class="conn"><div class="cl"></div><div class="cn">→ CTR 封面点击率</div><div class="cl"></div></div>
       ${frow('CTR封面',d.ctr,LB.ctr_base,d.ctr.toFixed(2)+'%',LB.ctr_base+'%',parseFloat(d.ctr_pts||0)>=0?d.ctr_pts+' pts':d.ctr_pts+' pts',bc(d.ctr,LB.ctr_base),bw(d.ctr,LB.ctr_base,8),false,null)}
