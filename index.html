@@ -1756,8 +1756,12 @@ function buildKolCard(d,rank){
         ${kbar('🏋️ 店均场次',d.store_sess,35,d.store_sess+'场',d.store_sess_y)}
         ${ksub('👑 头K场次',d.head_sess!=null?d.head_sess.toLocaleString()+'场':'—',d.head_sess_y)}
         ${ksub('🔸 腰尾K场次',(d.tail_sess!=null?(d.tail_sess>=1?d.tail_sess.toFixed(1)+'万':(d.tail_sess*10000).toFixed(0))+'场':'—'),d.tail_sess_y)}
-        <!-- 店均带货商品数 + 头K/腰尾K子行 -->
-        ${(()=>{const avgProd=d.store_sess>0?(d.prod_cur/d.store_sess).toFixed(2):'—';return kbar('店均商品数',d.store_sess>0?d.prod_cur/d.store_sess:0,0.5,avgProd+'万次/店',d.prod_y,d.prod_y>=0?'ok':'bad');})()}
+        <!-- 店均合作主播数 + 头K/腰尾K子行 -->
+        ${(()=>{const avgMer=d.mer>0?(d.head_mer+d.tail_mer)/d.mer:0;const cls=avgMer>=5?'ok':avgMer>=3?'warn':'bad';return kbar('店均合作主播数',avgMer,5,avgMer.toFixed(1)+'位/店',null,cls);})()}
+        ${ksub('👑 头K主播数',d.head_mer!=null?d.head_mer.toLocaleString()+'位':'—',d.head_mer_y)}
+        ${ksub('🔸 腰尾K主播数',d.tail_mer!=null?(d.tail_mer>=10000?(d.tail_mer/10000).toFixed(1)+'万位':d.tail_mer.toLocaleString()+'位'):'—',d.tail_mer_y)}
+        <!-- 场均带货商品数 + 头K/腰尾K子行 -->
+        ${(()=>{const totalSess=d.head_sess+(d.tail_sess>=1?d.tail_sess*10000:d.tail_sess*10000);const avgProd=totalSess>0?((d.prod_cur*10000)/totalSess):0;const dispVal=avgProd>=1?(avgProd.toFixed(1)+'万次/场'):avgProd.toFixed(1)+'次/场';return kbar('场均带货商品数',avgProd,5,dispVal,d.prod_y,d.prod_y>=0?'ok':'bad');})()}
         ${ksub('👑 头K商品次',d.head_prod!=null?(d.head_prod>=10000?(d.head_prod/10000).toFixed(1)+'万次':d.head_prod.toLocaleString()+'次'):'—',d.head_prod_y)}
         ${ksub('🔸 腰尾K商品次',d.tail_prod!=null?d.tail_prod+'万次':'—',d.tail_prod_y)}
         <!-- 整体坑产 + 头K/腰尾K子行 -->
@@ -2070,16 +2074,7 @@ function initKolCharts(){
         {yAxis:3000,lineStyle:{color:'#f97316',width:1.5,opacity:0.8},label:{formatter:'坑产中位 ¥3000',color:'#f97316',fontSize:10,position:'insideEndTop'}}
       ]}
     }],
-    graphic:[
-      {type:'rect',left:'57%',top:'5%',shape:{width:280,height:130},style:{fill:'rgba(22,163,74,0.09)',stroke:'rgba(22,163,74,0.2)',lineWidth:1},z:0},
-      {type:'rect',left:'7%',top:'5%',shape:{width:280,height:130},style:{fill:'rgba(99,102,241,0.09)',stroke:'rgba(99,102,241,0.2)',lineWidth:1},z:0},
-      {type:'rect',left:'57%',top:'50%',shape:{width:280,height:130},style:{fill:'rgba(249,115,22,0.09)',stroke:'rgba(249,115,22,0.2)',lineWidth:1},z:0},
-      {type:'rect',left:'7%',top:'50%',shape:{width:280,height:130},style:{fill:'rgba(148,163,184,0.09)',stroke:'rgba(148,163,184,0.25)',lineWidth:1},z:0},
-      {type:'text',left:'59%',top:'7%',style:{text:'🏆 核心资产',fill:'rgba(22,163,74,0.95)',fontSize:11,fontWeight:'bold'},z:2},
-      {type:'text',left:'9%',top:'7%',style:{text:'💎 高潜赛道',fill:'rgba(99,102,241,0.95)',fontSize:11,fontWeight:'bold'},z:2},
-      {type:'text',left:'59%',top:'52%',style:{text:'⚡ 流量内耗',fill:'rgba(234,88,12,0.95)',fontSize:11,fontWeight:'bold'},z:2},
-      {type:'text',left:'9%',top:'52%',style:{text:'🔭 有待观察',fill:'rgba(71,85,105,0.95)',fontSize:11,fontWeight:'bold'},z:2},
-    ]
+    graphic:[]
   });
 
   function kolBar(elId, arr, base, fmtVal, fmtLabel, colorFn){
