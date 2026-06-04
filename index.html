@@ -1756,12 +1756,10 @@ function buildKolCard(d,rank){
         ${kbar('🏋️ 店均场次',d.store_sess,35,d.store_sess+'场',d.store_sess_y)}
         ${ksub('👑 头K场次',d.head_sess!=null?d.head_sess.toLocaleString()+'场':'—',d.head_sess_y)}
         ${ksub('🔸 腰尾K场次',(d.tail_sess!=null?(d.tail_sess>=1?d.tail_sess.toFixed(1)+'万':(d.tail_sess*10000).toFixed(0))+'场':'—'),d.tail_sess_y)}
-        <!-- 带货商品次 + 头K/腰尾K子行 -->
-        ${kbar('带货商品次',d.prod_cur,10,d.prod_cur+'万次',d.prod_y,d.prod_y>=0?'ok':'bad')}
+        <!-- 店均带货商品数 + 头K/腰尾K子行 -->
+        ${(()=>{const avgProd=d.store_sess>0?(d.prod_cur/d.store_sess).toFixed(2):'—';return kbar('店均商品数',d.store_sess>0?d.prod_cur/d.store_sess:0,0.5,avgProd+'万次/店',d.prod_y,d.prod_y>=0?'ok':'bad');})()}
         ${ksub('👑 头K商品次',d.head_prod!=null?(d.head_prod>=10000?(d.head_prod/10000).toFixed(1)+'万次':d.head_prod.toLocaleString()+'次'):'—',d.head_prod_y)}
         ${ksub('🔸 腰尾K商品次',d.tail_prod!=null?d.tail_prod+'万次':'—',d.tail_prod_y)}
-        <!-- K播DGMV -->
-        ${kbar('K播DGMV',d.gmv_cur,0.2,'¥'+d.gmv_cur+'亿',d.gmv_y,d.gmv_y>=0?'ok':'bad')}
         <!-- 整体坑产 + 头K/腰尾K子行 -->
         ${kbar('🛍️ 整体坑产',d.pit_cur,3000,pitFmt(d.pit_cur),d.pit_y)}
         ${ksub('👑 头K坑产',d.head_pit!=null?pitFmt(d.head_pit):'—',d.head_pit_y)}
