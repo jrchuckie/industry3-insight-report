@@ -2074,24 +2074,29 @@ function initKolCharts(){
   const bub=echarts.init(bubEl);
   const bubData=kolData.map(d=>[d.sess_cur, d.avgd_cur*10000, d.gmv_cur, d.n, d.gmv_y]);
   bub.setOption({
-    tooltip:{formatter:p=>{const [s,a,g,n,yoy]=p.value;return `${n}<br>场次 ${s.toLocaleString()}场<br>场均 ¥${a.toFixed(0)}元<br>K播DGMV ¥${g}亿<br>YoY ${yoy>=0?'+':''}${yoy.toFixed(1)}%`;}},
+    tooltip:{formatter:p=>{const [s,a,g,n,yoy]=p.value;return `<b>${n}</b><br>场次 ${s.toLocaleString()}场<br>场均 ¥${a.toFixed(0)}元<br>K播DGMV ¥${g}亿<br>YoY ${yoy>=0?'+':''}${yoy.toFixed(1)}%`;}},
     grid:{left:60,right:20,top:30,bottom:50},
-    xAxis:{name:'场次规模（场）',nameLocation:'middle',nameGap:28,splitLine:{show:false},axisLabel:{color:'#64748b',fontSize:10},axisLine:{lineStyle:{color:'#e2e8f0'}}},
-    yAxis:{name:'场均DGMV（元）',nameLocation:'middle',nameGap:50,splitLine:{show:false},axisLabel:{color:'#64748b',fontSize:10},axisLine:{lineStyle:{color:'#e2e8f0'}}},
+    xAxis:{name:'场次规模（场）',nameLocation:'middle',nameGap:28,nameTextStyle:{color:'#1e293b',fontSize:12,fontWeight:'bold'},splitLine:{show:false},axisLabel:{color:'#374151',fontSize:10},axisLine:{lineStyle:{color:'#94a3b8'}}},
+    yAxis:{name:'场均DGMV（元）',nameLocation:'middle',nameGap:50,nameTextStyle:{color:'#1e293b',fontSize:12,fontWeight:'bold'},splitLine:{show:false},axisLabel:{color:'#374151',fontSize:10},axisLine:{lineStyle:{color:'#94a3b8'}}},
     series:[{type:'scatter',
       symbolSize:v=>Math.max(10,Math.sqrt(v[2])*28),
       itemStyle:{color:p=>p.value[4]>=0?'rgba(22,163,74,0.75)':'rgba(249,115,22,0.75)',borderColor:'#fff',borderWidth:1.5},
       label:{show:true,position:'right',formatter:p=>p.value[3].replace(/.*?（/,'').replace('）',''),fontSize:9,color:'#374151'},
-      data:bubData}],
+      data:bubData,
+      markLine:{silent:true,symbol:'none',lineStyle:{type:'dashed'},data:[
+        {xAxis:10600,lineStyle:{color:'#7c3aed',width:1.5,opacity:0.8},label:{formatter:'场次中位 10600场',color:'#7c3aed',fontSize:10,position:'insideStartTop'}},
+        {yAxis:5000,lineStyle:{color:'#f97316',width:1.5,opacity:0.8},label:{formatter:'场均中位 ¥5000元',color:'#f97316',fontSize:10,position:'insideEndTop'}}
+      ]}
+    }],
     graphic:[
-      {type:'rect',left:'55%',top:'5%',right:'5%',bottom:'52%',style:{fill:'rgba(22,163,74,0.09)',stroke:'rgba(22,163,74,0.2)',lineWidth:1},z:0},
-      {type:'rect',left:'5%',top:'5%',right:'45%',bottom:'52%',style:{fill:'rgba(99,102,241,0.09)',stroke:'rgba(99,102,241,0.2)',lineWidth:1},z:0},
-      {type:'rect',left:'55%',top:'48%',right:'5%',bottom:'5%',style:{fill:'rgba(249,115,22,0.09)',stroke:'rgba(249,115,22,0.2)',lineWidth:1},z:0},
-      {type:'rect',left:'5%',top:'48%',right:'45%',bottom:'5%',style:{fill:'rgba(148,163,184,0.09)',stroke:'rgba(148,163,184,0.25)',lineWidth:1},z:0},
-      {type:'text',style:{text:'🏆 核心资产',x:'58%',y:'8%',fill:'rgba(22,163,74,0.95)',fontSize:11,fontWeight:'bold'},z:1},
-      {type:'text',style:{text:'💎 高潜赛道',x:'7%',y:'8%',fill:'rgba(99,102,241,0.95)',fontSize:11,fontWeight:'bold'},z:1},
-      {type:'text',style:{text:'⚡ 流量内耗',x:'58%',y:'55%',fill:'rgba(234,88,12,0.95)',fontSize:11,fontWeight:'bold'},z:1},
-      {type:'text',style:{text:'🔭 有待观察',x:'7%',y:'55%',fill:'rgba(71,85,105,0.95)',fontSize:11,fontWeight:'bold'},z:1},
+      {type:'rect',left:'55%',top:'5%',right:'3%',bottom:'50%',style:{fill:'rgba(22,163,74,0.09)',stroke:'rgba(22,163,74,0.2)',lineWidth:1},z:0},
+      {type:'rect',left:'7%',top:'5%',right:'45%',bottom:'50%',style:{fill:'rgba(99,102,241,0.09)',stroke:'rgba(99,102,241,0.2)',lineWidth:1},z:0},
+      {type:'rect',left:'55%',top:'50%',right:'3%',bottom:'8%',style:{fill:'rgba(249,115,22,0.09)',stroke:'rgba(249,115,22,0.2)',lineWidth:1},z:0},
+      {type:'rect',left:'7%',top:'50%',right:'45%',bottom:'8%',style:{fill:'rgba(148,163,184,0.09)',stroke:'rgba(148,163,184,0.25)',lineWidth:1},z:0},
+      {type:'text',left:'57%',top:'7%',style:{text:'🏆 核心资产',fill:'rgba(22,163,74,0.95)',fontSize:11,fontWeight:'bold'},z:2},
+      {type:'text',left:'9%',top:'7%',style:{text:'💎 高潜赛道',fill:'rgba(99,102,241,0.95)',fontSize:11,fontWeight:'bold'},z:2},
+      {type:'text',left:'57%',top:'52%',style:{text:'⚡ 流量内耗',fill:'rgba(234,88,12,0.95)',fontSize:11,fontWeight:'bold'},z:2},
+      {type:'text',left:'9%',top:'52%',style:{text:'🔭 有待观察',fill:'rgba(71,85,105,0.95)',fontSize:11,fontWeight:'bold'},z:2},
     ]
   });
 
