@@ -970,7 +970,7 @@ function fmtYoy(v){if(v==null||v===undefined)return null;return Math.round(v*10)
 function frow(lbl,val,base,dispV,dispB,diffStr,cls,width,isSup,yoyVal){
   const cc=isSup?'sup':cls;
   const vsCls=diffStr&&(diffStr.startsWith('-')||diffStr.startsWith('▼'))?'dn':'up';
-  const yoyLine=yoyVal!=null?`<div class="fr-yoy ${yoyVal<0?'dn':'up'}">YoY ${yoyVal>0?'+':''}${yoyVal}%</div>`:'<div class="fr-yoy" style="color:#94a3b8;font-size:10px">YoY —</div>';
+  const yoyLine=yoyVal!=null?`<div class="fr-yoy ${String(yoyVal).startsWith('-')?'dn':'up'}">YoY ${yoyVal}</div>`:'<div class="fr-yoy" style="color:#94a3b8;font-size:10px">YoY —</div>';
   return `<div class="funnel-row"><div class="fl">${lbl}</div><div class="fc"><div class="fb"><div class="ff ${cc}" style="width:${width}"></div><div class="fbl" style="left:60%"></div><span class="fvo">${dispV}</span></div></div><div class="fr"><div class="fr-base">基准 ${dispB}</div><div class="fr-val ${vsCls}">vs基: ${diffStr}</div>${yoyLine}</div></div>`;
 }
 
@@ -1044,7 +1044,7 @@ function buildNCard(d,rank){
       <div class="conn"><div class="cl"></div><div class="cn">→ CVR 转化率</div><div class="cl"></div></div>
       ${frow('CVR 转化率',d.cvr,NB.cvr,d.cvr.toFixed(3)+'%',NB.cvr+'%',(d.cvr-NB.cvr>=0?'+':'')+((d.cvr-NB.cvr).toFixed(3))+'%',bc(d.cvr,NB.cvr),bw(d.cvr,NB.cvr),false,d.cvr_y)}
       <div class="conn"><div class="cl"></div><div class="cn">→ 客单价（基准¥${NB.aov}中位数）</div><div class="cl"></div></div>
-      ${frow('客单价',d.aov,NB.aov,'¥'+d.aov,'¥'+NB.aov,(d.aov-NB.aov>=0?'▲':'-')+'¥'+Math.round(Math.abs(d.aov-NB.aov)),aovBarCls,aovW,false,d.aov_y)}
+      ${frow('客单价',d.aov,NB.aov,'¥'+d.aov,'¥'+NB.aov,(d.aov-NB.aov>=0?'▲':'-')+'¥'+Math.round(Math.abs(d.aov-NB.aov)),aovBarCls,aovW,false,d.aov_y!=null?(d.aov_y>0?'+':'')+d.aov_y+'%':null)}
       <div class="gbar">
         <span style="font-size:11px;color:#6b7280">GPM：</span>
         <span style="font-size:15px;font-weight:700;color:${d.gpm>=NB.gpm?'#16a34a':'#e8372c'}">${d.gpm}</span> <span style="font-size:10px;color:${d.gpm_y>=0?'#16a34a':'#dc2626'}">YoY ${d.gpm_y>=0?'+':''}${d.gpm_y}%</span>
@@ -1130,16 +1130,25 @@ function buildLCard(d,rank){
   const stxt=['✅ 健康','🟡 轻微','🟠 中等','🔴 严重'][sev];
   // 诊断pills
   const lowList=[];const yoyList=[];
-  if(d.exp<LB.exp_med*0.7)lowList.push('总曝光');
+  if(d.avgsess<15)lowList.push('单间场次');
+  if(d.avg_dur&&d.avg_dur<3)lowList.push('单间时长');
+  if(d.avg_exp&&d.avg_exp<LB.exp_per_room*0.6)lowList.push('单间曝光');
   if(d.ctr<LB.ctr_base*0.8)lowList.push('CTR封面');
   if(d.jinbo<LB.jinbo_base*0.7)lowList.push('进播率');
+  if(d.conv&&d.conv<50)lowList.push('商品点击率');
   if(d.cvr<LB.cvr_base*0.7)lowList.push('CVR转化');
   if(d.gpm<LB.gpm_med*0.7)lowList.push('GPM');
   if(d.aov<LB.aov_base*0.5)lowList.push('客单价');
-  if(d.exp_y<=-30)yoyList.push('总曝光'+d.exp_y+'%');
-  if(d.dgmv_y<=-20)yoyList.push('店播DGMV'+d.dgmv_y+'%');
+  if(d.avgsess_y<=-15)yoyList.push('单间场次'+d.avgsess_y+'%');
+  if(d.dur_y<=-15)yoyList.push('单间时长'+d.dur_y+'%');
+  if(d.exp_y<=-20)yoyList.push('单间曝光'+d.exp_y+'%');
+  if(parseFloat(d.ctr_pts||0)<=-0.2)yoyList.push('CTR封面'+d.ctr_pts+'pts');
+  if(parseFloat(d.jinbo_pts||0)<=-0.3)yoyList.push('进播率'+d.jinbo_pts+'pts');
+  if(d.conv_pts&&parseFloat(d.conv_pts)<=-5)yoyList.push('商品点击率'+d.conv_pts+'pts');
+  if(d.cvr_pts&&parseFloat(d.cvr_pts)<=-0.3)yoyList.push('CVR转化'+d.cvr_pts+'pts');
   if(d.gpm_y<=-25)yoyList.push('GPM'+d.gpm_y+'%');
   if(d.aov_y<=-20)yoyList.push('客单价'+d.aov_y+'%');
+  if(d.dgmv_y<=-20)yoyList.push('店播DGMV'+d.dgmv_y+'%');
   const lowPills=lowList.map(x=>`<span class="diag-pill low">${x}</span>`).join('');
   const yoyPills=yoyList.map(x=>`<span class="diag-pill yoy">${x}</span>`).join('');
   const hasLow=lowPills.length>0;const hasYoy=yoyPills.length>0;
@@ -1178,12 +1187,12 @@ function buildLCard(d,rank){
   <div class="card-body">
     <div class="funnel-visual">
       <div style="font-size:10px;color:#94a3b8;margin-bottom:2px;padding-left:108px">← 不足 ｜ ▌基准60% ｜ 达标 →</div>
-      ${frow('单间场次',d.avgsess,20,d.avgsess+'次','20次',(d.avgsess-20>=0?'+':'')+((d.avgsess-20).toFixed(1))+'次',bc(d.avgsess,20),bw(d.avgsess||0,20,50),false,d.avgsess_y)}
-      ${frow('单间时长',d.avg_dur,5,d.avg_dur?d.avg_dur.toFixed(1)+'h':'—','5h',d.avg_dur?(d.avg_dur-5>=0?'+':'')+((d.avg_dur-5).toFixed(1))+'h':'—',bc(d.avg_dur,5),bw(d.avg_dur||0,5,15),false,d.dur_y)}
+      ${frow('单间场次',d.avgsess,20,d.avgsess+'次','20次',(d.avgsess-20>=0?'+':'')+((d.avgsess-20).toFixed(1))+'次',bc(d.avgsess,20),bw(d.avgsess||0,20,50),false,d.avgsess_y!=null?(d.avgsess_y>0?'+':'')+d.avgsess_y+'%':null)}
+      ${frow('单间时长',d.avg_dur,5,d.avg_dur?d.avg_dur.toFixed(1)+'h':'—','5h',d.avg_dur?(d.avg_dur-5>=0?'+':'')+((d.avg_dur-5).toFixed(1))+'h':'—',bc(d.avg_dur,5),bw(d.avg_dur||0,5,15),false,d.dur_y!=null?(d.dur_y>0?'+':'')+d.dur_y+'%':null)}
       <div class="conn"><div class="cl"></div><div class="cn">→ 曝光量</div><div class="cl"></div></div>
-      ${frow('单间曝光',d.avg_exp,LB.exp_per_room,d.avg_exp?d.avg_exp.toFixed(1)+'万':'—',(LB.exp_per_room||5)+'万',d.avg_exp&&LB.exp_per_room?(d.avg_exp-LB.exp_per_room>=0?'+':'')+((d.avg_exp-LB.exp_per_room).toFixed(1))+'万':'—',bc(d.avg_exp,LB.exp_per_room||5),bw(d.avg_exp||0,LB.exp_per_room||5,30),true,d.exp_y)}
+      ${frow('单间曝光',d.avg_exp,LB.exp_per_room,d.avg_exp?d.avg_exp.toFixed(1)+'万':'—',(LB.exp_per_room||5)+'万',d.avg_exp&&LB.exp_per_room?(d.avg_exp-LB.exp_per_room>=0?'+':'')+((d.avg_exp-LB.exp_per_room).toFixed(1))+'万':'—',bc(d.avg_exp,LB.exp_per_room||5),bw(d.avg_exp||0,LB.exp_per_room||5,30),true,d.exp_y!=null?(d.exp_y>0?'+':'')+d.exp_y+'%':null)}
       <div class="conn"><div class="cl"></div><div class="cn">→ CTR 封面点击率</div><div class="cl"></div></div>
-      ${frow('CTR封面',d.ctr,LB.ctr_base,d.ctr.toFixed(2)+'%',LB.ctr_base+'%',(parseFloat(d.ctr_pts||0)>=0?'+':'')+d.ctr_pts+' pts',bc(d.ctr,LB.ctr_base),bw(d.ctr,LB.ctr_base,8),false,parseFloat(d.ctr_pts||0))}
+      ${frow('CTR封面',d.ctr,LB.ctr_base,d.ctr.toFixed(2)+'%',LB.ctr_base+'%',(parseFloat(d.ctr_pts||0)>=0?'+':'')+d.ctr_pts+' pts',bc(d.ctr,LB.ctr_base),bw(d.ctr,LB.ctr_base,8),false,d.ctr_pts?(parseFloat(d.ctr_pts)>0?'+':'')+parseFloat(d.ctr_pts).toFixed(2)+'pts':null)}
       <div style="display:flex;gap:8px;margin:4px 0;padding-left:8px">
         <div style="flex:1;background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:4px 8px;font-size:10px">
           <div style="font-weight:600;color:#6b7280;margin-bottom:2px">🫧 呼吸灯 CTR</div>
@@ -1195,9 +1204,9 @@ function buildLCard(d,rank){
         </div>
       </div>
       <div class="conn"><div class="cl"></div><div class="cn">→ CVR 进播率</div><div class="cl"></div></div>
-      ${frow('进播率',d.jinbo,LB.jinbo_base,d.jinbo.toFixed(2)+'%',LB.jinbo_base+'%',(parseFloat(d.jinbo_pts||0)>=0?'+':'')+d.jinbo_pts+' pts',bc(d.jinbo,LB.jinbo_base),bw(d.jinbo,LB.jinbo_base,15),false,parseFloat(d.jinbo_pts||0))}
+      ${frow('进播率',d.jinbo,LB.jinbo_base,d.jinbo.toFixed(2)+'%',LB.jinbo_base+'%',(parseFloat(d.jinbo_pts||0)>=0?'+':'')+d.jinbo_pts+' pts',bc(d.jinbo,LB.jinbo_base),bw(d.jinbo,LB.jinbo_base,15),false,d.jinbo_pts?(parseFloat(d.jinbo_pts)>=0?'+':'')+parseFloat(d.jinbo_pts).toFixed(2)+'pts':null)}
       <div class="conn"><div class="cl"></div><div class="cn">→ 商品点击率 / CVR</div><div class="cl"></div></div>
-      ${frow('商品点击率',d.conv,100,d.conv?d.conv.toFixed(1)+'%':'—','—',d.conv_pts?(parseFloat(d.conv_pts)>=0?'+':'')+d.conv_pts+' pts':'—',bc(d.conv,80),bw(d.conv||0,100,100),false,d.conv_pts?parseFloat(d.conv_pts):null)}
+      ${frow('商品点击率',d.conv,100,d.conv?d.conv.toFixed(1)+'%':'—','—',d.conv_pts?(parseFloat(d.conv_pts)>=0?'+':'')+d.conv_pts+' pts':'—',bc(d.conv,80),bw(d.conv||0,100,100),false,d.conv_pts?(parseFloat(d.conv_pts)>=0?'+':'')+parseFloat(d.conv_pts).toFixed(2)+'pts':null)}
       <div style="display:flex;gap:8px;margin:4px 0;padding-left:8px">
         <div style="flex:1;background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:4px 8px;font-size:10px">
           <div style="font-weight:600;color:#6b7280;margin-bottom:2px">🫧 呼吸灯 CVR</div>
@@ -1208,7 +1217,7 @@ function buildLCard(d,rank){
           <div style="color:${(d.zhibo_cvr||0)>=1.5?'#16a34a':(d.zhibo_cvr||0)>=0.8?'#eab308':'#e8372c'};font-weight:700">${d.zhibo_cvr?d.zhibo_cvr.toFixed(2)+'%':'—'}${d.zhibo_cvr_y!=null?' <span style="font-size:9px;color:'+(d.zhibo_cvr_y>=0?'#16a34a':'#dc2626')+'">('+(d.zhibo_cvr_y>=0?'+':'')+d.zhibo_cvr_y+'pts)</span>':''}</div>
         </div>
       </div>
-      ${frow('CVR商品转化',d.cvr,LB.cvr_base,d.cvr.toFixed(2)+'%',LB.cvr_base+'%',(parseFloat(d.cvr_pts||0)>=0?'+':'')+d.cvr_pts+' pts',bc(d.cvr,LB.cvr_base),bw(d.cvr,LB.cvr_base,10),false,d.cvr_pts?parseFloat(d.cvr_pts):null)}
+      ${frow('CVR商品转化',d.cvr,LB.cvr_base,d.cvr.toFixed(2)+'%',LB.cvr_base+'%',(parseFloat(d.cvr_pts||0)>=0?'+':'')+d.cvr_pts+' pts',bc(d.cvr,LB.cvr_base),bw(d.cvr,LB.cvr_base,10),false,d.cvr_pts?(parseFloat(d.cvr_pts)>=0?'+':'')+parseFloat(d.cvr_pts).toFixed(2)+'pts':null)}
       <div class="conn"><div class="cl"></div><div class="cn">→ 客单价</div><div class="cl"></div></div>
       ${frow('客单价',d.aov,LB.aov_base,'¥'+d.aov.toFixed(0),'¥'+LB.aov_base,(d.aov-LB.aov_base>=0?'▲':'-')+'¥'+Math.round(Math.abs(d.aov-LB.aov_base)),bc(d.aov,LB.aov_base),bw(d.aov,LB.aov_base,2000),false,d.aov_y)}
       <div class="gbar">
