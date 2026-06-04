@@ -1717,18 +1717,24 @@ function buildKolCard(d,rank){
     </div>`;
   }
 
-  // 低绝对值警告（坑产<2000元，店均场次<10场）
+  // 低绝对值警告（跟漏斗对齐：店均场次/店均主播/场均商品/坑产）
+  const totalSessCalc = d.head_sess + (d.tail_sess||0)*10000;
+  const avgProdCalc = totalSessCalc>0 ? (d.prod_cur*10000/totalSessCalc) : 0;
+  const avgMerCalc = d.mer>0 ? (d.head_mer+d.tail_mer)/d.mer : 0;
   const lowItems=[];
-  if(d.pit_cur<2000) lowItems.push(`坑产¥${d.pit_cur.toLocaleString()}元`);
   if(d.store_sess<10) lowItems.push(`店均场次${d.store_sess}场`);
+  if(avgMerCalc<1) lowItems.push(`店均主播${avgMerCalc.toFixed(1)}位`);
+  if(avgProdCalc<1) lowItems.push(`场均商品${avgProdCalc.toFixed(1)}次`);
+  if(d.pit_cur<2000) lowItems.push(`整体坑产¥${d.pit_cur.toLocaleString()}`);
+  if(d.head_pit!=null&&d.head_pit<1500) lowItems.push(`头K坑产¥${d.head_pit.toLocaleString()}`);
 
-  // YoY严重跌（<-20%）
+  // YoY严重跌（跟漏斗对齐）
   const yoyBad=[];
-  if(d.gmv_y<-10) yoyBad.push(`K播DGMV ${d.gmv_y.toFixed(1)}%`);
-  if(d.pit_y<-20) yoyBad.push(`整体坑产 ${d.pit_y.toFixed(1)}%`);
-  if(d.head_gmv_y!=null&&d.head_gmv_y<-20) yoyBad.push(`头K DGMV ${d.head_gmv_y.toFixed(1)}%`);
-  if(d.head_pit_y!=null&&d.head_pit_y<-20) yoyBad.push(`头K坑产 ${d.head_pit_y.toFixed(1)}%`);
-  if(d.tail_gmv_y!=null&&d.tail_gmv_y<-20) yoyBad.push(`腰尾K DGMV ${d.tail_gmv_y.toFixed(1)}%`);
+  if(d.store_sess_y!=null&&d.store_sess_y<=-15) yoyBad.push(`店均场次 ${d.store_sess_y.toFixed(1)}%`);
+  if(d.pit_y<=-20) yoyBad.push(`整体坑产 ${d.pit_y.toFixed(1)}%`);
+  if(d.head_pit_y!=null&&d.head_pit_y<=-20) yoyBad.push(`头K坑产 ${d.head_pit_y.toFixed(1)}%`);
+  if(d.tail_gmv_y!=null&&d.tail_gmv_y<=-20) yoyBad.push(`腰尾K DGMV ${d.tail_gmv_y.toFixed(1)}%`);
+  if(d.gmv_y<=-20) yoyBad.push(`K播DGMV ${d.gmv_y.toFixed(1)}%`);
 
   const lowHtml=lowItems.length?`<div class="diag-row low-row"><div class="diag-row-label">📊 绝对值偏低</div><div class="diag-pills">${lowItems.map(x=>`<span class="diag-pill low">${x}</span>`).join('')}</div></div>`:'';
   const yoyHtml=yoyBad.length?`<div class="diag-row yoy-row"><div class="diag-row-label">📉 YoY跌幅严重</div><div class="diag-pills">${yoyBad.map(x=>`<span class="diag-pill yoy">${x}</span>`).join('')}</div></div>`:'';
@@ -1778,10 +1784,7 @@ function buildKolCard(d,rank){
             ${yoyHtml}
           </div>
         </div>
-        <div class="action-box">
-          <div class="action-title">行动建议</div>
-          <div class="action-text">${d.actions.join('<br>')}</div>
-        </div>
+
       </div>
     </div>
   </div>`;
@@ -1801,9 +1804,9 @@ function renderKol(mode){
     const sn=n=>n.replace(/.*?（/,'').replace('）','');
     const pill=(n,bg,tc)=>`<span style="background:${bg};color:${tc};padding:1px 6px;border-radius:8px;margin:1px;display:inline-block;font-size:10px">${n}</span>`;
     const KMLIST=[
-      {label:'整体坑产',base:'¥3000元',lowThr:2000,yoyThr:-20,vFn:d=>d.pit_cur,yFn:d=>d.pit_y},
-      {label:'头K坑产',base:'¥3000元',lowThr:1000,yoyThr:-20,vFn:d=>d.head_pit,yFn:d=>d.head_pit_y},
-      {label:'头K DGMV',base:'—',lowThr:null,yoyThr:-20,vFn:d=>null,yFn:d=>d.head_gmv_y},
+      {label:'店均场次',base:'基准35场',lowThr:10,yoyThr:-15,vFn:d=>d.store_sess,yFn:d=>d.store_sess_y},
+      {label:'整体坑产',base:'基准¥3000',lowThr:2000,yoyThr:-20,vFn:d=>d.pit_cur,yFn:d=>d.pit_y},
+      {label:'头K坑产',base:'基准¥3000',lowThr:1500,yoyThr:-20,vFn:d=>d.head_pit,yFn:d=>d.head_pit_y},
       {label:'腰尾K DGMV',base:'—',lowThr:null,yoyThr:-20,vFn:d=>null,yFn:d=>d.tail_gmv_y},
       {label:'K播DGMV',base:'—',lowThr:null,yoyThr:-20,vFn:d=>d.gmv_cur,yFn:d=>d.gmv_y},
     ];
