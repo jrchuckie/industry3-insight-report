@@ -1178,12 +1178,12 @@ function buildLCard(d,rank){
   <div class="card-body">
     <div class="funnel-visual">
       <div style="font-size:10px;color:#94a3b8;margin-bottom:2px;padding-left:108px">← 不足 ｜ ▌基准60% ｜ 达标 →</div>
-      ${frow('单店场次',d.avgsess,20,d.avgsess+'次','20次',(d.avgsess-20>=0?'+':'')+((d.avgsess-20).toFixed(1))+'次',bc(d.avgsess,20),bw(d.avgsess||0,20,50),false,d.avgsess_y)}
-      ${frow('单间时长',d.avg_dur,18000,d.avg_dur?Math.round(d.avg_dur)+'h':'—','18000h',d.avg_dur?(d.avg_dur-18000>=0?'+':'')+Math.round(d.avg_dur-18000)+'h':'—',bc(d.avg_dur,18000),bw(d.avg_dur||0,18000,40000),false,null)}
+      ${frow('单间场次',d.avgsess,20,d.avgsess+'次','20次',(d.avgsess-20>=0?'+':'')+((d.avgsess-20).toFixed(1))+'次',bc(d.avgsess,20),bw(d.avgsess||0,20,50),false,d.avgsess_y)}
+      ${frow('单间时长',d.avg_dur,5,d.avg_dur?d.avg_dur.toFixed(1)+'h':'—','5h',d.avg_dur?(d.avg_dur-5>=0?'+':'')+((d.avg_dur-5).toFixed(1))+'h':'—',bc(d.avg_dur,5),bw(d.avg_dur||0,5,15),false,d.dur_y)}
       <div class="conn"><div class="cl"></div><div class="cn">→ 曝光量</div><div class="cl"></div></div>
       ${frow('单间曝光',d.avg_exp,LB.exp_per_room,d.avg_exp?d.avg_exp.toFixed(1)+'万':'—',(LB.exp_per_room||5)+'万',d.avg_exp&&LB.exp_per_room?(d.avg_exp-LB.exp_per_room>=0?'+':'')+((d.avg_exp-LB.exp_per_room).toFixed(1))+'万':'—',bc(d.avg_exp,LB.exp_per_room||5),bw(d.avg_exp||0,LB.exp_per_room||5,30),true,d.exp_y)}
       <div class="conn"><div class="cl"></div><div class="cn">→ CTR 封面点击率</div><div class="cl"></div></div>
-      ${frow('CTR封面',d.ctr,LB.ctr_base,d.ctr.toFixed(2)+'%',LB.ctr_base+'%',parseFloat(d.ctr_pts||0)>=0?d.ctr_pts+' pts':d.ctr_pts+' pts',bc(d.ctr,LB.ctr_base),bw(d.ctr,LB.ctr_base,8),false,null)}
+      ${frow('CTR封面',d.ctr,LB.ctr_base,d.ctr.toFixed(2)+'%',LB.ctr_base+'%',(parseFloat(d.ctr_pts||0)>=0?'+':'')+d.ctr_pts+' pts',bc(d.ctr,LB.ctr_base),bw(d.ctr,LB.ctr_base,8),false,parseFloat(d.ctr_pts||0))}
       <div style="display:flex;gap:8px;margin:4px 0;padding-left:8px">
         <div style="flex:1;background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:4px 8px;font-size:10px">
           <div style="font-weight:600;color:#6b7280;margin-bottom:2px">🫧 呼吸灯 CTR</div>
@@ -1195,9 +1195,9 @@ function buildLCard(d,rank){
         </div>
       </div>
       <div class="conn"><div class="cl"></div><div class="cn">→ CVR 进播率</div><div class="cl"></div></div>
-      ${frow('进播率',d.jinbo,LB.jinbo_base,d.jinbo.toFixed(2)+'%',LB.jinbo_base+'%',parseFloat(d.jinbo_pts||0)>=0?'+'+d.jinbo_pts+' pts':d.jinbo_pts+' pts',bc(d.jinbo,LB.jinbo_base),bw(d.jinbo,LB.jinbo_base,15),false,null)}
+      ${frow('进播率',d.jinbo,LB.jinbo_base,d.jinbo.toFixed(2)+'%',LB.jinbo_base+'%',(parseFloat(d.jinbo_pts||0)>=0?'+':'')+d.jinbo_pts+' pts',bc(d.jinbo,LB.jinbo_base),bw(d.jinbo,LB.jinbo_base,15),false,parseFloat(d.jinbo_pts||0))}
       <div class="conn"><div class="cl"></div><div class="cn">→ 商品点击率 / CVR</div><div class="cl"></div></div>
-      ${frow('商品点击率',d.conv,100,d.conv?d.conv.toFixed(1)+'%':'—','—',d.conv_pts?(parseFloat(d.conv_pts)>=0?'+':'')+d.conv_pts+' pts':'—',bc(d.conv,80),bw(d.conv||0,100,100),false,null)}
+      ${frow('商品点击率',d.conv,100,d.conv?d.conv.toFixed(1)+'%':'—','—',d.conv_pts?(parseFloat(d.conv_pts)>=0?'+':'')+d.conv_pts+' pts':'—',bc(d.conv,80),bw(d.conv||0,100,100),false,d.conv_pts?parseFloat(d.conv_pts):null)}
       <div style="display:flex;gap:8px;margin:4px 0;padding-left:8px">
         <div style="flex:1;background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:4px 8px;font-size:10px">
           <div style="font-weight:600;color:#6b7280;margin-bottom:2px">🫧 呼吸灯 CVR</div>
@@ -1208,7 +1208,7 @@ function buildLCard(d,rank){
           <div style="color:${(d.zhibo_cvr||0)>=1.5?'#16a34a':(d.zhibo_cvr||0)>=0.8?'#eab308':'#e8372c'};font-weight:700">${d.zhibo_cvr?d.zhibo_cvr.toFixed(2)+'%':'—'}${d.zhibo_cvr_y!=null?' <span style="font-size:9px;color:'+(d.zhibo_cvr_y>=0?'#16a34a':'#dc2626')+'">('+(d.zhibo_cvr_y>=0?'+':'')+d.zhibo_cvr_y+'pts)</span>':''}</div>
         </div>
       </div>
-      ${frow('CVR商品转化',d.cvr,LB.cvr_base,d.cvr.toFixed(2)+'%',LB.cvr_base+'%',parseFloat(d.cvr_pts||0)>=0?'+'+d.cvr_pts+' pts':d.cvr_pts+' pts',bc(d.cvr,LB.cvr_base),bw(d.cvr,LB.cvr_base,10),false,d.cvr_pts)}
+      ${frow('CVR商品转化',d.cvr,LB.cvr_base,d.cvr.toFixed(2)+'%',LB.cvr_base+'%',(parseFloat(d.cvr_pts||0)>=0?'+':'')+d.cvr_pts+' pts',bc(d.cvr,LB.cvr_base),bw(d.cvr,LB.cvr_base,10),false,d.cvr_pts?parseFloat(d.cvr_pts):null)}
       <div class="conn"><div class="cl"></div><div class="cn">→ 客单价</div><div class="cl"></div></div>
       ${frow('客单价',d.aov,LB.aov_base,'¥'+d.aov.toFixed(0),'¥'+LB.aov_base,(d.aov-LB.aov_base>=0?'▲':'-')+'¥'+Math.round(Math.abs(d.aov-LB.aov_base)),bc(d.aov,LB.aov_base),bw(d.aov,LB.aov_base,2000),false,d.aov_y)}
       <div class="gbar">
@@ -1341,8 +1341,10 @@ function renderLive2() {
     const sn=n=>n.replace(/.*?（/,'').replace('）','');
     const pill=(n,bg,tc)=>`<span style="background:${bg};color:${tc};padding:1px 6px;border-radius:8px;margin:1px;display:inline-block;font-size:10px">${n}</span>`;
     const LMLIST=[
-      {label:'总曝光',base:LB.exp_med,unit:'亿',lowThr:LB.exp_med*0.7,yoyThr:-20,vFn:d=>d.exp,yFn:d=>d.exp_y},
-      {label:'GPM',  base:LB.gpm_med,unit:'元',lowThr:LB.gpm_med*0.7,yoyThr:-25,vFn:d=>d.gpm,yFn:d=>d.gpm_y},
+      {label:'单间场次',base:20,unit:'次',lowThr:15,yoyThr:-15,vFn:d=>d.avgsess,yFn:d=>d.avgsess_y},
+      {label:'单间时长',base:5,unit:'h',lowThr:3,yoyThr:-15,vFn:d=>d.avg_dur,yFn:d=>d.dur_y},
+      {label:'单间曝光',base:LB.exp_per_room,unit:'万',lowThr:LB.exp_per_room*0.6,yoyThr:-20,vFn:d=>d.avg_exp,yFn:d=>d.exp_y},
+      {label:'GPM',base:LB.gpm_med,unit:'元',lowThr:LB.gpm_med*0.7,yoyThr:-25,vFn:d=>d.gpm,yFn:d=>d.gpm_y},
       {label:'CTR封面',base:LB.ctr_base,unit:'%',lowThr:LB.ctr_base*0.8,yoyThr:-15,vFn:d=>d.ctr,yFn:d=>parseFloat(d.ctr_pts||0)},
       {label:'进播率',base:LB.jinbo_base,unit:'%',lowThr:LB.jinbo_base*0.7,yoyThr:-15,vFn:d=>d.jinbo,yFn:d=>parseFloat(d.jinbo_pts||0)},
       {label:'CVR转化',base:LB.cvr_base,unit:'%',lowThr:LB.cvr_base*0.7,yoyThr:-15,vFn:d=>d.cvr,yFn:d=>parseFloat(d.cvr_pts||0)},
